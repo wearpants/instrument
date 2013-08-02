@@ -88,9 +88,9 @@ def _measure_each_decorate(metric = print_metric, name = None):
 measure_each.func = _measure_each_decorate
 
 try:
-    from statsd import statsd
-    if not statsd: raise RuntimeError("no statsd")
-except Exception:
+    from statsd import statsd, StatsClient
+    if statsd is None: statsd = StatsClient()
+except ImportError:
     pass
 else:
     def statsd_metric(name, count, elapsed):
