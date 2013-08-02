@@ -3,11 +3,11 @@ from functools import wraps
 
 # if your metric function throws an exception or is slow, you suck.
 
-def print_metric(name, count, total_time):
+def print_metric(name, count, elapsed):
     if name is not None:
-        print("%s: %d elements in %f seconds"%(name, count, total_time))
+        print("%s: %d elements in %f seconds"%(name, count, elapsed))
     else:
-        print("%d elements in %f seconds"%(count, total_time))
+        print("%d elements in %f seconds"%(count, elapsed))
 
 def measure(iterable, metric = print_metric, name = None):
     """Record count and time statistics for consuming an iterable
@@ -86,3 +86,14 @@ def _measure_each_decorate(metric = print_metric, name = None):
     return wrapper
 
 measure_each.func = _measure_each_decorate
+
+try:
+    from statsd import statsd
+    if not statsd: raise RuntimeError("no statsd")
+except Exception:
+    pass
+else:
+    def statsd_metric(name, count, elapsed):
+        with statsd.pipeline as pipe:
+            pipe.incr(name, count)
+            pipe.timing(name, int(round(1000 * dt)))  # Convert to ms.
