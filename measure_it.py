@@ -55,11 +55,12 @@ def measure_each(iterable, metric = print_metric, name = None):
     :arg function metric: f(name, 1, time)
     :arg str name: a name for the stats.
     """
+    it = iter(iterable)
     while True:
         # time retrieving an element.
         t = time()
         try:
-            x = next(iterable)
+            x = next(it)
         except StopIteration:
             # don't record a metric for final next() call, as that's
             # confusing & useless
