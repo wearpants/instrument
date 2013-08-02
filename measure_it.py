@@ -1,5 +1,7 @@
 from time import time
 
+# if your metric function throws an exception or is slow, you suck.
+
 def print_metric(name, count, total_time):
     if name is not None:
         print("%s: %d elements in %f seconds"%(name, count, total_time))
@@ -7,7 +9,7 @@ def print_metric(name, count, total_time):
         print("%d elements in %f seconds"%(count, total_time))
 
 def measure(iterable, metric = print_metric, name = None):
-    """Record count and time statistics for an iterable
+    """Record count and time statistics for consuming an iterable
 
     :arg iterable: an iterable thing
     :arg function metric: f(name, count, total_time)
@@ -43,3 +45,40 @@ def _measure_decorate(metric = print_metric, name = None):
     return wrapper
 
 measure.func = _measure_decorate
+
+def measure_each(iterable, metric = print_metric, name = None):
+    """Record count and time statistics for each item of an iterable
+
+    :arg iterable: an iterable thing
+    :arg function metric: f(name, 1, time)
+    :arg str name: a name for the stats.
+    """
+    while True:
+        # time retrieving an element.
+        t = time()
+        try:
+            x = next(iterable)
+        except StopIteration:
+            # don't record a metric for final next() call, as that's
+            # confusing & useless
+            raise
+        except Exception:
+            # record a metric for other exceptions, than raise
+            metric(name, 1, time() - t)
+            raise
+        else:
+            # normal path, record metric and yield
+            metric(name, 1, time() - t)
+            yield x
+        
+def _measure_each_decorate(metric = print_metric, name = None):
+    def wrapper(func):        
+        def wrapped(*args, **kwargs):
+            iterable = func(*args, **kwargs)
+            return measure_each(iterable, metric, name if name is not None
+                           else func.__module__ + '.' +func.__name__)
+        
+        return wrapped
+    return wrapper
+
+measure_each.func = _measure_each_decorate
