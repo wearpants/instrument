@@ -1,4 +1,5 @@
 from time import time
+from functools import wraps
 
 # if your metric function throws an exception or is slow, you suck.
 
@@ -35,7 +36,8 @@ def measure(iterable, metric = print_metric, name = None):
         metric(name, count, total_time)
 
 def _measure_decorate(metric = print_metric, name = None):
-    def wrapper(func):        
+    def wrapper(func):
+        @wraps(func)
         def wrapped(*args, **kwargs):
             iterable = func(*args, **kwargs)
             return measure(iterable, metric, name if name is not None
@@ -73,6 +75,7 @@ def measure_each(iterable, metric = print_metric, name = None):
         
 def _measure_each_decorate(metric = print_metric, name = None):
     def wrapper(func):        
+        @wraps(func)        
         def wrapped(*args, **kwargs):
             iterable = func(*args, **kwargs)
             return measure_each(iterable, metric, name if name is not None
