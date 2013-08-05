@@ -59,7 +59,7 @@ bogomips: 5 elements in 0.50 seconds
 Decorators
 ==========
 
-If you have a generator function (one that uses `yield`), you can wrap it with a decorator:
+If you have a generator function (one that uses `yield`), you can wrap it with a decorator using `.func()`. You can pass the same `name` and `metric` arugments:
 
 >>> @measure_each.func()
 ... def slow(N):
