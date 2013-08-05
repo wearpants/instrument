@@ -62,8 +62,7 @@ def measure_each(iterable, metric = print_metric, name = None):
         try:
             x = next(it)
         except StopIteration:
-            # don't record a metric for final next() call, as that's
-            # confusing & useless
+            # don't record a metric for final next() call
             raise
         except Exception:
             # record a metric for other exceptions, than raise
