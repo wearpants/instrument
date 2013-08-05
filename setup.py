@@ -2,8 +2,8 @@
 
 from distutils.core import setup
 
-setup(name='measure_it',
-      version="0.1",
+setup(name='measure-it',
+      version="0.1.0",
       description='a Pythonic logger',
       author='Pete Fein',
       author_email='pete@wearpants.org',
