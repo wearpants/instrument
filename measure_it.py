@@ -9,9 +9,9 @@ def print_metric(name, count, elapsed):
     :arg float elapsed: time in seconds
     """
     if name is not None:
-        print("%s: %d elements in %f seconds"%(name, count, elapsed))
+        print("%s: %d elements in %.2f seconds"%(name, count, elapsed))
     else:
-        print("%d elements in %f seconds"%(count, elapsed))
+        print("%d elements in %.2f seconds"%(count, elapsed))
 
 def measure(iterable, metric = print_metric, name = None):
     """Measure element count and total time for consuming an iterable
