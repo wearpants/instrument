@@ -14,7 +14,7 @@ def print_metric(name, count, elapsed):
         print("%d elements in %.2f seconds"%(count, elapsed))
 
 def measure(iterable, metric = print_metric, name = None):
-    """Measure element count and total time for consuming an iterable
+    """Measure total time and element count for consuming an iterable
 
     :arg iterable: any iterable
     :arg function metric: f(name, count, total_time)
@@ -37,7 +37,7 @@ def measure(iterable, metric = print_metric, name = None):
         metric(name, count, total_time)
 
 def measure_each(iterable, metric = print_metric, name = None):
-    """Measure time for each item of an iterable
+    """Measure time elapsed to produce each item of an iterable
 
     :arg iterable: any iterable
     :arg function metric: f(name, 1, time)
