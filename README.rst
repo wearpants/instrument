@@ -1,5 +1,5 @@
-measure_it:
-===========
+measure_it
+==========
 
 `measure_it <http://github.com/wearpants/measure_it>`_ provides timing and counting for iterators.
 
