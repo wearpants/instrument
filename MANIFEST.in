@@ -1,0 +1,5 @@
+recursive-include doc *.rst
+include doc/conf.py doc/Makefile doc/make.bat
+recursive-include doc/_static *
+recursive-include doc/_templates *.html .keep
+include README.rst LICENSE

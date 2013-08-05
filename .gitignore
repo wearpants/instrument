@@ -3,3 +3,5 @@
 *.wpr
 *.wpu
 doc/_build
+dist/
+/MANIFEST
