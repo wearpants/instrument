@@ -12,7 +12,7 @@ setup(name='measure-it',
       license = "BSD",
       classifiers = [
       "Programming Language :: Python :: 2",
-      "Programming Language :: Python :: 2",
+      "Programming Language :: Python :: 3",
       "Development Status :: 5 - Production/Stable",
       "Intended Audience :: Developers",
       "License :: OSI Approved :: BSD License",],
