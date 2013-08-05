@@ -7,7 +7,9 @@ measure_it
 
 Basic Usage
 ===========
-Sometimes code is slow, and timing iterators is tricky:
+
+Iterators & generators often encapsulate I/O, number crunching or other
+operations we want to gather metrics for:
 
 >>> from time import sleep
 >>> def math_is_hard(N):
@@ -17,8 +19,8 @@ Sometimes code is slow, and timing iterators is tricky:
 ...         yield x * x
 ...         x += 1
 
-The :func:`measure` and :func:`measure_each` helpers record metrics
-for time and count for iterators and generators.
+Timing iterators is tricky. :func:`measure` and :func:`measure_each` record
+metrics for time and element count for iteratables.
 
 >>> from measure_it import measure, measure_each
 
@@ -108,4 +110,4 @@ API Documentation
 =================
 
 .. automodule:: measure_it
-    :members:
+    :members: measure, measure_each, print_metric
