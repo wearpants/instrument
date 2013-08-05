@@ -1,5 +1,6 @@
 from time import time
 from functools import wraps
+__all__ = ['measure', 'measure_each']
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
