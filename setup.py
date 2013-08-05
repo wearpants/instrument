@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(name='measure-it',
       version="0.1.0",
-      description='a Pythonic logger',
+      description='time and count measurement for iterators',
       author='Pete Fein',
       author_email='pete@wearpants.org',
       url='http://github.com/wearpants/measure_it',
