@@ -11,6 +11,8 @@ setup(name='measure-it',
       py_modules=['measure_it'],
       license = "BSD",
       classifiers = [
+      "Programming Language :: Python :: 2",
+      "Programming Language :: Python :: 2",
       "Development Status :: 5 - Production/Stable",
       "Intended Audience :: Developers",
       "License :: OSI Approved :: BSD License",],
