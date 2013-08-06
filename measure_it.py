@@ -95,6 +95,6 @@ except ImportError:
 else:
     def statsd_metric(name, count, elapsed):
         """Metric that records to `statsd`"""
-        with statsd.pipeline as pipe:
+        with statsd.pipeline() as pipe:
             pipe.incr(name, count)
-            pipe.timing(name, int(round(1000 * dt)))  # milliseconds
+            pipe.timing(name, int(round(1000 * elapsed)))  # milliseconds
