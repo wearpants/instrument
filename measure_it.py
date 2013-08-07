@@ -1,6 +1,6 @@
 from time import time
 from functools import wraps
-__all__ = ['measure', 'measure_each']
+__all__ = ['measure', 'measure_each', 'measure_reduce', 'measure_produce', ]
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -61,7 +61,7 @@ def measure_each(iterable, metric = print_metric, name = None):
             metric(name, 1, time() - t)
             yield x
 
-def measure_fold(metric = print_metric, name = None):
+def measure_reduce(metric = print_metric, name = None):
     def wrapper(func):
         @wraps(func)
         def wrapped(iterable, **kwargs):
@@ -82,6 +82,9 @@ def measure_fold(metric = print_metric, name = None):
         
         return wrapped
     return wrapper
+
+def measure_produce():
+    pass
 
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
