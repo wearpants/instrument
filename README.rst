@@ -22,7 +22,7 @@ operations we want to gather metrics for:
 Timing iterators is tricky. :func:`measure` and :func:`measure_each` record
 metrics for time and element count for iteratables.
 
->>> from measure_it import measure, measure_each, measure_fold
+>>> from measure_it import measure, measure_each
 
 Wrap an iterator in :func:`measure` to time how long it takes to consume entirely:
 
@@ -87,9 +87,15 @@ Decorators work inside classes too. If you don't provide a name, a decent one wi
 __main__.Database.batch_get: 4 elements in 0.40 seconds
 [{'square': 1, 'id': 1}, {'square': 4, 'id': 2}, {'square': 9, 'id': 3}, {'square': 81000000, 'id': 9000}]
 
-Reducer Functions
+Reducer Decorator
 =================
->>> @measure_fold()
+
+>>> from measure_it import measure_reduce 
+
+The `measure_reduce` decorator measures functions that consume many items.
+Examples include aggregators & mappers, or a `Database.batch_save()`.
+
+>>> @measure_reduce()
 ... def sum_squares(L):
 ...     total = 0
 ...     for i in L:
