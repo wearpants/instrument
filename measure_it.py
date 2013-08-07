@@ -61,6 +61,28 @@ def measure_each(iterable, metric = print_metric, name = None):
             metric(name, 1, time() - t)
             yield x
 
+def measure_fold(metric = print_metric, name = None):
+    def wrapper(func):
+        @wraps(func)
+        def wrapped(iterable, **kwargs):
+            it = iter(iterable)
+            count = 0
+            
+            def counted_iterable():
+                nonlocal count
+                for i in it:
+                    count += 1
+                    yield i
+
+            t = time()
+            try:
+                return func(counted_iterable(), **kwargs)
+            finally:
+                metric(name, count, time() - t)
+        
+        return wrapped
+    return wrapper
+
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
     def _decorator(metric = print_metric, name = None): 
