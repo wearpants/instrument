@@ -93,7 +93,7 @@ Reducer Decorator
 >>> from measure_it import measure_reduce 
 
 The `measure_reduce` decorator measures functions that consume many items.
-Examples include aggregators & mappers, or a `Database.batch_save()`.
+Examples include aggregators & mappers, or a `Database.batch_save()`:
 
 >>> @measure_reduce()
 ... def sum_squares(L):
@@ -106,6 +106,48 @@ Examples include aggregators & mappers, or a `Database.batch_save()`.
 >>> sum_squares(range(5))
 5 elements in 0.50 seconds
 30
+
+This works with `*args` functions too:
+
+>>> @measure_reduce()
+... def do_things(*rows):
+...     for r in rows:
+...         # you'd actually commit to your database here
+...         sleep(0.1)
+... 
+>>> rows = [{'id':i} for i in range(5)]
+>>> do_things(*rows)
+5 elements in 0.50 seconds
+
+It does not work inside classes yet:
+
+>>> class Database(object):
+...     @measure_reduce()
+...     def batch_save(*rows):
+...         for r in rows:
+...             # you'd actually commit to your database here
+...             sleep(0.1)
+... 
+>>> rows = [{'id':i} for i in range(5)]
+>>> database = Database()
+>>> database.batch_save(*rows)
+5 elements in 0.50 seconds
+
+I doubt the iterable-in-class case works either:
+
+>>> class Database(object):
+...     @measure_reduce()
+...     def batch_save(rows):
+...         for r in rows:
+...             # you'd actually commit to your database here
+...             sleep(0.1)
+... 
+>>> rows = [{'id':i} for i in range(5)]
+>>> database = Database()
+>>> database.batch_save(rows)
+5 elements in 0.50 seconds
+
+
 
 Customizing Output
 ==================

@@ -1,6 +1,8 @@
 from time import time
 from functools import wraps
-__all__ = ['measure', 'measure_each', 'measure_reduce', 'measure_produce', ]
+import inspect
+
+__all__ = ['measure', 'measure_each', 'measure_reduce']
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -61,9 +63,34 @@ def measure_each(iterable, metric = print_metric, name = None):
             metric(name, 1, time() - t)
             yield x
 
+    
+def _iterable_to_varargs(func):
+    """decorator to convert a *args func to one taking a iterable"""
+    def wrapped(*args, **kwargs):
+        return func(args, **kwargs)
+    return wrapped
+
+def _varargs_to_iterable(func):
+    """decorator to convert a func taking a iterable to a *args one"""
+    def wrapped(iterable, **kwargs):
+        return func(*iterable, **kwargs)
+    return wrapped
+
 def measure_reduce(metric = print_metric, name = None):
+    """Decorator to measure a function that consumes many items.
+    
+    The wrapped `func` should take either a single `iterable` argument or
+    `*args` (plus keyword arguments).
+    
+    :arg function metric: f(name, 1, time)
+    :arg str name: name for the metric
+    """
     def wrapper(func):
-        @wraps(func)
+        wrapping = wraps(func)
+        varargs = inspect.getfullargspec(func).varargs is not None
+        if varargs:
+            func = _varargs_to_iterable(func)
+            
         def wrapped(iterable, **kwargs):
             it = iter(iterable)
             count = 0
@@ -80,11 +107,11 @@ def measure_reduce(metric = print_metric, name = None):
             finally:
                 metric(name, count, time() - t)
         
-        return wrapped
-    return wrapper
+        if varargs:
+            wrapped = _iterable_to_varargs(wrapped)
 
-def measure_produce():
-    pass
+        return wrapping(wrapped)
+    return wrapper
 
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
