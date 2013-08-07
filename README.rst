@@ -90,9 +90,11 @@ __main__.Database.batch_get: 4 elements in 0.40 seconds
 Reducer Decorator
 =================
 
-*WORK IN PROGRESS*
-* Python 2 support - no non-local :-(
-* Needs correct handling for `self` / inside classes
+**WORK IN PROGRESS**
+
+* needs Python 2 support - no non-local :-(
+* needs correct handling for `self` / inside classes
+* finish source docs
 
 >>> from measure_it import measure_reduce 
 
