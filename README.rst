@@ -90,10 +90,14 @@ __main__.Database.batch_get: 4 elements in 0.40 seconds
 Reducer Decorator
 =================
 
+*WORK IN PROGRESS*
+* Python 2 support - no non-local :-(
+* Needs correct handling for `self` / inside classes
+
 >>> from measure_it import measure_reduce 
 
 The `measure_reduce` decorator measures functions that consume many items.
-Examples include aggregators & mappers, or a `Database.batch_save()`:
+Examples include aggregators or a `Database.batch_save()`:
 
 >>> @measure_reduce()
 ... def sum_squares(L):
