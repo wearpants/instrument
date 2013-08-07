@@ -1,7 +1,7 @@
 measure_it
 ==========
 
-`measure_it <http://github.com/wearpants/measure_it>`_ provides timing and counting for iterators.
+`measure_it <http://github.com/wearpants/measure_it>`__ provides timing and counting for iterators.
 
 .. currentmodule:: measure_it
 
@@ -170,7 +170,7 @@ metric recording funtion. It should take three arguments: `count` of items,
 Iterable bogomips produced 5 items in 502 milliseconds
 [0, 1, 4, 9, 16]
 
-If you have `statsd <https://pypi.python.org/pypi/statsd>`_ installed, the
+If you have `statsd <https://pypi.python.org/pypi/statsd>`__ installed, the
 :func:`statsd_metric` function can be used to record metrics to it. Or write
 your own!
 
