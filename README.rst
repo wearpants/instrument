@@ -175,7 +175,7 @@ Changelog
 
 0.2
 ---
-add `map_reduce`
+add `measure_reduce`
 
 0.1
 ---
