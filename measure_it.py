@@ -88,6 +88,24 @@ def _varargs_to_iterable_method(func):
         return func(self, *iterable, **kwargs)
     return wrapped
 
+class counted_iterable(object):
+    """helper class that wraps an iterable and counts items"""
+    __slots__ = ['iterable', 'count']
+
+    def __init__(self, iterable):
+        self.iterable = iter(iterable)
+        self.count = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        ret = next(self.iterable)
+        self.count += 1
+        return ret
+
+    next = __next__ # python2 compatibility
+
 def measure_reduce(metric = print_metric, name = None):
     """Decorator to measure a function that consumes many items.
     
@@ -109,25 +127,15 @@ def measure_reduce(metric = print_metric, name = None):
                 func = _varargs_to_iterable_func(func)
 
         def wrapped(*args, **kwargs):
-            # python 2 doesn't support nonlocal, so use the
-            # mutable-object-closure trick instead.
-            count = [0]
-            it = iter(args[0 if not method else 1])
-            
-            def counted_iterable():
-                # nonlocal count
-                for i in it:
-                    count[0] += 1
-                    yield i
-
+            it = counted_iterable(args[0 if not method else 1])
             t = time()
             try:
                 if method:
-                    return func(args[0], counted_iterable(), *args[2:], **kwargs)
+                    return func(args[0], it, *args[2:], **kwargs)
                 else:
-                    return func(counted_iterable(), **kwargs)
+                    return func(it, **kwargs)
             finally:
-                metric(name, count[0], time() - t)
+                metric(name, it.count, time() - t)
 
         if varargs:
             if method:
