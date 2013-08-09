@@ -168,7 +168,7 @@ API Documentation
 =================
 
 .. automodule:: measure_it
-    :members: measure, measure_each, print_metric
+    :members: measure, measure_each, measure_reduce, print_metric
 
 Changelog
 =========
