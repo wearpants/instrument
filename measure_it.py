@@ -99,7 +99,7 @@ def measure_reduce(metric = print_metric, name = None):
     """
     def wrapper(func):
         wrapping = wraps(func)
-        argspec = inspect.getfullargspec(func)
+        argspec = inspect.getargspec(func)
         method = argspec.args and argspec.args[0] == 'self'
         varargs = argspec.varargs is not None
         if varargs:
@@ -109,13 +109,15 @@ def measure_reduce(metric = print_metric, name = None):
                 func = _varargs_to_iterable_func(func)
 
         def wrapped(*args, **kwargs):
+            # python 2 doesn't support nonlocal, so use the
+            # mutable-object-closure trick instead.
+            count = [0]
             it = iter(args[0 if not method else 1])
-            count = 0
             
             def counted_iterable():
-                nonlocal count
+                # nonlocal count
                 for i in it:
-                    count += 1
+                    count[0] += 1
                     yield i
 
             t = time()
@@ -125,7 +127,7 @@ def measure_reduce(metric = print_metric, name = None):
                 else:
                     return func(counted_iterable(), **kwargs)
             finally:
-                metric(name, count, time() - t)
+                metric(name, count[0], time() - t)
 
         if varargs:
             if method:
