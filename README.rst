@@ -110,6 +110,7 @@ Examples include aggregators or a `batch_save()`:
 30
 
 This works with `*args` functions too:
+
 >>> @measure_reduce()
 ... def sum_squares2(*args):
 ...     total = 0
