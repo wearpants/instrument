@@ -172,3 +172,14 @@ API Documentation
 
 .. automodule:: measure_it
     :members: measure, measure_each, print_metric
+
+Changelog
+=========
+
+0.2
+---
+add `map_reduce`
+
+0.1
+---
+Initial release
