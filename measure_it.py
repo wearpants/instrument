@@ -64,16 +64,28 @@ def measure_each(iterable, metric = print_metric, name = None):
             yield x
 
     
-def _iterable_to_varargs(func):
+def _iterable_to_varargs_func(func):
     """decorator to convert a *args func to one taking a iterable"""
     def wrapped(*args, **kwargs):
         return func(args, **kwargs)
     return wrapped
 
-def _varargs_to_iterable(func):
+def _varargs_to_iterable_func(func):
     """decorator to convert a func taking a iterable to a *args one"""
     def wrapped(iterable, **kwargs):
         return func(*iterable, **kwargs)
+    return wrapped
+
+def _iterable_to_varargs_method(func):
+    """decorator to convert a *args method to one taking a iterable"""
+    def wrapped(self, *args, **kwargs):
+        return func(self, args, **kwargs)
+    return wrapped
+
+def _varargs_to_iterable_method(func):
+    """decorator to convert a method taking a iterable to a *args one"""
+    def wrapped(self, iterable, **kwargs):
+        return func(self, *iterable, **kwargs)
     return wrapped
 
 def measure_reduce(metric = print_metric, name = None):
@@ -87,12 +99,17 @@ def measure_reduce(metric = print_metric, name = None):
     """
     def wrapper(func):
         wrapping = wraps(func)
-        varargs = inspect.getfullargspec(func).varargs is not None
+        argspec = inspect.getfullargspec(func)
+        method = argspec.args and argspec.args[0] == 'self'
+        varargs = argspec.varargs is not None
         if varargs:
-            func = _varargs_to_iterable(func)
-            
-        def wrapped(iterable, **kwargs):
-            it = iter(iterable)
+            if method:
+                func = _varargs_to_iterable_method(func)
+            else:
+                func = _varargs_to_iterable_func(func)
+
+        def wrapped(*args, **kwargs):
+            it = iter(args[0 if not method else 1])
             count = 0
             
             def counted_iterable():
@@ -103,12 +120,18 @@ def measure_reduce(metric = print_metric, name = None):
 
             t = time()
             try:
-                return func(counted_iterable(), **kwargs)
+                if method:
+                    return func(args[0], counted_iterable(), *args[2:], **kwargs)
+                else:
+                    return func(counted_iterable(), **kwargs)
             finally:
                 metric(name, count, time() - t)
-        
+
         if varargs:
-            wrapped = _iterable_to_varargs(wrapped)
+            if method:
+                wrapped = _iterable_to_varargs_method(wrapped)
+            else:
+                wrapped = _iterable_to_varargs_func(wrapped)
 
         return wrapping(wrapped)
     return wrapper

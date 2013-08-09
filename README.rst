@@ -125,35 +125,28 @@ This works with `*args` functions too:
 >>> do_things(*rows)
 5 elements in 0.50 seconds
 
-It does not work inside classes yet:
+And inside classes:
 
 >>> class Database(object):
 ...     @measure_reduce()
-...     def batch_save(*rows):
+...     def batch_save(self, rows):
 ...         for r in rows:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
 ... 
->>> rows = [{'id':i} for i in range(5)]
->>> database = Database()
->>> database.batch_save(*rows)
-5 elements in 0.50 seconds
-
-I doubt the iterable-in-class case works either:
-
->>> class Database(object):
 ...     @measure_reduce()
-...     def batch_save(rows):
+...     def batch_save2(self, *rows):
 ...         for r in rows:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
 ... 
+
 >>> rows = [{'id':i} for i in range(5)]
 >>> database = Database()
 >>> database.batch_save(rows)
 5 elements in 0.50 seconds
-
-
+>>> database.batch_save2(*rows)
+5 elements in 0.50 seconds
 
 Customizing Output
 ==================
