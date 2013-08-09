@@ -138,7 +138,6 @@ And inside classes:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
 ... 
-
 >>> rows = [{'id':i} for i in range(5)]
 >>> database = Database()
 >>> database.batch_save(rows)
