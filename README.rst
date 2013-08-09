@@ -87,19 +87,15 @@ Decorators work inside classes too. If you don't provide a name, a decent one wi
 __main__.Database.batch_get: 4 elements in 0.40 seconds
 [{'square': 1, 'id': 1}, {'square': 4, 'id': 2}, {'square': 9, 'id': 3}, {'square': 81000000, 'id': 9000}]
 
-Reducer Decorator
-=================
+Reducers
+========
 
-**WORK IN PROGRESS**
-
-* needs Python 2 support - no non-local :-(
-* needs correct handling for `self` / inside classes
-* finish source docs
+The `measure_reduce` decorator measures functions that consume many items.
+Examples include aggregators or a `batch_save()`:
 
 >>> from measure_it import measure_reduce 
 
-The `measure_reduce` decorator measures functions that consume many items.
-Examples include aggregators or a `Database.batch_save()`:
+`measure_reduce` is a decorator for functions, *not* iterators:
 
 >>> @measure_reduce()
 ... def sum_squares(L):
@@ -114,16 +110,17 @@ Examples include aggregators or a `Database.batch_save()`:
 30
 
 This works with `*args` functions too:
-
 >>> @measure_reduce()
-... def do_things(*rows):
-...     for r in rows:
-...         # you'd actually commit to your database here
-...         sleep(0.1)
+... def sum_squares2(*args):
+...     total = 0
+...     for i in args:
+...         sleep(.1)
+...         total += i*i
+...     return total
 ... 
->>> rows = [{'id':i} for i in range(5)]
->>> do_things(*rows)
+>>> sum_squares2(*range(5))
 5 elements in 0.50 seconds
+30
 
 And inside classes:
 
