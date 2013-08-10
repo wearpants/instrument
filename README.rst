@@ -198,6 +198,16 @@ This works in classes too:
 __main__.CrunchCrunch.slow: 1 elements in 0.10 seconds
 'SLOW'
 
+Blocks
+======
+To measure the excecution time of a block of code, use a `measure_block` context manager:
+
+>>> from measure_it import measure_block
+>>> with measure_block(name="slowcode"):
+...     # you'd do something useful here
+...     sleep(0.2)
+slowcode: 1 elements in 0.20 seconds
+
 Customizing Output
 ==================
 
@@ -228,8 +238,8 @@ Changelog
 
 0.3
 ---
-* add `measure_each`
-* add `measure_produce`
+* add `measure_each`, `measure_produce`, `measure_func`, `measure_block`
+
 
 0.2
 ---

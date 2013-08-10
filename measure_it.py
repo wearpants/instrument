@@ -1,8 +1,10 @@
 from time import time
 from functools import wraps
+from contextlib import contextmanager
 import inspect
 
-__all__ = ['measure', 'measure_each', 'measure_first', 'measure_reduce', 'measure_produce']
+__all__ = ['measure', 'measure_each', 'measure_first', 'measure_reduce',
+           'measure_produce', 'measure_func', 'measure_block']
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -285,6 +287,18 @@ def measure_func(metric = print_metric, name = None):
         return measure_it_decorator()
     return wrapper
 
+@contextmanager
+def measure_block(metric = print_metric, name = None):
+    """Context manager to measure execution time of a block
+    
+    :arg function metric: f(name, 1, time)
+    :arg str name: name for the metric
+    """
+    t = time()
+    try:
+        yield
+    finally:
+        metric(name, 1, time() - t)
 
 try:
     from statsd import statsd, StatsClient
