@@ -21,7 +21,7 @@ operations we want to gather metrics for:
 ...         yield x * x
 ...         x += 1
 
-Timing iterators is tricky. :func:`measure_iter` and :func:`measure_each` record
+Timing iterators is tricky. :func:`measure_iter`, :func:`measure_each` and func:`measure_first` record
 metrics for time and element count for iteratables.
 
 >>> from measure_it import measure_iter, measure_each, measure_first
@@ -51,18 +51,18 @@ The :func:`measure_each` wrapper measures the time taken to produce each item:
 1 elements in 0.10 seconds
 [0, 1, 4, 9, 16]
 
-You can provide a custom name for the metric:
-
->>> _ = measure_iter(math_is_hard(5), name="bogomips")
->>> list(_)
-bogomips: 5 elements in 0.50 seconds
-[0, 1, 4, 9, 16]
-
 The :func:`measure_first` wrapper measures the time taken to produce the first item:
 
 >>> _ = measure_first(math_is_hard(5))
 >>> list(_)
 1 elements in 0.10 seconds
+[0, 1, 4, 9, 16]
+
+You can provide a custom name for the metric:
+
+>>> _ = measure_iter(math_is_hard(5), name="bogomips")
+>>> list(_)
+bogomips: 5 elements in 0.50 seconds
 [0, 1, 4, 9, 16]
 
 Decorators
@@ -98,7 +98,7 @@ __main__.Database.batch_get: 4 elements in 0.40 seconds
 
 Reducers & Producers
 ====================
-`measure_reduce` and `measure_produce` are decorators for functions, *not* iterators:
+:func:`measure_reduce` and :func:`measure_produce` are decorators for functions, *not* iterators:
 
 >>> from measure_it import measure_reduce, measure_produce
 
@@ -131,7 +131,7 @@ This works with `*args` functions too:
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
-The `measure_produce` decorator measures a function that produces many items. This is similar to `measure_iter.func()`, but for functions that return lists instead of iterators (or other object with `__len__`):
+The :func:`measure_produce` decorator measures a function that produces many items. This is similar to `measure_iter.func()`, but for functions that return lists instead of iterators (or other object with `__len__`):
 
 >>> @measure_produce()
 ... def list_squares(N):
@@ -141,7 +141,7 @@ The `measure_produce` decorator measures a function that produces many items. Th
 __main__.list_squares: 5 elements in 0.50 seconds
 [0, 1, 4, 9, 16]
 
-`measure_reduce` and `measure_produce` can be used inside classes:
+:func:`measure_reduce` and :func:`measure_produce` can be used inside classes:
 
 >>> class Database(object):
 ...     @measure_reduce()
@@ -174,7 +174,7 @@ __main__.Database.dumb_query: 3 elements in 0.30 seconds
 
 Functions
 =========
-The `measure_func` decorator simply measures total function execution time:
+The :func:`measure_func` decorator simply measures total function execution time:
 
 >>> from measure_it import measure_func
 >>> @measure_func()
@@ -200,7 +200,7 @@ __main__.CrunchCrunch.slow: 1 elements in 0.10 seconds
 
 Blocks
 ======
-To measure the excecution time of a block of code, use a `measure_block` context manager:
+To measure the excecution time of a block of code, use a :func:`measure_block` context manager:
 
 >>> from measure_it import measure_block
 >>> with measure_block(name="slowcode"):
@@ -238,12 +238,12 @@ Changelog
 
 0.3
 ---
-* add `measure_each`, `measure_produce`, `measure_func`, `measure_block`
-* rename `measure` to `measure_iter` and deprecate old name
+* add measure_each, measure_produce, measure_func, measure_block
+* rename measure to measure_iter and deprecate old name
 
 0.2
 ---
-* add `measure_reduce`
+* add measure_reduce
 
 0.1
 ---
