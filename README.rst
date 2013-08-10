@@ -106,7 +106,7 @@ Examples include aggregators or a `batch_save()`:
 ...     return total
 ... 
 >>> sum_squares(range(5))
-5 elements in 0.50 seconds
+__main__.sum_squares: 5 elements in 0.50 seconds
 30
 
 This works with `*args` functions too:
@@ -120,7 +120,7 @@ This works with `*args` functions too:
 ...     return total
 ... 
 >>> sum_squares2(*range(5))
-5 elements in 0.50 seconds
+__main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
 And inside classes:
@@ -141,9 +141,9 @@ And inside classes:
 >>> rows = [{'id':i} for i in range(5)]
 >>> database = Database()
 >>> database.batch_save(rows)
-5 elements in 0.50 seconds
+__main__.Database.batch_save: 5 elements in 0.50 seconds
 >>> database.batch_save2(*rows)
-5 elements in 0.50 seconds
+__main__.Database.batch_save2: 5 elements in 0.50 seconds
 
 Customizing Output
 ==================

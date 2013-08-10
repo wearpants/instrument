@@ -63,27 +63,27 @@ def measure_each(iterable, metric = print_metric, name = None):
             metric(name, 1, time() - t)
             yield x
 
-    
+
 def _iterable_to_varargs_func(func):
-    """decorator to convert a *args func to one taking a iterable"""
+    """decorator to convert a func taking a iterable to a *args one"""
     def wrapped(*args, **kwargs):
         return func(args, **kwargs)
     return wrapped
 
-def _varargs_to_iterable_func(func):
-    """decorator to convert a func taking a iterable to a *args one"""
+def _varargs_to_iterable_func(func):    
+    """decorator to convert a *args func to one taking a iterable"""    
     def wrapped(iterable, **kwargs):
         return func(*iterable, **kwargs)
     return wrapped
 
 def _iterable_to_varargs_method(func):
-    """decorator to convert a *args method to one taking a iterable"""
+    """decorator to convert a method taking a iterable to a *args one"""
     def wrapped(self, *args, **kwargs):
         return func(self, args, **kwargs)
     return wrapped
 
 def _varargs_to_iterable_method(func):
-    """decorator to convert a method taking a iterable to a *args one"""
+    """decorator to convert a *args method to one taking a iterable"""
     def wrapped(self, iterable, **kwargs):
         return func(self, *iterable, **kwargs)
     return wrapped
@@ -115,36 +115,53 @@ def measure_reduce(metric = print_metric, name = None):
     :arg function metric: f(name, 1, time)
     :arg str name: name for the metric
     """
-    def wrapper(func):
-        wrapping = wraps(func)
-        argspec = inspect.getargspec(func)
-        method = argspec.args and argspec.args[0] == 'self'
-        varargs = argspec.varargs is not None
-        if varargs:
-            if method:
-                func = _varargs_to_iterable_method(func)
-            else:
-                func = _varargs_to_iterable_func(func)
 
-        def wrapped(*args, **kwargs):
-            it = counted_iterable(args[0 if not method else 1])
+    class measure_it_decorator(object): # must be a class for descriptor magic to work
+        __slots__ = ['func', 'name_', 'varargs', 'callme']
+        
+        # we need _call/callme b/c CPython short-circurits CALL_FUNCTION to
+        # directly access __call__, bypassing our varargs decorator
+        
+        def __init__(self, func):
+            self.name_ = name if name is not None else func.__module__ + '.' +func.__name__
+            self.varargs = inspect.getargspec(func).varargs is not None
+            if self.varargs:
+                func = _varargs_to_iterable_func(func)
+                self.callme = _iterable_to_varargs_func(self._call)
+            else:
+                self.callme = self._call
+
+            self.func = func
+
+        def __call__(self, *args, **kwargs):
+            return self.callme(*args, **kwargs)
+
+        def _call(self, iterable, **kwargs):
+            it = counted_iterable(iterable)
             t = time()
             try:
-                if method:
-                    return func(args[0], it, *args[2:], **kwargs)
-                else:
-                    return func(it, **kwargs)
+                return self.func(it, **kwargs)
             finally:
-                metric(name, it.count, time() - t)
+                metric(self.name_, it.count, time() - t)
 
-        if varargs:
-            if method:
-                wrapped = _iterable_to_varargs_method(wrapped)
-            else:
-                wrapped = _iterable_to_varargs_func(wrapped)
 
-        return wrapping(wrapped)
-    return wrapper
+        def __get__(self, instance, class_):
+            name_ = name if name is not None else\
+                ".".join((class_.__module__, class_.__name__, self.func.__name__))
+
+            def wrapped_method(*args, **kwargs):
+                it = counted_iterable(args[0])
+                t = time()
+                try:
+                    return self.func(instance, it, *args[1:], **kwargs)
+                finally:
+                    metric(name_, it.count, time() - t)
+            
+            if varargs: wrapped_method = _iterable_to_varargs_method(wrapped_method)
+            wrapped_method = wrapping(wrapped_method)
+            return wrapped_method
+                        
+    return measure_it_decorator
 
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
