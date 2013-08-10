@@ -254,6 +254,38 @@ def measure_produce(metric = print_metric, name = None):
         return measure_it_decorator()
     return wrapper
 
+def measure_func(metric = print_metric, name = None):
+    """Decorator to measure function execution time.
+    
+    :arg function metric: f(name, 1, total_time)
+    :arg str name: name for the metric
+    """
+    def wrapper(func):       
+        def measurer(name_, *args, **kwargs):
+            t = time()            
+            try:
+                return func(*args, **kwargs)
+            finally:
+                metric(name_, 1, time() - t)
+
+        name_ = name if name is not None else func.__module__ + '.' +func.__name__    
+        class measure_it_decorator(object): # must be a class for descriptor magic to work
+            @wraps(func)
+            def __call__(self, *args, **kwargs):
+                return measurer(name_, *args, **kwargs)
+    
+            def __get__(self, instance, class_):
+                name_ = name if name is not None else\
+                    ".".join((class_.__module__, class_.__name__, func.__name__))
+                @wraps(func)
+                def wrapped_method(*args, **kwargs):
+                    return measurer(name_, instance, *args, **kwargs)
+                return wrapped_method
+            
+        return measure_it_decorator()
+    return wrapper
+
+
 try:
     from statsd import statsd, StatsClient
     if statsd is None: statsd = StatsClient()

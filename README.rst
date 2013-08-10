@@ -172,6 +172,32 @@ __main__.Database.batch_save2: 5 elements in 0.50 seconds
 __main__.Database.dumb_query: 3 elements in 0.30 seconds
 [{'square': 0, 'id': 0}, {'square': 1, 'id': 1}, {'square': 4, 'id': 2}]
 
+Functions
+=========
+The `measure_func` decorator simply measures total function execution time:
+
+>>> from measure_it import measure_func
+>>> @measure_func()
+... def slow():
+...     # you'd do something useful here
+...     sleep(.1)
+...     return "SLOW"
+>>> slow()
+__main__.slow: 1 elements in 0.10 seconds
+'SLOW'
+
+This works in classes too:
+
+>>> class CrunchCrunch(object):
+...     @measure_func()
+...     def slow(self):
+...         # you'd do something useful here
+...         sleep(.1)
+...         return "SLOW"
+>>> CrunchCrunch().slow()
+__main__.CrunchCrunch.slow: 1 elements in 0.10 seconds
+'SLOW'
+
 Customizing Output
 ==================
 
@@ -195,7 +221,7 @@ API Documentation
 =================
 
 .. automodule:: measure_it
-    :members: measure, measure_each, measure_reduce, measure_produce, print_metric
+    :members: measure, measure_each, measure_reduce, measure_produce, measure_func, measure_block, print_metric
 
 Changelog
 =========
