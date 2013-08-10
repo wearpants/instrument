@@ -63,6 +63,31 @@ def measure_each(iterable, metric = print_metric, name = None):
             metric(name, 1, time() - t)
             yield x
 
+def measure_first(iterable, metric = print_metric, name = None):
+    """Measure time elapsed to produce first item of an iterable
+
+    :arg iterable: any iterable
+    :arg function metric: f(name, 1, time)
+    :arg str name: name for the metric
+    """
+    it = iter(iterable)
+    t = time()
+    try:
+        x = next(it)
+    except StopIteration:
+        # don't record a metric for final next() call
+        raise
+    except Exception:
+        # record a metric for other exceptions, than raise
+        metric(name, 1, time() - t)
+        raise
+    else:
+        # normal path, record metric and yield
+        metric(name, 1, time() - t)
+        yield x
+
+    for x in it: yield x
+
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
     def _decorator(metric = print_metric, name = None): 
@@ -88,6 +113,7 @@ def _make_decorator(measuring_func):
 
 measure.func = _make_decorator(measure)
 measure_each.func = _make_decorator(measure_each)
+measure_first.func = _make_decorator(measure_first)
 
 def _iterable_to_varargs_func(func):
     """decorator to convert a func taking a iterable to a *args one"""

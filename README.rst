@@ -3,6 +3,8 @@ measure_it
 
 `measure_it <http://github.com/wearpants/measure_it>`__ provides timing and counting for iterators.
 
+measure_it supports both Python 2.7 and >= 3.2
+
 .. currentmodule:: measure_it
 
 Basic Usage
@@ -22,7 +24,7 @@ operations we want to gather metrics for:
 Timing iterators is tricky. :func:`measure` and :func:`measure_each` record
 metrics for time and element count for iteratables.
 
->>> from measure_it import measure, measure_each
+>>> from measure_it import measure, measure_each, measure_first
 
 Wrap an iterator in :func:`measure` to time how long it takes to consume entirely:
 
@@ -54,6 +56,13 @@ You can provide a custom name for the metric:
 >>> _ = measure(math_is_hard(5), name="bogomips")
 >>> list(_)
 bogomips: 5 elements in 0.50 seconds
+[0, 1, 4, 9, 16]
+
+The :func:`measure_first` wrapper measures the time taken to produce the first item:
+
+>>> _ = measure_first(math_is_hard(5))
+>>> list(_)
+1 elements in 0.10 seconds
 [0, 1, 4, 9, 16]
 
 Decorators
@@ -172,6 +181,10 @@ API Documentation
 
 Changelog
 =========
+
+0.3
+---
+add `measure_each`
 
 0.2
 ---
