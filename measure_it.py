@@ -63,6 +63,31 @@ def measure_each(iterable, metric = print_metric, name = None):
             metric(name, 1, time() - t)
             yield x
 
+def _make_decorator(measuring_func):
+    """morass of closures for making decorators/descriptors"""
+    def _decorator(metric = print_metric, name = None): 
+        def wrapper(func):
+            
+            name_ = name if name is not None else func.__module__ + '.' +func.__name__    
+            class measure_it_decorator(object): # must be a class for descriptor magic to work
+                @wraps(func)
+                def __call__(self, *args, **kwargs):
+                    return measuring_func(func(*args, **kwargs), metric, name_)
+    
+                def __get__(self, instance, class_):
+                    name_ = name if name is not None else\
+                        ".".join((class_.__module__, class_.__name__, func.__name__))
+                    @wraps(func)
+                    def wrapped_method(*args, **kwargs):
+                        return measuring_func(func(instance, *args, **kwargs), metric, name_)
+                    return wrapped_method
+            return measure_it_decorator()
+        
+        return wrapper
+    return _decorator
+
+measure.func = _make_decorator(measure)
+measure_each.func = _make_decorator(measure_each)
 
 def _iterable_to_varargs_func(func):
     """decorator to convert a func taking a iterable to a *args one"""
@@ -182,32 +207,6 @@ def measure_reduce(metric = print_metric, name = None):
             return wrapped_method
                         
     return measure_it_decorator
-
-def _make_decorator(measuring_func):
-    """morass of closures for making decorators/descriptors"""
-    def _decorator(metric = print_metric, name = None): 
-        def wrapper(func):
-            
-            name_ = name if name is not None else func.__module__ + '.' +func.__name__    
-            class measure_it_decorator(object): # must be a class for descriptor magic to work
-                @wraps(func)
-                def __call__(self, *args, **kwargs):
-                    return measuring_func(func(*args, **kwargs), metric, name_)
-    
-                def __get__(self, instance, class_):
-                    name_ = name if name is not None else\
-                        ".".join((class_.__module__, class_.__name__, func.__name__))
-                    @wraps(func)
-                    def wrapped_method(*args, **kwargs):
-                        return measuring_func(func(instance, *args, **kwargs), metric, name_)
-                    return wrapped_method
-            return measure_it_decorator()
-        
-        return wrapper
-    return _decorator
-
-measure.func = _make_decorator(measure)
-measure_each.func = _make_decorator(measure_each)
 
 try:
     from statsd import statsd, StatsClient
