@@ -2,7 +2,7 @@ from time import time
 from functools import wraps
 import inspect
 
-__all__ = ['measure', 'measure_each', 'measure_reduce']
+__all__ = ['measure', 'measure_each', 'measure_first', 'measure_reduce', 'measure_produce']
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -163,32 +163,11 @@ def measure_reduce(metric = print_metric, name = None):
     The wrapped `func` should take either a single `iterable` argument or
     `*args` (plus keyword arguments).
     
-    :arg function metric: f(name, 1, time)
+    :arg function metric: f(name, count, total_time)
     :arg str name: name for the metric
     """
-    class measure_it_decorator(object):
-        @property
-        def __module__(self):
-            return self._module
-        
+    class measure_reduce_decorator(object):
         def __init__(self, func):
-            # fake similar behavior to functools.wraps for the object
-            for attr in ('__name__', '__doc__', '__annotations__'):
-                try:
-                    value = getattr(func, attr)
-                except AttributeError:
-                    pass
-                else:
-                    setattr(self, attr, value)            
-            
-            try:
-                value = getattr(func, '__module__')
-            except AttributeError:
-                self._module = '<unknown>'
-            else:
-                setattr(self, '_module', value)
-            
-            # introspection & initialization
             self.orig_func = func
             self.wrapping = wraps(func)
             self.metric_name = name if name is not None else func.__module__ + '.' +func.__name__
@@ -232,7 +211,48 @@ def measure_reduce(metric = print_metric, name = None):
             wrapped_method = self.wrapping(wrapped_method)
             return wrapped_method
                         
-    return measure_it_decorator
+    return measure_reduce_decorator
+
+def measure_produce(metric = print_metric, name = None):
+    """Decorator to measure a function that produces many items.
+    
+    The function should return an object that supports `__len__` (ie, a
+    list). If the function returns an iterator, use `measure.func()` instead.
+    
+    :arg function metric: f(name, count, total_time)
+    :arg str name: name for the metric
+    """
+
+    def wrapper(func):       
+        def measurer(name_, *args, **kwargs):
+            t = time()            
+            try:
+                ret = func(*args, **kwargs)
+            except Exception:
+                # record a metric for other exceptions, than raise
+                metric(name_, 0, time() - t)
+                raise
+            else:
+                # normal path, record metric & return
+                metric(name_, len(ret), time() - t)
+                return ret
+
+        name_ = name if name is not None else func.__module__ + '.' +func.__name__    
+        class measure_it_decorator(object): # must be a class for descriptor magic to work
+            @wraps(func)
+            def __call__(self, *args, **kwargs):
+                return measurer(name_, *args, **kwargs)
+    
+            def __get__(self, instance, class_):
+                name_ = name if name is not None else\
+                    ".".join((class_.__module__, class_.__name__, func.__name__))
+                @wraps(func)
+                def wrapped_method(*args, **kwargs):
+                    return measurer(name_, instance, *args, **kwargs)
+                return wrapped_method
+            
+        return measure_it_decorator()
+    return wrapper
 
 try:
     from statsd import statsd, StatsClient

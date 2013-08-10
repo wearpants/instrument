@@ -96,15 +96,14 @@ Decorators work inside classes too. If you don't provide a name, a decent one wi
 __main__.Database.batch_get: 4 elements in 0.40 seconds
 [{'square': 1, 'id': 1}, {'square': 4, 'id': 2}, {'square': 9, 'id': 3}, {'square': 81000000, 'id': 9000}]
 
-Reducers
-========
+Reducers & Producers
+====================
+`measure_reduce` and `measure_produce` are decorators for functions, *not* iterators:
+
+>>> from measure_it import measure_reduce, measure_produce
 
 The `measure_reduce` decorator measures functions that consume many items.
 Examples include aggregators or a `batch_save()`:
-
->>> from measure_it import measure_reduce 
-
-`measure_reduce` is a decorator for functions, *not* iterators:
 
 >>> @measure_reduce()
 ... def sum_squares(L):
@@ -132,7 +131,17 @@ This works with `*args` functions too:
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
-And inside classes:
+The `measure_produce` decorator measures a function that produces many items. This is similar to `measure.func()`, but for functions that return lists instead of iterators (or other object with `__len__`):
+
+>>> @measure_produce()
+... def list_squares(N):
+...     sleep(0.1 * N)
+...     return [i * i for i in range(N)]
+>>> list_squares(5)
+__main__.list_squares: 5 elements in 0.50 seconds
+[0, 1, 4, 9, 16]
+
+`measure_reduce` and `measure_produce` can be used inside classes:
 
 >>> class Database(object):
 ...     @measure_reduce()
@@ -147,12 +156,21 @@ And inside classes:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
 ... 
+...     @measure_produce()
+...     def dumb_query(self, x):
+...         # you'd actually talk to your database here
+...         sleep(0.1 * x)
+...         return [{"id":i, "square": i*i} for i in range(x)]
+... 
 >>> rows = [{'id':i} for i in range(5)]
 >>> database = Database()
 >>> database.batch_save(rows)
 __main__.Database.batch_save: 5 elements in 0.50 seconds
 >>> database.batch_save2(*rows)
 __main__.Database.batch_save2: 5 elements in 0.50 seconds
+>>> database.dumb_query(3)
+__main__.Database.dumb_query: 3 elements in 0.30 seconds
+[{'square': 0, 'id': 0}, {'square': 1, 'id': 1}, {'square': 4, 'id': 2}]
 
 Customizing Output
 ==================
@@ -177,18 +195,19 @@ API Documentation
 =================
 
 .. automodule:: measure_it
-    :members: measure, measure_each, measure_reduce, print_metric
+    :members: measure, measure_each, measure_reduce, measure_produce, print_metric
 
 Changelog
 =========
 
 0.3
 ---
-add `measure_each`
+* add `measure_each`
+* add `measure_produce`
 
 0.2
 ---
-add `measure_reduce`
+* add `measure_reduce`
 
 0.1
 ---
