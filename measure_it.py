@@ -3,7 +3,7 @@ from functools import wraps
 from contextlib import contextmanager
 import inspect
 
-__all__ = ['measure', 'measure_each', 'measure_first', 'measure_reduce',
+__all__ = ['measure_iter', 'measure_each', 'measure_first', 'measure_reduce',
            'measure_produce', 'measure_func', 'measure_block']
 
 def print_metric(name, count, elapsed):
@@ -18,7 +18,7 @@ def print_metric(name, count, elapsed):
     else:
         print("%d elements in %.2f seconds"%(count, elapsed))
 
-def measure(iterable, metric = print_metric, name = None):
+def measure_iter(iterable, metric = print_metric, name = None):
     """Measure total time and element count for consuming an iterable
 
     :arg iterable: any iterable
@@ -40,6 +40,9 @@ def measure(iterable, metric = print_metric, name = None):
         # underlying iterable is exhausted (StopIteration) or errored. Record
         # the `metric` and allow exception to propogate
         metric(name, count, total_time)
+
+# deprecated alias for measure_iter
+measure = measure_iter
 
 def measure_each(iterable, metric = print_metric, name = None):
     """Measure time elapsed to produce each item of an iterable
@@ -113,10 +116,9 @@ def _make_decorator(measuring_func):
         return wrapper
     return _decorator
 
-measure.func = _make_decorator(measure)
+measure_iter.func = _make_decorator(measure_iter)
 measure_each.func = _make_decorator(measure_each)
 measure_first.func = _make_decorator(measure_first)
-
 def _iterable_to_varargs_func(func):
     """decorator to convert a func taking a iterable to a *args one"""
     def wrapped(*args, **kwargs):
@@ -219,7 +221,7 @@ def measure_produce(metric = print_metric, name = None):
     """Decorator to measure a function that produces many items.
     
     The function should return an object that supports `__len__` (ie, a
-    list). If the function returns an iterator, use `measure.func()` instead.
+    list). If the function returns an iterator, use `measure_iter.func()` instead.
     
     :arg function metric: f(name, count, total_time)
     :arg str name: name for the metric
