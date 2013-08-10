@@ -2,7 +2,7 @@
 from distutils.core import setup
 
 setup(name='measure-it',
-      version="0.2",
+      version="0.2.1",
       description='time and count measurement for iterators',
       author='Pete Fein',
       author_email='pete@wearpants.org',
