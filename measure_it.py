@@ -115,14 +115,13 @@ def measure_reduce(metric = print_metric, name = None):
     :arg function metric: f(name, 1, time)
     :arg str name: name for the metric
     """
-
     class measure_it_decorator(object):
         @property
         def __module__(self):
             return self._module
         
         def __init__(self, func):
-            # fake similar behavior to functools.wraps
+            # fake similar behavior to functools.wraps for the object
             for attr in ('__name__', '__doc__', '__annotations__'):
                 try:
                     value = getattr(func, attr)
@@ -139,16 +138,19 @@ def measure_reduce(metric = print_metric, name = None):
                 setattr(self, '_module', value)
             
             # introspection & initialization
-            self.name_ = name if name is not None else func.__module__ + '.' +func.__name__
+            self.orig_func = func
+            self.wrapping = wraps(func)
+            self.metric_name = name if name is not None else func.__module__ + '.' +func.__name__
             self.varargs = inspect.getargspec(func).varargs is not None
             if self.varargs:
-                func = _varargs_to_iterable_func(func)
+                self.method = _varargs_to_iterable_method(func)
+                self.func = _varargs_to_iterable_func(func)
                 self.callme = _iterable_to_varargs_func(self._call)
             else:
+                self.method = func                
+                self.func = func
                 self.callme = self._call
 
-            self.func = func
-        
         # we need _call/callme b/c CPython short-circurits CALL_FUNCTION to
         # directly access __call__, bypassing our varargs decorator             
         def __call__(self, *args, **kwargs):
@@ -160,23 +162,23 @@ def measure_reduce(metric = print_metric, name = None):
             try:
                 return self.func(it, **kwargs)
             finally:
-                metric(self.name_, it.count, time() - t)
-
+                metric(self.metric_name, it.count, time() - t)
 
         def __get__(self, instance, class_):
-            name_ = name if name is not None else\
-                ".".join((class_.__module__, class_.__name__, self.func.__name__))
+            metric_name = name if name is not None else\
+                ".".join((class_.__module__, class_.__name__, self.orig_func.__name__))
 
-            def wrapped_method(*args, **kwargs):
-                it = counted_iterable(args[0])
+            def wrapped_method(iterable, **kwargs):
+                it = counted_iterable(iterable)
                 t = time()
                 try:
-                    return self.func(instance, it, *args[1:], **kwargs)
+                    return self.method(instance, it, **kwargs)
                 finally:
-                    metric(name_, it.count, time() - t)
+                    metric(metric_name, it.count, time() - t)
             
-            if varargs: wrapped_method = _iterable_to_varargs_method(wrapped_method)
-            wrapped_method = wrapping(wrapped_method)
+            # wrap in func version b/c self is handled for us by descriptor (ie, `instance`)
+            if self.varargs: wrapped_method = _iterable_to_varargs_func(wrapped_method)
+            wrapped_method = self.wrapping(wrapped_method)
             return wrapped_method
                         
     return measure_it_decorator
