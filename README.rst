@@ -238,7 +238,7 @@ Changelog
 
 0.3
 ---
-* add measure_each, measure_produce, measure_func, measure_block
+* add measure_first, measure_produce, measure_func, measure_block
 * rename measure to measure_iter and deprecate old name
 
 0.2
