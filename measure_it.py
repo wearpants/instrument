@@ -116,13 +116,29 @@ def measure_reduce(metric = print_metric, name = None):
     :arg str name: name for the metric
     """
 
-    class measure_it_decorator(object): # must be a class for descriptor magic to work
-        __slots__ = ['func', 'name_', 'varargs', 'callme']
-        
-        # we need _call/callme b/c CPython short-circurits CALL_FUNCTION to
-        # directly access __call__, bypassing our varargs decorator
+    class measure_it_decorator(object):
+        @property
+        def __module__(self):
+            return self._module
         
         def __init__(self, func):
+            # fake similar behavior to functools.wraps
+            for attr in ('__name__', '__doc__', '__annotations__'):
+                try:
+                    value = getattr(func, attr)
+                except AttributeError:
+                    pass
+                else:
+                    setattr(self, attr, value)            
+            
+            try:
+                value = getattr(func, '__module__')
+            except AttributeError:
+                self._module = '<unknown>'
+            else:
+                setattr(self, '_module', value)
+            
+            # introspection & initialization
             self.name_ = name if name is not None else func.__module__ + '.' +func.__name__
             self.varargs = inspect.getargspec(func).varargs is not None
             if self.varargs:
@@ -132,7 +148,9 @@ def measure_reduce(metric = print_metric, name = None):
                 self.callme = self._call
 
             self.func = func
-
+        
+        # we need _call/callme b/c CPython short-circurits CALL_FUNCTION to
+        # directly access __call__, bypassing our varargs decorator             
         def __call__(self, *args, **kwargs):
             return self.callme(*args, **kwargs)
 
