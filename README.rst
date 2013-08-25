@@ -231,11 +231,15 @@ If you have `statsd <https://pypi.python.org/pypi/statsd>`__ installed, the
 :func:`statsd_metric` function can be used to record metrics to it. Or write
 your own!
 
+Unless individually specified, metrics are reported using the global
+:data:`default_metric`. To change the active default, simply assign another metric
+function to this attribute.
+
 API Documentation
 =================
 
 .. automodule:: measure_it
-    :members: measure_iter, measure_each, measure_reduce, measure_produce, measure_func, measure_first, measure_block, print_metric
+    :members: measure_iter, measure_each, measure_reduce, measure_produce, measure_func, measure_first, measure_block, print_metric, default_metric
 
 Changelog
 =========

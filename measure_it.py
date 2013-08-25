@@ -18,7 +18,20 @@ def print_metric(name, count, elapsed):
     else:
         print("%d elements in %.2f seconds"%(count, elapsed))
 
-def measure_iter(iterable, metric = print_metric, name = None):
+
+default_metric = print_metric #: user-supplied function to use as global default metric
+
+def call_default(name, count, elapsed):
+    """call the :func:`default_metric` global in this module
+    
+    :arg str name: name of the metric
+    :arg int count: number of elements
+    :arg float elapsed: time in seconds
+    """
+    return default_metric(name, count, elapsed)
+    
+
+def measure_iter(iterable, metric = call_default, name = None):
     """Measure total time and element count for consuming an iterable
 
     :arg iterable: any iterable
@@ -44,7 +57,7 @@ def measure_iter(iterable, metric = print_metric, name = None):
 # deprecated alias for measure_iter
 measure = measure_iter
 
-def measure_each(iterable, metric = print_metric, name = None):
+def measure_each(iterable, metric = call_default, name = None):
     """Measure time elapsed to produce each item of an iterable
 
     :arg iterable: any iterable
@@ -68,7 +81,7 @@ def measure_each(iterable, metric = print_metric, name = None):
             metric(name, 1, time() - t)
             yield x
 
-def measure_first(iterable, metric = print_metric, name = None):
+def measure_first(iterable, metric = call_default, name = None):
     """Measure time elapsed to produce first item of an iterable
 
     :arg iterable: any iterable
@@ -95,7 +108,7 @@ def measure_first(iterable, metric = print_metric, name = None):
 
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
-    def _decorator(metric = print_metric, name = None): 
+    def _decorator(metric = call_default, name = None): 
         def wrapper(func):
             
             name_ = name if name is not None else func.__module__ + '.' +func.__name__    
@@ -161,7 +174,7 @@ class counted_iterable(object):
 
     next = __next__ # python2 compatibility
 
-def measure_reduce(metric = print_metric, name = None):
+def measure_reduce(metric = call_default, name = None):
     """Decorator to measure a function that consumes many items.
     
     The wrapped `func` should take either a single `iterable` argument or
@@ -217,7 +230,7 @@ def measure_reduce(metric = print_metric, name = None):
                         
     return measure_reduce_decorator
 
-def measure_produce(metric = print_metric, name = None):
+def measure_produce(metric = call_default, name = None):
     """Decorator to measure a function that produces many items.
     
     The function should return an object that supports `__len__` (ie, a
@@ -258,7 +271,7 @@ def measure_produce(metric = print_metric, name = None):
         return measure_it_decorator()
     return wrapper
 
-def measure_func(metric = print_metric, name = None):
+def measure_func(metric = call_default, name = None):
     """Decorator to measure function execution time.
     
     :arg function metric: f(name, 1, total_time)
@@ -290,7 +303,7 @@ def measure_func(metric = print_metric, name = None):
     return wrapper
 
 @contextmanager
-def measure_block(metric = print_metric, name = None):
+def measure_block(metric = call_default, name = None):
     """Context manager to measure execution time of a block
     
     :arg function metric: f(name, 1, time)
