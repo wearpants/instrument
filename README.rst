@@ -25,7 +25,7 @@ operations we want to gather metrics for:
 ...         yield x * x
 ...         x += 1
 
-Timing iterators is tricky. :func:`measure_iter`, :func:`measure_each` and func:`measure_first` record
+Timing iterators is tricky. :func:`measure_iter`, :func:`measure_each` and :func:`measure_first` record
 metrics for time and element count for iteratables.
 
 >>> from measure_it import measure_iter, measure_each, measure_first
