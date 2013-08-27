@@ -340,6 +340,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 import prettytable
 
 class StatsMetric(object):
@@ -388,25 +389,22 @@ class StatsMetric(object):
             self.table.add_row([self.name, count_mean, count_std, elapsed_mean, elapsed_std])
 
             # plot things
-            self.plot('count', count_mean, count_std, count_arr)
             self.plot('elapsed', elapsed_mean, elapsed_std, elapsed_arr)
+            self.plot('count', count_mean, count_std, count_arr)
       
         finally:
             self.temp.close()
     
     
     def plot(self, which, mu, sigma, data):
-        num_bins = 50
-        n, bins, patches = plt.hist(data, num_bins, normed=True, facecolor='green', alpha=0.5)
-
-        # add a 'best fit' line
-        y = mlab.normpdf(bins, mu, sigma)
-        plt.plot(bins, y, 'r--')        
+        weights = np.ones_like(data)/len(data) # make bar heights sum to 100%
+        n, bins, patches = plt.hist(data, bins=50, weights=weights, facecolor='blue', alpha=0.5)
 
         # add some labels & such
         plt.title(r'{} {}: $\mu={:#.2f}$, $\sigma={:#.2f}$'.format(self.name, which.capitalize(), mu, sigma))
         plt.xlabel('Counts' if which == 'count' else 'Seconds')
-        plt.ylabel('Probability')
+        plt.ylabel('Frequency')
+        plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, position: "{:.1f}%".format(y*100)))
         
         plt.savefig(os.path.join(self.histograms_dir, ".".join((self.name, which, 'png'))))
         plt.close()
