@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 
 from time import time
 from functools import wraps
@@ -408,8 +408,8 @@ class StatsMetric(object):
     
     def _dump(self):
         """dump data for an individual metric. For internal use only."""
+        
         try:
-            self.temp.flush()
             self.temp.seek(0) # seek to beginning            
             arr = np.fromfile(self.temp, self.dtype)
             
