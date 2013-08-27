@@ -374,6 +374,7 @@ class StatsMetric(object):
     if sys.version_info.major >= 3:
         mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', buffering = 32768)
     else:
+        # python2.7: argument name differs
         mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', bufsize = 32768)
     
     def __init__(self, name):
@@ -408,6 +409,7 @@ class StatsMetric(object):
     def _dump(self):
         """dump data for an individual metric. For internal use only."""
         try:
+            self.temp.flush()
             self.temp.seek(0) # seek to beginning            
             arr = np.fromfile(self.temp, self.dtype)
             
@@ -440,16 +442,10 @@ class StatsMetric(object):
     def _histogram(self, which, mu, sigma, data):
         """plot a histogram. For internal use only"""
         
-        if sys.version_info.major >= 3:
-            title_format = r'{} {}: $\mu={:#.2f}$, $\sigma={:#.2f}$'
-        else:
-            # python2.7 doesn't support # for float
-            title_format = r'{} {}: $\mu={:.2f}$, $\sigma={:.2f}$'
-        
         weights = np.ones_like(data)/len(data) # make bar heights sum to 100%
         n, bins, patches = plt.hist(data, bins=25, weights=weights, facecolor='blue', alpha=0.5)
 
-        plt.title(title_format.format(self.name, which.capitalize(), mu, sigma))
+        plt.title(r'%s %s: $\mu=%.2f$, $\sigma=%.2f$' % (self.name, which.capitalize(), mu, sigma))
         plt.xlabel('Items' if which == 'count' else 'Seconds')
         plt.ylabel('Frequency')
         plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, position: "{:.1f}%".format(y*100)))
