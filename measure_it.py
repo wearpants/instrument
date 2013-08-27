@@ -333,6 +333,7 @@ import tempfile
 import warnings
 import os.path
 import shutil
+import sys
 
 import numpy as np
 import matplotlib
@@ -376,43 +377,46 @@ class StatsMetric(object):
             arr = np.fromfile(self.temp, self.dtype)
             
             count_arr = arr['count']
-            time_arr = arr['elapsed']
+            elapsed_arr = arr['elapsed']
             
             count_mean = np.mean(count_arr)
             count_std = np.std(count_arr)
-            time_mean = np.mean(time_arr)
-            time_std = np.std(time_arr)
+            elapsed_mean = np.mean(elapsed_arr)
+            elapsed_std = np.std(elapsed_arr)
             
             # write to prettytable
-            self.table.add_row([self.name, count_mean, count_std, time_mean, time_std])
+            self.table.add_row([self.name, count_mean, count_std, elapsed_mean, elapsed_std])
 
             # plot things
             self.plot('count', count_mean, count_std, count_arr)
-            self.plot('time', time_mean, time_std, time_arr)
+            self.plot('elapsed', elapsed_mean, elapsed_std, elapsed_arr)
       
         finally:
             self.temp.close()
     
     
-    def plot(self, which, mu, sigma, arr):        
-        num_bins = 50
-        n, bins, patches = plt.hist(arr, num_bins, facecolor='green', alpha=0.5)
-        plt.title(r'{} {}: $\mu={:#.2f}$, $\sigma={:#.2f}$'.format(self.name, which.capitalize(), mu, sigma ))
+    def plot(self, which, mu, sigma, data):
+        num_bins = 10
+        n, bins, patches = plt.hist(data, num_bins, normed=True, facecolor='green', alpha=0.5)
+
+        # add a 'best fit' line
+        y = mlab.normpdf(bins, mu, sigma)
+        plt.plot(bins, y, 'r--')        
+
+        # add some labels & such
+        plt.title(r'{} {}: $\mu={:#.2f}$, $\sigma={:#.2f}$'.format(self.name, which.capitalize(), mu, sigma))
         plt.xlabel('Counts' if which == 'count' else 'Seconds')
-        plt.ylabel('Occurrences')
+        plt.ylabel('Probability')
+        
         plt.savefig(os.path.join(self.histograms_dir, ".".join((self.name, which, 'png'))))
         plt.close()
-    
-    def iter_records(self):
-        return (self.struct.unpack(x) for x in
-                iter(lambda: self.temp.read(self.struct.size), b''))
-    
+        
     @classmethod
     def dump_all(cls):
         shutil.rmtree(cls.histograms_dir, ignore_errors=True)
         os.mkdir(cls.histograms_dir)
         
-        cls.table = prettytable.PrettyTable(['Name', 'Count Mean', 'Count Stddev', 'Time Mean', 'Time Stddev'])
+        cls.table = prettytable.PrettyTable(['Name', 'Count Mean', 'Count Stddev', 'Elapsed Mean', 'Elapsed Stddev'])
         cls.table.set_style(prettytable.PLAIN_COLUMNS)
         cls.table.sortby = 'Name'
         cls.table.align['Name'] = 'l'
@@ -421,4 +425,9 @@ class StatsMetric(object):
         for self in cls.instances.values():
             self.dump()
         
-        print(cls.table)
+        print(cls.table, file=sys.stderr)
+    
+    def iter_records(self):
+        return (self.struct.unpack(x) for x in
+                iter(lambda: self.temp.read(self.struct.size), b''))
+    
