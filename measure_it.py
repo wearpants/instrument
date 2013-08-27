@@ -331,16 +331,17 @@ else:
 import struct
 import tempfile
 import warnings
+import os.path
 
 import numpy as np
 import prettytable
 
-class NumpyStatsMetric(object):
+class StatsMetric(object):
 
     struct = struct.Struct('<Id')
     dtype = np.dtype([('count', np.uint32), ('elapsed', np.float64)])            
     table = None
-    _metrics = {}
+    instances = {}
     
     def __init__(self, name):
         self.name = name
@@ -356,9 +357,9 @@ class NumpyStatsMetric(object):
             return
         
         try:
-            self = cls._metrics[name]
+            self = cls.instances[name]
         except KeyError:
-            self = cls._metrics[name] = cls(name)
+            self = cls.instances[name] = cls(name)
         
         self.record(count, elapsed)
     
@@ -386,7 +387,7 @@ class NumpyStatsMetric(object):
         cls.table.sortby = 'Name'
         cls.table.align['Name'] = 'l'
         cls.table.float_format = '.2'
-        for self in cls._metrics.values():
+        for self in cls.instances.values():
             self.dump()
         
         print(cls.table)
