@@ -398,7 +398,7 @@ class StatsMetric(object):
     
     def plot(self, which, mu, sigma, data):
         weights = np.ones_like(data)/len(data) # make bar heights sum to 100%
-        n, bins, patches = plt.hist(data, bins=50, weights=weights, facecolor='blue', alpha=0.5)
+        n, bins, patches = plt.hist(data, bins=25, weights=weights, facecolor='blue', alpha=0.5)
 
         # add some labels & such
         plt.title(r'{} {}: $\mu={:#.2f}$, $\sigma={:#.2f}$'.format(self.name, which.capitalize(), mu, sigma))
