@@ -396,7 +396,7 @@ class StatsMetric(object):
     
     
     def plot(self, which, mu, sigma, data):
-        num_bins = 10
+        num_bins = 50
         n, bins, patches = plt.hist(data, num_bins, normed=True, facecolor='green', alpha=0.5)
 
         # add a 'best fit' line
