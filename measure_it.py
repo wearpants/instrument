@@ -391,10 +391,10 @@ class StatsMetric(object):
             # plot things
             self.histogram('count', count_mean, count_std, count_arr)
             self.histogram('elapsed', elapsed_mean, elapsed_std, elapsed_arr)
+            self.scatter(count_arr, elapsed_arr)
       
         finally:
             self.temp.close()
-    
     
     def histogram(self, which, mu, sigma, data):
         weights = np.ones_like(data)/len(data) # make bar heights sum to 100%
@@ -402,11 +402,19 @@ class StatsMetric(object):
 
         # add some labels & such
         plt.title(r'{} {}: $\mu={:#.2f}$, $\sigma={:#.2f}$'.format(self.name, which.capitalize(), mu, sigma))
-        plt.xlabel('Counts' if which == 'count' else 'Seconds')
+        plt.xlabel('Items' if which == 'count' else 'Seconds')
         plt.ylabel('Frequency')
         plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, position: "{:.1f}%".format(y*100)))
         
         plt.savefig(os.path.join(self.histograms_dir, ".".join((self.name, which, 'png'))))
+        plt.close()
+        
+    def scatter(self, count_arr, elapsed_arr):
+        plt.scatter(count_arr, elapsed_arr)
+        plt.title('{}: Count vs. Elapsed'.format(self.name))
+        plt.xlabel('Items')
+        plt.ylabel('Seconds')
+        plt.savefig(os.path.join(self.histograms_dir, ".".join((self.name, 'scatter', 'png'))))
         plt.close()
         
     @classmethod
