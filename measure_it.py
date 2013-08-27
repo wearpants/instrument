@@ -389,14 +389,14 @@ class StatsMetric(object):
             self.table.add_row([self.name, count_mean, count_std, elapsed_mean, elapsed_std])
 
             # plot things
-            self.plot('elapsed', elapsed_mean, elapsed_std, elapsed_arr)
-            self.plot('count', count_mean, count_std, count_arr)
+            self.histogram('count', count_mean, count_std, count_arr)
+            self.histogram('elapsed', elapsed_mean, elapsed_std, elapsed_arr)
       
         finally:
             self.temp.close()
     
     
-    def plot(self, which, mu, sigma, data):
+    def histogram(self, which, mu, sigma, data):
         weights = np.ones_like(data)/len(data) # make bar heights sum to 100%
         n, bins, patches = plt.hist(data, bins=25, weights=weights, facecolor='blue', alpha=0.5)
 
