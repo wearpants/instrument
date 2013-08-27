@@ -345,7 +345,7 @@ import prettytable
 
 class StatsMetric(object):
 
-    histograms_dir = "histograms"
+    plots_dir = "statplots"
 
     struct = struct.Struct('<Id')
     dtype = np.dtype([('count', np.uint32), ('elapsed', np.float64)])            
@@ -396,7 +396,7 @@ class StatsMetric(object):
             self.histogram('elapsed', elapsed_mean, elapsed_std, elapsed_arr)
             plt.subplot(3, 1, 3)            
             self.scatter(count_arr, elapsed_arr)
-            plt.savefig(os.path.join(self.histograms_dir, ".".join((self.name, 'png'))),
+            plt.savefig(os.path.join(self.plots_dir, ".".join((self.name, 'png'))),
                         bbox_inches="tight")
 
         finally:
@@ -420,8 +420,8 @@ class StatsMetric(object):
         
     @classmethod
     def dump_all(cls):
-        shutil.rmtree(cls.histograms_dir, ignore_errors=True)
-        os.mkdir(cls.histograms_dir)
+        shutil.rmtree(cls.plots_dir, ignore_errors=True)
+        os.mkdir(cls.plots_dir)
         
         cls.table = prettytable.PrettyTable(['Name', 'Count Mean', 'Count Stddev', 'Elapsed Mean', 'Elapsed Stddev'])
         cls.table.set_style(prettytable.PLAIN_COLUMNS)
