@@ -326,3 +326,67 @@ else:
         with statsd.pipeline() as pipe:
             pipe.incr(name, count)
             pipe.timing(name, int(round(1000 * elapsed)))  # milliseconds
+
+### Matplotlib ###
+import struct
+import tempfile
+import warnings
+
+import numpy as np
+import prettytable
+
+class NumpyStatsMetric(object):
+
+    struct = struct.Struct('<Id')
+    dtype = np.dtype([('count', np.uint32), ('elapsed', np.float64)])            
+    table = None
+    _metrics = {}
+    
+    def __init__(self, name):
+        self.name = name
+        self.temp = tempfile.TemporaryFile(mode = 'w+b', buffering = 32768)
+    
+    def record(self, count, elapsed):
+        self.temp.write(self.struct.pack(count, elapsed))
+    
+    @classmethod
+    def metric(cls, name, count, elapsed):
+        if name is None:
+            warnings.warn("Ignoring unnamed metric", stacklevel=3)
+            return
+        
+        try:
+            self = cls._metrics[name]
+        except KeyError:
+            self = cls._metrics[name] = cls(name)
+        
+        self.record(count, elapsed)
+    
+    def dump(self):
+        try:
+            self.temp.seek(0) # seek to beginning            
+            arr = np.fromfile(self.temp, self.dtype)
+            self.table.add_row([self.name,           
+                                np.mean(arr['count']),
+                                np.std(arr['count']),
+                                np.mean(arr['elapsed']),
+                                np.std(arr['elapsed'])])
+
+        finally:
+            self.temp.close()
+    
+    def iter_records(self):
+        return (self.struct.unpack(x) for x in
+                iter(lambda: self.temp.read(self.struct.size), b''))
+    
+    @classmethod
+    def dump_all(cls):
+        cls.table = prettytable.PrettyTable(['Name', 'Count Mean', 'Count Stddev', 'Time Mean', 'Time Stddev'])
+        cls.table.set_style(prettytable.PLAIN_COLUMNS)
+        cls.table.sortby = 'Name'
+        cls.table.align['Name'] = 'l'
+        cls.table.float_format = '.2'
+        for self in cls._metrics.values():
+            self.dump()
+        
+        print(cls.table)
