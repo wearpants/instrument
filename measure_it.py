@@ -332,11 +332,18 @@ import struct
 import tempfile
 import warnings
 import os.path
+import shutil
 
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
 import prettytable
 
 class StatsMetric(object):
+
+    histograms_dir = "histograms"
 
     struct = struct.Struct('<Id')
     dtype = np.dtype([('count', np.uint32), ('elapsed', np.float64)])            
@@ -367,14 +374,34 @@ class StatsMetric(object):
         try:
             self.temp.seek(0) # seek to beginning            
             arr = np.fromfile(self.temp, self.dtype)
-            self.table.add_row([self.name,           
-                                np.mean(arr['count']),
-                                np.std(arr['count']),
-                                np.mean(arr['elapsed']),
-                                np.std(arr['elapsed'])])
+            
+            count_arr = arr['count']
+            time_arr = arr['elapsed']
+            
+            count_mean = np.mean(count_arr)
+            count_std = np.std(count_arr)
+            time_mean = np.mean(time_arr)
+            time_std = np.std(time_arr)
+            
+            # write to prettytable
+            self.table.add_row([self.name, count_mean, count_std, time_mean, time_std])
 
+            # plot things
+            self.plot('count', count_mean, count_std, count_arr)
+            self.plot('time', time_mean, time_std, time_arr)
+      
         finally:
             self.temp.close()
+    
+    
+    def plot(self, which, mu, sigma, arr):        
+        num_bins = 50
+        n, bins, patches = plt.hist(arr, num_bins, facecolor='green', alpha=0.5)
+        plt.title(r'{} {}: $\mu={:#.2f}$, $\sigma={:#.2f}$'.format(self.name, which.capitalize(), mu, sigma ))
+        plt.xlabel('Counts' if which == 'count' else 'Seconds')
+        plt.ylabel('Occurrences')
+        plt.savefig(os.path.join(self.histograms_dir, ".".join((self.name, which, 'png'))))
+        plt.close()
     
     def iter_records(self):
         return (self.struct.unpack(x) for x in
@@ -382,11 +409,15 @@ class StatsMetric(object):
     
     @classmethod
     def dump_all(cls):
+        shutil.rmtree(cls.histograms_dir, ignore_errors=True)
+        os.mkdir(cls.histograms_dir)
+        
         cls.table = prettytable.PrettyTable(['Name', 'Count Mean', 'Count Stddev', 'Time Mean', 'Time Stddev'])
         cls.table.set_style(prettytable.PLAIN_COLUMNS)
         cls.table.sortby = 'Name'
         cls.table.align['Name'] = 'l'
         cls.table.float_format = '.2'
+        
         for self in cls.instances.values():
             self.dump()
         
