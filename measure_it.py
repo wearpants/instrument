@@ -406,6 +406,29 @@ class StatsMetric(object):
             
             self.temp.write(self.struct.pack(count, elapsed))
     
+    @classmethod
+    def dump(cls):
+        """Output all recorded stats"""
+        with cls.lock:
+            if not cls.instances: return
+            if cls.dump_atexit and sys.version_info.major >= 3:
+                # python2.7 has no unregister function
+                atexit.unregister(cls.dump)
+            
+            shutil.rmtree(cls.plots_dir, ignore_errors=True)
+            os.mkdir(cls.plots_dir)
+            
+            cls.table = prettytable.PrettyTable(['Name', 'Count Mean', 'Count Stddev', 'Elapsed Mean', 'Elapsed Stddev'])
+            cls.table.set_style(prettytable.PLAIN_COLUMNS)
+            cls.table.sortby = 'Name'
+            cls.table.align['Name'] = 'l'
+            cls.table.float_format = '.2'
+            
+            for self in cls.instances.values():
+                self._dump()
+            
+            print(cls.table, file=sys.stderr)    
+    
     def _dump(self):
         """dump data for an individual metric. For internal use only."""
         
@@ -457,26 +480,3 @@ class StatsMetric(object):
         plt.title('{}: Count vs. Elapsed'.format(self.name))
         plt.xlabel('Items')
         plt.ylabel('Seconds')
-        
-    @classmethod
-    def dump(cls):
-        """Output all recorded stats"""
-        with cls.lock:
-            if not cls.instances: return
-            if cls.dump_atexit and sys.version_info.major >= 3:
-                # python2.7 has no unregister function
-                atexit.unregister(cls.dump)
-            
-            shutil.rmtree(cls.plots_dir, ignore_errors=True)
-            os.mkdir(cls.plots_dir)
-            
-            cls.table = prettytable.PrettyTable(['Name', 'Count Mean', 'Count Stddev', 'Elapsed Mean', 'Elapsed Stddev'])
-            cls.table.set_style(prettytable.PLAIN_COLUMNS)
-            cls.table.sortby = 'Name'
-            cls.table.align['Name'] = 'l'
-            cls.table.float_format = '.2'
-            
-            for self in cls.instances.values():
-                self._dump()
-            
-            print(cls.table, file=sys.stderr)
