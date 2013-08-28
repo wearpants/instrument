@@ -49,8 +49,6 @@ class NumpyMetric(object):
     def __init__(self, name):
         self.name = name
         self.temp = self.mktemp()
-        self.count_arr = None
-        self.elapsed_arr = None
 
     @classmethod
     def metric(cls, name, count, elapsed):
@@ -116,18 +114,21 @@ class NumpyMetric(object):
 
     @classmethod
     def _pre_dump(cls):
+        """subclass hook, called before dumping metrics"""
         pass
 
     @classmethod
     def _post_dump(cls):
+        """subclass hook, called after dumping metrics"""
         pass
 
     def _output(self):
+        """subclass hook, called to output a single metric"""
         pass
 
     def _cleanup(self):
+        """subclass hook, called to clean up after outputting a single metric"""
         pass
-
 
 class StatsMetric(NumpyMetric):
     """Print a table of statistics
