@@ -7,4 +7,4 @@ dist/
 /MANIFEST
 /.coverage
 /htmlcov
-/statsplots
+/mit_plots

@@ -159,9 +159,9 @@ class StatsMetric(NumpyMetric):
 class PlotMetric(NumpyMetric):
     """Plot graphs of metrics.
 
-    :cvar plots_dir: directory to save plots in. Defaults to `./statsplots`.
+    :cvar plots_dir: directory to save plots in. Defaults to `./mit_plots`.
     """
-    plots_dir = os.path.abspath("statsplots")
+    plots_dir = os.path.abspath("mit_plots")
 
     @classmethod
     def _pre_dump(cls):
