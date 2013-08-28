@@ -31,6 +31,18 @@ def call_default(name, count, elapsed):
     return default_metric(name, count, elapsed)
     
 
+def make_multi_metric(*metrics):
+    """Make a new metric function that calls the supplied metrics
+    
+    :arg functions metrics: metric functions
+    :rtype: function
+    """
+    def multi_metric(name, count, elapsed):
+        """Calls multiple metrics (closure)"""
+        for m in metrics:
+            m(name, count, elapsed)
+    return multi_metric
+
 def measure_iter(iterable, metric = call_default, name = None):
     """Measure total time and element count for consuming an iterable
 

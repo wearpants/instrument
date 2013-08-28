@@ -239,10 +239,14 @@ API Documentation
 =================
 
 .. automodule:: measure_it
-    :members: measure_iter, measure_each, measure_reduce, measure_produce, measure_func, measure_first, measure_block, print_metric, default_metric
+    :members: measure_iter, measure_each, measure_reduce, measure_produce, measure_func, measure_first, measure_block, print_metric, default_metric, make_multi_metric
 
 Changelog
 =========
+
+0.4
+---
+* add make_multi_metric
 
 0.3
 ---
