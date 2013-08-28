@@ -51,7 +51,7 @@ class CSVDirMetric(object):
             if not cls.instances:
                 # first call
                 shutil.rmtree(cls.outdir, ignore_errors=True)
-                os.mkdir(cls.outdir)
+                os.makedirs(cls.outdir)
 
                 if cls.dump_atexit: atexit.register(cls.dump)
 

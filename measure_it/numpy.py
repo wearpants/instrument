@@ -168,7 +168,7 @@ class PlotMetric(NumpyMetric):
     def _pre_dump(cls):
         """Output all recorded stats"""
         shutil.rmtree(cls.outdir, ignore_errors=True)
-        os.mkdir(cls.outdir)
+        os.makedirs(cls.outdir)
         super(PlotMetric, cls)._pre_dump()
 
     def _cleanup(self):
