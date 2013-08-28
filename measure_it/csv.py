@@ -1,24 +1,14 @@
-"""`numpy`-based metrics"""
 from __future__ import print_function, division, absolute_import
 
-import struct
 import tempfile
 import warnings
 import os.path
 import shutil
 import sys
 import threading
-import atexit
+import csv
 
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.mlab as mlab
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
-import prettytable
-
-class NumpyMetric(object):
+class CSVMetric(object):
     """Base class for numpy-based metrics
 
     Do not create instances of this class directly. Simply pass the
@@ -34,17 +24,8 @@ class NumpyMetric(object):
 
     dump_atexit = True
 
-    calc_stats = True #: should mean/stddev be calculated?
-    struct = struct.Struct('<Id')
-    dtype = np.dtype([('count', np.uint32), ('elapsed', np.float64)])
     lock = threading.Lock()
     instances = {}
-
-    if sys.version_info.major >= 3:
-        mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', buffering = 32768)
-    else:
-        # python2.7: argument name differs
-        mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', bufsize = 32768)
 
     def __init__(self, name):
         self.name = name
@@ -136,6 +117,7 @@ class StatsMetric(NumpyMetric):
     :cvar outfile: output file. Defaults to `sys.stderr`.
     """
     outfile = sys.stderr
+    table = None
 
     @classmethod
     def _pre_dump(cls):
@@ -159,15 +141,15 @@ class StatsMetric(NumpyMetric):
 class PlotMetric(NumpyMetric):
     """Plot graphs of metrics.
 
-    :cvar outdir: directory to save plots in. Defaults to `./mit_plots`.
+    :cvar plots_dir: directory to save plots in. Defaults to `./mit_plots`.
     """
-    outdir = os.path.abspath("mit_plots")
+    plots_dir = os.path.abspath("mit_plots")
 
     @classmethod
     def _pre_dump(cls):
         """Output all recorded stats"""
-        shutil.rmtree(cls.outdir, ignore_errors=True)
-        os.mkdir(cls.outdir)
+        shutil.rmtree(cls.plots_dir, ignore_errors=True)
+        os.mkdir(cls.plots_dir)
         super(PlotMetric, cls)._pre_dump()
 
     def _cleanup(self):
@@ -183,7 +165,7 @@ class PlotMetric(NumpyMetric):
         self._histogram('elapsed', self.elapsed_mean, self.elapsed_std, self.elapsed_arr)
         plt.subplot(3, 1, 3)
         self._scatter()
-        plt.savefig(os.path.join(self.outdir, ".".join((self.name, 'png'))),
+        plt.savefig(os.path.join(self.plots_dir, ".".join((self.name, 'png'))),
                     bbox_inches="tight")
 
         super(PlotMetric, self)._output()
