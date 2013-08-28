@@ -33,6 +33,7 @@ class NumpyMetric(object):
 
     dump_atexit = True
 
+    calc_stats = True #: should mean/stddev be calculated?
     struct = struct.Struct('<Id')
     dtype = np.dtype([('count', np.uint32), ('elapsed', np.float64)])
     lock = threading.Lock()
@@ -52,7 +53,7 @@ class NumpyMetric(object):
 
     @classmethod
     def metric(cls, name, count, elapsed):
-        """A metric function that generates plots and stats
+        """A metric function that buffers through numpy
 
         :arg str name: name of the metric
         :arg int count: number of elements
@@ -99,11 +100,18 @@ class NumpyMetric(object):
             arr = np.fromfile(self.temp, self.dtype)
             self.count_arr = arr['count']
             self.elapsed_arr = arr['elapsed']
+
+            if self.calc_stats:
+                # calculate mean & standard deviation
+                self.count_mean = np.mean(self.count_arr)
+                self.count_std = np.std(self.count_arr)
+                self.elapsed_mean = np.mean(self.elapsed_arr)
+                self.elapsed_std = np.std(self.elapsed_arr)
+
             self._output()
         finally:
             self.temp.close()
             self._cleanup()
-
 
     @classmethod
     def _pre_dump(cls):
@@ -120,9 +128,8 @@ class NumpyMetric(object):
         pass
 
 
-class StatsTableMetric(NumpyMetric):
+class StatsMetric(NumpyMetric):
     """Print a table of statistics
-
 
     :cvar outfile: output file. Defaults to `sys.stderr`.
     """
@@ -136,24 +143,19 @@ class StatsTableMetric(NumpyMetric):
         cls.table.sortby = 'Name'
         cls.table.align['Name'] = 'l'
         cls.table.float_format = '.2'
-        super(StatsTableMetric, cls)._pre_dump()
+        super(StatsMetric, cls)._pre_dump()
 
     @classmethod
     def _post_dump(cls):
         print(cls.table, file=cls.outfile)
-        super(StatsTableMetric, cls)._post_dump()
+        super(StatsMetric, cls)._post_dump()
 
     def _output(self):
-        count_mean = np.mean(self.count_arr)
-        count_std = np.std(self.count_arr)
-        elapsed_mean = np.mean(self.elapsed_arr)
-        elapsed_std = np.std(self.elapsed_arr)
-
         # write to prettytable
-        self.table.add_row([self.name, count_mean, count_std, elapsed_mean, elapsed_std])
-        super(StatsTableMetric, self)._output()
+        self.table.add_row([self.name, self.count_mean, self.count_std, self.elapsed_mean, self.elapsed_std])
+        super(StatsMetric, self)._output()
 
-class MatplotlibMetric(NumpyMetric):
+class PlotMetric(NumpyMetric):
     """Plot graphs of metrics.
 
     :cvar plots_dir: directory to save plots in. Defaults to `./statsplots`.
@@ -165,32 +167,25 @@ class MatplotlibMetric(NumpyMetric):
         """Output all recorded stats"""
         shutil.rmtree(cls.plots_dir, ignore_errors=True)
         os.mkdir(cls.plots_dir)
-        super(MatplotlibMetric, cls)._pre_dump()
+        super(PlotMetric, cls)._pre_dump()
 
-    @classmethod
-    def _post_dump(cls):
+    def _cleanup(self):
+        plt.clf()
         plt.close()
-        super(MatplotlibMetric, cls)._post_dump()
+        super(PlotMetric, self)._cleanup()
 
     def _output(self):
-        """dump data for an individual metric. For internal use only."""
-        count_mean = np.mean(self.count_arr)
-        count_std = np.std(self.count_arr)
-        elapsed_mean = np.mean(self.elapsed_arr)
-        elapsed_std = np.std(self.elapsed_arr)
-
-        # plot things
         plt.figure(1, figsize = (8, 18))
         plt.subplot(3, 1, 1)
-        self._histogram('count', count_mean, count_std, self.count_arr)
+        self._histogram('count', self.count_mean, self.count_std, self.count_arr)
         plt.subplot(3, 1, 2)
-        self._histogram('elapsed', elapsed_mean, elapsed_std, self.elapsed_arr)
+        self._histogram('elapsed', self.elapsed_mean, self.elapsed_std, self.elapsed_arr)
         plt.subplot(3, 1, 3)
         self._scatter()
         plt.savefig(os.path.join(self.plots_dir, ".".join((self.name, 'png'))),
                     bbox_inches="tight")
 
-        super(MatplotlibMetric, self)._output()
+        super(PlotMetric, self)._output()
 
     def _histogram(self, which, mu, sigma, data):
         """plot a histogram. For internal use only"""
