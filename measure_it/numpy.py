@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import prettytable
 
+__all__ = ['PlotMetric', 'StatsMetric']
+
 class NumpyMetric(object):
     """Base class for numpy-based metrics
 
@@ -76,7 +78,7 @@ class NumpyMetric(object):
 
     @classmethod
     def dump(cls):
-        """Output all recorded stats"""
+        """Output all recorded metrics"""
         with cls.lock:
             if not cls.instances: return
             if cls.dump_atexit and sys.version_info.major >= 3:

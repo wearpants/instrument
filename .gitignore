@@ -8,3 +8,5 @@ dist/
 /.coverage
 /htmlcov
 /mit_plots
+/mit_csv
+mit.csv
