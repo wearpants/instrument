@@ -116,7 +116,7 @@ Examples include aggregators or a `batch_save()`:
 ...         sleep(.1)
 ...         total += i*i
 ...     return total
-... 
+...
 >>> sum_squares(range(5))
 __main__.sum_squares: 5 elements in 0.50 seconds
 30
@@ -130,7 +130,7 @@ This works with `*args` functions too:
 ...         sleep(.1)
 ...         total += i*i
 ...     return total
-... 
+...
 >>> sum_squares2(*range(5))
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
@@ -153,19 +153,19 @@ __main__.list_squares: 5 elements in 0.50 seconds
 ...         for r in rows:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
-... 
+...
 ...     @measure_reduce()
 ...     def batch_save2(self, *rows):
 ...         for r in rows:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
-... 
+...
 ...     @measure_produce()
 ...     def dumb_query(self, x):
 ...         # you'd actually talk to your database here
 ...         sleep(0.1 * x)
 ...         return [{"id":i, "square": i*i} for i in range(x)]
-... 
+...
 >>> rows = [{'id':i} for i in range(5)]
 >>> database = Database()
 >>> database.batch_save(rows)
@@ -221,7 +221,7 @@ metric recording funtion. It should take three arguments: `count` of items,
 
 >>> def my_metric(name, count, elapsed):
 ...     print("Iterable %s produced %d items in %d milliseconds"%(name, count, int(round(elapsed*1000))))
-... 
+...
 >>> _ = measure_iter(math_is_hard(5), name="bogomips", metric=my_metric)
 >>> list(_)
 Iterable bogomips produced 5 items in 502 milliseconds
@@ -239,7 +239,6 @@ API Documentation
 =================
 
 .. automodule:: measure_it
-
     :members: measure_iter, measure_each, measure_reduce, measure_produce, measure_func, measure_first, measure_block, print_metric, default_metric, make_multi_metric, StatsMetric
 
 Changelog
