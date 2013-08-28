@@ -22,14 +22,13 @@ class NumpyMetric(object):
     """Base class for numpy-based metrics
 
     Do not create instances of this class directly. Simply pass the
-    classmethod :func:`metric` to a measurement function. Output stats and
-    using :func:`dump`. These are the only public methods.
+    classmethod :func:`metric` to a measurement function. Output using
+    :func:`dump`. These are the only public methods.
 
     Each metric consumes one open file and 32K of memory while running.
-    Dumping stats requires enough memory to load all data points for each
-    metric.
+    Output requires enough memory to load all data points for each metric.
 
-    :cvar dump_atexit: automatically :func:`dump` stats when the interpreter exits. Defaults to True.
+    :cvar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
     """
 
     dump_atexit = True
