@@ -34,12 +34,11 @@ class NumpyMetric(object):
     """
 
     dump_atexit = True
-
     calc_stats = True #: should mean/stddev be calculated?
     struct = struct.Struct('<Id')
     dtype = np.dtype([('count', np.uint32), ('elapsed', np.float64)])
     lock = threading.Lock()
-    instances = {}
+    instances = None #: replace with dict in each subclass
 
     if sys.version_info.major >= 3:
         mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', buffering = 32768)
@@ -136,6 +135,7 @@ class StatsMetric(NumpyMetric):
 
     :cvar outfile: output file. Defaults to `sys.stderr`.
     """
+    instances = {}
     outfile = sys.stderr
 
     @classmethod
@@ -162,6 +162,7 @@ class PlotMetric(NumpyMetric):
 
     :cvar outdir: directory to save plots in. Defaults to `./mit_plots`.
     """
+    instances = {}
     outdir = os.path.abspath("mit_plots")
 
     @classmethod
