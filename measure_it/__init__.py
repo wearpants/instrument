@@ -45,7 +45,7 @@ def make_multi_metric(*metrics):
             m(name, count, elapsed)
     return multi_metric
 
-def measure_iter(iterable, metric = call_default, name = None):
+def measure_iter(iterable, name = None, metric = call_default):
     """Measure total time and element count for consuming an iterable
 
     :arg iterable: any iterable
@@ -67,11 +67,7 @@ def measure_iter(iterable, metric = call_default, name = None):
         # underlying iterable is exhausted (StopIteration) or errored. Record
         # the `metric` and allow exception to propogate
         metric(name, count, total_time)
-
-# deprecated alias for measure_iter
-measure = measure_iter
-
-def measure_each(iterable, metric = call_default, name = None):
+def measure_each(iterable, name = None, metric = call_default):
     """Measure time elapsed to produce each item of an iterable
 
     :arg iterable: any iterable
@@ -95,7 +91,7 @@ def measure_each(iterable, metric = call_default, name = None):
             metric(name, 1, time() - t)
             yield x
 
-def measure_first(iterable, metric = call_default, name = None):
+def measure_first(iterable, name = None, metric = call_default):
     """Measure time elapsed to produce first item of an iterable
 
     :arg iterable: any iterable
@@ -122,21 +118,21 @@ def measure_first(iterable, metric = call_default, name = None):
 
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
-    def _decorator(metric = call_default, name = None):
+    def _decorator(name = None, metric = call_default):
         def wrapper(func):
 
             name_ = name if name is not None else func.__module__ + '.' +func.__name__
             class measure_it_decorator(object): # must be a class for descriptor magic to work
                 @wraps(func)
                 def __call__(self, *args, **kwargs):
-                    return measuring_func(func(*args, **kwargs), metric, name_)
+                    return measuring_func(func(*args, **kwargs), name_, metric)
 
                 def __get__(self, instance, class_):
                     name_ = name if name is not None else\
                         ".".join((class_.__module__, class_.__name__, func.__name__))
                     @wraps(func)
                     def wrapped_method(*args, **kwargs):
-                        return measuring_func(func(instance, *args, **kwargs), metric, name_)
+                        return measuring_func(func(instance, *args, **kwargs), name_, metric)
                     return wrapped_method
             return measure_it_decorator()
 
@@ -188,7 +184,7 @@ class counted_iterable(object):
 
     next = __next__ # python2 compatibility
 
-def measure_reduce(metric = call_default, name = None):
+def measure_reduce(name = None, metric = call_default):
     """Decorator to measure a function that consumes many items.
 
     The wrapped `func` should take either a single `iterable` argument or
@@ -244,7 +240,7 @@ def measure_reduce(metric = call_default, name = None):
 
     return measure_reduce_decorator
 
-def measure_produce(metric = call_default, name = None):
+def measure_produce(name = None, metric = call_default):
     """Decorator to measure a function that produces many items.
 
     The function should return an object that supports `__len__` (ie, a
@@ -285,7 +281,7 @@ def measure_produce(metric = call_default, name = None):
         return measure_it_decorator()
     return wrapper
 
-def measure_func(metric = call_default, name = None):
+def measure_func(name = None, metric = call_default):
     """Decorator to measure function execution time.
 
     :arg function metric: f(name, 1, total_time)
@@ -317,7 +313,7 @@ def measure_func(metric = call_default, name = None):
     return wrapper
 
 @contextmanager
-def measure_block(metric = call_default, name = None):
+def measure_block(name = None, metric = call_default):
     """Context manager to measure execution time of a block
 
     :arg function metric: f(name, 1, time)
