@@ -4,8 +4,14 @@ Changelog
 ---
 * add default_metric
 * add make_multi_metric
-* add StatsMetric
+* add StatsMetric and PlotMetric, based on numpy
+* add CSVDirMetric and CSVFileMetric
+
+**Backwards-incompatible changes**
+
+* remove deprecated :func:`measure`; use :func:`measure_iter` instead
 * convert to package
+* swap metric and name arguments
 
 0.3
 ---
