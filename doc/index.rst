@@ -10,7 +10,7 @@ measure_it
 :homepage: https://measure_it.readthedocs.org/en/latest/
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     Introduction <self>
     output
@@ -21,7 +21,6 @@ measure_it
 
 Basic Usage
 ===========
-
 Iterators & generators often encapsulate I/O, number crunching or other
 operations we want to gather metrics for:
 
@@ -219,3 +218,10 @@ To measure the excecution time of a block of code, use a :func:`measure_block` c
 ...     # you'd do something useful here
 ...     sleep(0.2)
 slowcode: 1 elements in 0.20 seconds
+
+You can also pass your own value for `count`; this is useful to measure a resource used by a block (the number of bytes in a file, for example):
+
+>>> with measure_block(name="slowcode", count=42):
+...     # you'd do something useful here
+...     sleep(0.2)
+slowcode: 42 elements in 0.20 seconds

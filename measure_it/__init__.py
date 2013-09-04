@@ -313,14 +313,15 @@ def measure_func(name = None, metric = call_default):
     return wrapper
 
 @contextmanager
-def measure_block(name = None, metric = call_default):
+def measure_block(name = None, metric = call_default, count = 1):
     """Context manager to measure execution time of a block
 
     :arg function metric: f(name, 1, time)
     :arg str name: name for the metric
+    :arg int count: user-supplied number of items, defaults to 1
     """
     t = time()
     try:
         yield
     finally:
-        metric(name, 1, time() - t)
+        metric(name, count, time() - t)

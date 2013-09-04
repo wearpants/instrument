@@ -6,6 +6,7 @@ Changelog
 * add make_multi_metric
 * add StatsMetric and PlotMetric, based on numpy
 * add CSVDirMetric and CSVFileMetric
+* measure_block supports user-supplied count
 
 **Backwards-incompatible changes**
 
