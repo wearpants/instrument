@@ -1,4 +1,7 @@
-"""you are not expected to understand this implementation. that's why it has tests."""
+"""you are not expected to understand this implementation.
+that's why it has tests.
+the above-mentioned 'you' includes the author. :-}
+"""
 
 from __future__ import print_function, division
 
