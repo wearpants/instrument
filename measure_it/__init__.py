@@ -1,3 +1,5 @@
+"""you are not expected to understand this implementation. that's why it has tests."""
+
 from __future__ import print_function, division
 
 from time import time
