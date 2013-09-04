@@ -7,6 +7,10 @@ measure_it
 * conduct performance benchmarks
 * easily generate plots/graphs and statistics
 
+Get it from the cheeseshop today:
+
+  `pip install measure_it`
+
 :author: Pete Fein <pete@wearpants.org>
 :license: BSD
 :versions: Python 2.7 & 3
