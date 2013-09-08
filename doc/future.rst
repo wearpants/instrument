@@ -12,3 +12,7 @@ Support for automagic instrumentation of popular 3rd-party packages:
 * HTTP clients: `requests <http://docs.python-requests.org/en/latest/>`__ and `urllib <http://docs.python.org/2/library/urllib2.html>`__
 * storage engines: MongoDB, memcached, redis, Elastic Search. Possibly sqlalchemy
 
+Improved testing:
+
+* support for tox (2.7 & 3.3 only)
+* support for http://travis-ci.org
