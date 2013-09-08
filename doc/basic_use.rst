@@ -2,6 +2,9 @@ Basic Usage
 ===========
 .. currentmodule:: measure_it
 
+Measurements
+------------
+
 Iterators & generators often encapsulate I/O, number crunching or other
 operations we want to gather metrics for:
 

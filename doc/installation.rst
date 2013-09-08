@@ -7,8 +7,8 @@ eventually instrumentation for popular packages. Since most users will want only
 Note that the included `requirements.txt` file includes *all* depedencies
 (for build/test purposes), and is almost certainly not what you want.
 
-Base Install
-------------
+Minimal
+-------
 
 To install the base package (with no depedencies beyond the standard library):
 
@@ -16,8 +16,8 @@ To install the base package (with no depedencies beyond the standard library):
 
 This includes: all generic measurement functions, :func:`print_metric` and :mod:`csv` metrics.
 
-Optional Install
-----------------
+Batteries Included
+------------------
 
 To install the dependencies for an optional component, specify it in brackets
 during installation (see also: `setuptools extras
