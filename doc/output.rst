@@ -1,5 +1,5 @@
-Customizing Output
-==================
+Output
+======
 
 By default, metrics are printed to standard out. You can provide your own
 metric recording funtion. It should take three arguments: `count` of items,
@@ -13,10 +13,13 @@ metric recording funtion. It should take three arguments: `count` of items,
 Iterable bogomips produced 5 items in 502 milliseconds
 [0, 1, 4, 9, 16]
 
-If you have `statsd <https://pypi.python.org/pypi/statsd>`__ installed, the
-:func:`statsd_metric` function can be used to record metrics to it. Or write
-your own!
-
 Unless individually specified, metrics are reported using the global
 :data:`default_metric`. To change the active default, simply assign another metric
 function to this attribute.
+
+statsd
+------
+
+If you have `statsd <https://pypi.python.org/pypi/statsd>`__ installed, the
+:func:`measure_it.statsd.statsd_metric` function can be used to record metrics to it. Each
+metric will generate two buckets: a count and a timing.
