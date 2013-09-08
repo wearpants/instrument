@@ -17,6 +17,7 @@ measure_it
     output
     api
     incompatibilities
+    future
     changelog
 
 .. currentmodule:: measure_it
