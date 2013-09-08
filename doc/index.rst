@@ -12,6 +12,7 @@ measure_it
 .. toctree::
     :maxdepth: 2
 
+    installation
     Introduction <self>
     output
     api
