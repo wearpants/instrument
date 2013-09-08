@@ -1,5 +1,7 @@
 Changelog
 =========
+See also: :doc:`incompatibilities`.
+
 0.4
 ---
 * add default_metric
@@ -7,12 +9,6 @@ Changelog
 * add StatsMetric and PlotMetric, based on numpy
 * add CSVDirMetric and CSVFileMetric
 * measure_block supports user-supplied count
-
-**Backwards-incompatible changes**
-
-* remove deprecated :func:`measure`; use :func:`measure_iter` instead
-* convert to package
-* swap metric and name arguments
 
 0.3
 ---

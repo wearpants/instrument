@@ -15,6 +15,7 @@ measure_it
     Introduction <self>
     output
     api
+    incompatibilities
     changelog
 
 .. currentmodule:: measure_it
