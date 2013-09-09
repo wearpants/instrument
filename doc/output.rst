@@ -66,18 +66,15 @@ requires some care.
 
 :class:`.NumpyMetric` subclasses are global to your program; do not manually
 create instances. Instead, use the classmethod :meth:`.NumpyMetric.metric`.
-Set the class variable `outdir` to a directory in which to store files. The
-contents of this directory will be deleted on startup. The `dump_atexit` flag
-will register a handler to write data when the interpreter finishes
-execution. Set to false to manage yourself.
+The `dump_atexit` flag will register a handler to write data when the
+interpreter finishes execution. Set to false to manage yourself.
 
 >>> from measure_it.numpy import StatsMetric, PlotMetric
->>> StatsMetric.outdir = "/tmp/my_metrics_dir"
 >>> _ = measure_iter(math_is_hard(5), metric=StatsMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
-:class:`.StatsMetric` prints pretty tables of aggregate population statistics::
+:class:`.StatsMetric` prints pretty tables of aggregate population statistics. Set the class variable `outfile` to a path to write data. This file will be deleted on startup::
 
     Name           Count Mean        Count Stddev        Elapsed Mean        Elapsed Stddev
     alice            47.96              28.44               310.85               291.16
@@ -86,7 +83,9 @@ execution. Set to false to manage yourself.
 
 
 :class:`.PlotMetric` generates plots using matplotlib. Plots are saved to
-multiple files, named after each metric.
+multiple files, named after each metric. Set the class variable `outdir` to a
+directory in which to store files. The contents of this directory will be
+deleted on startup.
 
 .. figure:: images/sample_plotmetric.png
     :align: center
