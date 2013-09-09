@@ -90,8 +90,8 @@ class CSVFileMetric(object):
             os.remove(self.outfile)
 
         dirname = os.path.dirname(outfile)
-        if dirname:
-            os.makedirs(dirname, exist_ok=True)
+        if dirname and not os.path.exists(dirname):
+            os.makedirs(dirname)
 
         self.dump_atexit = dump_atexit
         if dump_atexit:
