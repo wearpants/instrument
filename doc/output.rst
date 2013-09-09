@@ -20,9 +20,8 @@ metric functions at program startup, **before** recording any metrics.
 :func:`.make_multi_metric` creates a single metric function that records to
 several outputs.
 
-
-csv
----
+Comma Separated
+---------------
 
 :mod:`.csv` saves raw metrics as comma separated text files.
 This is useful for conducting external analysis. :mod:`.csv` is threadsafe; use
@@ -41,7 +40,7 @@ file will be overwritten.
 [0, 1, 4, 9, 16]
 
 :class:`.CSVDirMetric` saves metrics to multiple files, named after each
-metric, with two columns: item count & elapsedtime. This class is global to
+metric, with two columns: item count & elapsed time. This class is global to
 your program; do not manually create instances. Instead, use the classmethod
 :meth:`.CSVDirMetric.metric`. Set the class variable `outdir` to a directory
 in which to store files. The contents of this directory will be deleted on
@@ -57,8 +56,46 @@ Both classes support at `dump_atexit` flag, which will register a handler to
 write data when the interpreter finishes execution. Set to false to manage
 yourself.
 
-statsd
-------
+Plots & Statistics
+------------------
+
+:mod:`.numpy` generates aggregate plots (graphs) and statistics. This is
+useful for benchmarking or batch jobs; for live systems, `statsd (graphite)`_ is a
+better choice. :mod:`.numpy` is threadsafe; use under multiprocessing
+requires some care.
+
+:class:`.NumpyMetric` subclasses are global to your program; do not manually
+create instances. Instead, use the classmethod :meth:`.NumpyMetric.metric`.
+Set the class variable `outdir` to a directory in which to store files. The
+contents of this directory will be deleted on startup. The `dump_atexit` flag
+will register a handler to write data when the interpreter finishes
+execution. Set to false to manage yourself.
+
+>>> from measure_it.numpy import StatsMetric, PlotMetric
+>>> StatsMetric.outdir = "/tmp/my_metrics_dir"
+>>> _ = measure_iter(math_is_hard(5), metric=StatsMetric.metric, name="bogomips")
+>>> list(_)
+[0, 1, 4, 9, 16]
+
+:class:`.StatsMetric` prints pretty tables of aggregate population statistics::
+
+    Name           Count Mean        Count Stddev        Elapsed Mean        Elapsed Stddev
+    alice            47.96              28.44               310.85               291.16
+    bob              50.08              28.84               333.98               297.11
+    charles          51.79              29.22               353.58               300.82
+
+
+:class:`.PlotMetric` generates plots using matplotlib. Plots are saved to
+multiple files, named after each metric.
+
+.. figure:: images/sample_plotmetric.png
+    :align: center
+
+    Sample plot for an O(n\ :sup:`2`\ ) algorithm
+
+
+statsd (graphite)
+-----------------
 
 For monitoring production systems, the :func:`.statsd_metric` function can be
 used to record metrics to `statsd <https://pypi.python.org/pypi/statsd>`__.
