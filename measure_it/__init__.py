@@ -7,7 +7,7 @@ from __future__ import print_function, division
 
 __version__ = '0.4'
 
-from time import time
+import time
 from functools import wraps
 from contextlib import contextmanager
 import inspect
@@ -64,11 +64,11 @@ def measure_iter(iterable, name = None, metric = call_default):
     it = enumerate(iterable, 1) # count, element
     try:
         while True:
-            t = time()
+            t = time.time()
             try:
                 count, x = next(it)
             finally:
-                total_time += time() - t
+                total_time += time.time() - t
             yield x
     finally:
         # underlying iterable is exhausted (StopIteration) or errored. Record
@@ -83,7 +83,7 @@ def measure_each(iterable, name = None, metric = call_default):
     """
     it = iter(iterable)
     while True:
-        t = time()
+        t = time.time()
         try:
             x = next(it)
         except StopIteration:
@@ -91,11 +91,11 @@ def measure_each(iterable, name = None, metric = call_default):
             raise
         except Exception:
             # record a metric for other exceptions, than raise
-            metric(name, 1, time() - t)
+            metric(name, 1, time.time() - t)
             raise
         else:
             # normal path, record metric and yield
-            metric(name, 1, time() - t)
+            metric(name, 1, time.time() - t)
             yield x
 
 def measure_first(iterable, name = None, metric = call_default):
@@ -106,7 +106,7 @@ def measure_first(iterable, name = None, metric = call_default):
     :arg str name: name for the metric
     """
     it = iter(iterable)
-    t = time()
+    t = time.time()
     try:
         x = next(it)
     except StopIteration:
@@ -114,11 +114,11 @@ def measure_first(iterable, name = None, metric = call_default):
         raise
     except Exception:
         # record a metric for other exceptions, than raise
-        metric(name, 1, time() - t)
+        metric(name, 1, time.time() - t)
         raise
     else:
         # normal path, record metric and yield
-        metric(name, 1, time() - t)
+        metric(name, 1, time.time() - t)
         yield x
 
     for x in it: yield x
@@ -222,11 +222,11 @@ def measure_reduce(name = None, metric = call_default):
 
         def _call(self, iterable, **kwargs):
             it = counted_iterable(iterable)
-            t = time()
+            t = time.time()
             try:
                 return self.func(it, **kwargs)
             finally:
-                metric(self.metric_name, it.count, time() - t)
+                metric(self.metric_name, it.count, time.time() - t)
 
         def __get__(self, instance, class_):
             metric_name = name if name is not None else\
@@ -234,11 +234,11 @@ def measure_reduce(name = None, metric = call_default):
 
             def wrapped_method(iterable, **kwargs):
                 it = counted_iterable(iterable)
-                t = time()
+                t = time.time()
                 try:
                     return self.method(instance, it, **kwargs)
                 finally:
-                    metric(metric_name, it.count, time() - t)
+                    metric(metric_name, it.count, time.time() - t)
 
             # wrap in func version b/c self is handled for us by descriptor (ie, `instance`)
             if self.varargs: wrapped_method = _iterable_to_varargs_func(wrapped_method)
@@ -259,16 +259,16 @@ def measure_produce(name = None, metric = call_default):
 
     def wrapper(func):
         def measurer(name_, *args, **kwargs):
-            t = time()
+            t = time.time()
             try:
                 ret = func(*args, **kwargs)
             except Exception:
                 # record a metric for other exceptions, than raise
-                metric(name_, 0, time() - t)
+                metric(name_, 0, time.time() - t)
                 raise
             else:
                 # normal path, record metric & return
-                metric(name_, len(ret), time() - t)
+                metric(name_, len(ret), time.time() - t)
                 return ret
 
         name_ = name if name is not None else func.__module__ + '.' +func.__name__
@@ -296,11 +296,11 @@ def measure_func(name = None, metric = call_default):
     """
     def wrapper(func):
         def measurer(name_, *args, **kwargs):
-            t = time()
+            t = time.time()
             try:
                 return func(*args, **kwargs)
             finally:
-                metric(name_, 1, time() - t)
+                metric(name_, 1, time.time() - t)
 
         name_ = name if name is not None else func.__module__ + '.' +func.__name__
         class measure_it_decorator(object): # must be a class for descriptor magic to work
@@ -327,8 +327,8 @@ def measure_block(name = None, metric = call_default, count = 1):
     :arg str name: name for the metric
     :arg int count: user-supplied number of items, defaults to 1
     """
-    t = time()
+    t = time.time()
     try:
         yield
     finally:
-        metric(name, count, time() - t)
+        metric(name, count, time.time() - t)
