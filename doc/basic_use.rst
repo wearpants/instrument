@@ -98,7 +98,7 @@ Reducers & Producers
 
 >>> from measure_it import measure_reduce, measure_produce
 
-The `measure_reduce` decorator measures functions that consume many items.
+The :func:`measure_reduce` decorator measures functions that consume many items.
 Examples include aggregators or a `batch_save()`:
 
 >>> @measure_reduce()
@@ -127,7 +127,7 @@ This works with `*args` functions too:
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
-The :func:`measure_produce` decorator measures a function that produces many items. This is similar to `measure_iter.func()`, but for functions that return lists instead of iterators (or other object with `__len__`):
+The :func:`measure_produce` decorator measures a function that produces many items. This is similar to `measure_iter.func()`, but for functions that return lists instead of iterators (or other object supporting `len(..)`):
 
 >>> @measure_produce()
 ... def list_squares(N):
