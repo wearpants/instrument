@@ -16,12 +16,14 @@ operations we want to gather metrics for:
 ...         yield x * x
 ...         x += 1
 
-Timing iterators is tricky. :func:`measure_iter`, :func:`measure_each` and :func:`measure_first` record
-metrics for time and element count for iteratables.
+Timing iterators is tricky. :func:`measure_iter`, :func:`measure_each` and
+:func:`measure_first` record metrics for time and element count for
+iteratables.
 
 >>> from measure_it import measure_iter, measure_each, measure_first
 
-Wrap an iterator in :func:`measure_iter` to time how long it takes to consume entirely:
+Wrap an iterator in :func:`measure_iter` to time how long it takes to consume
+entirely:
 
 >>> underlying = math_is_hard(5)
 >>> underlying # doctest: +ELLIPSIS
@@ -35,7 +37,8 @@ The wrapped iterator yields the same results as the underlying iterable:
 >>> squares
 [0, 1, 4, 9, 16]
 
-The :func:`measure_each` wrapper measures the time taken to produce each item:
+The :func:`measure_each` wrapper measures the time taken to produce each
+item:
 
 >>> _ = measure_each(math_is_hard(5))
 >>> list(_)
@@ -46,7 +49,8 @@ The :func:`measure_each` wrapper measures the time taken to produce each item:
 1 elements in 0.10 seconds
 [0, 1, 4, 9, 16]
 
-The :func:`measure_first` wrapper measures the time taken to produce the first item:
+The :func:`measure_first` wrapper measures the time taken to produce the
+first item:
 
 >>> _ = measure_first(math_is_hard(5))
 >>> list(_)
@@ -63,7 +67,9 @@ bogomips: 5 elements in 0.50 seconds
 Decorators
 ----------
 
-If you have a generator function (one that uses `yield`), you can wrap it with a decorator using `.func()`. You can pass the same `name` and `metric` arugments:
+If you have a generator function (one that uses `yield`), you can wrap it
+with a decorator using `.func()`. You can pass the same `name` and `metric`
+arugments:
 
 >>> @measure_each.func()
 ... def slow(N):
@@ -76,7 +82,8 @@ __main__.slow: 1 elements in 0.10 seconds
 __main__.slow: 1 elements in 0.10 seconds
 [0, 1, 2]
 
-Decorators work inside classes too. If you don't provide a name, a decent one will be inferred:
+Decorators work inside classes too. If you don't provide a name, a decent one
+will be inferred:
 
 >>> class Database(object):
 ...     @measure_iter.func()
@@ -94,12 +101,13 @@ __main__.Database.batch_get: 4 elements in 0.40 seconds
 Reducers & Producers
 --------------------
 
-:func:`measure_reduce` and :func:`measure_produce` are decorators for functions, *not* iterators:
+:func:`measure_reduce` and :func:`measure_produce` are decorators for
+functions, *not* iterators:
 
 >>> from measure_it import measure_reduce, measure_produce
 
-The :func:`measure_reduce` decorator measures functions that consume many items.
-Examples include aggregators or a `batch_save()`:
+The :func:`measure_reduce` decorator measures functions that consume many
+items. Examples include aggregators or a `batch_save()`:
 
 >>> @measure_reduce()
 ... def sum_squares(L):
@@ -127,7 +135,9 @@ This works with `*args` functions too:
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
-The :func:`measure_produce` decorator measures a function that produces many items. This is similar to `measure_iter.func()`, but for functions that return lists instead of iterators (or other object supporting `len(..)`):
+The :func:`measure_produce` decorator measures a function that produces many
+items. This is similar to `measure_iter.func()`, but for functions that
+return lists instead of iterators (or other object supporting `len(..)`):
 
 >>> @measure_produce()
 ... def list_squares(N):
@@ -137,7 +147,8 @@ The :func:`measure_produce` decorator measures a function that produces many ite
 __main__.list_squares: 5 elements in 0.50 seconds
 [0, 1, 4, 9, 16]
 
-:func:`measure_reduce` and :func:`measure_produce` can be used inside classes:
+:func:`measure_reduce` and :func:`measure_produce` can be used inside
+classes:
 
 >>> class Database(object):
 ...     @measure_reduce()
@@ -171,7 +182,8 @@ __main__.Database.dumb_query: 3 elements in 0.30 seconds
 Functions
 ---------
 
-The :func:`measure_func` decorator simply measures total function execution time:
+The :func:`measure_func` decorator simply measures total function execution
+time:
 
 >>> from measure_it import measure_func
 >>> @measure_func()
@@ -198,7 +210,8 @@ __main__.CrunchCrunch.slow: 1 elements in 0.10 seconds
 Blocks
 ------
 
-To measure the excecution time of a block of code, use a :func:`measure_block` context manager:
+To measure the excecution time of a block of code, use a
+:func:`measure_block` context manager:
 
 >>> from measure_it import measure_block
 >>> with measure_block(name="slowcode"):
@@ -206,7 +219,8 @@ To measure the excecution time of a block of code, use a :func:`measure_block` c
 ...     sleep(0.2)
 slowcode: 1 elements in 0.20 seconds
 
-You can also pass your own value for `count`; this is useful to measure a resource used by a block (the number of bytes in a file, for example):
+You can also pass your own value for `count`; this is useful to measure a
+resource used by a block (the number of bytes in a file, for example):
 
 >>> with measure_block(name="slowcode", count=42):
 ...     # you'd do something useful here
