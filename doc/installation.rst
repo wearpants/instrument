@@ -27,5 +27,8 @@ during installation (see also: `setuptools extras
 
 The following extra targets are supported:
 
-* :mod:`statsd <measure_it.statsd>`: statsd metric
-* :mod:`numpy <measure_it.numpy>`: numpy & matplotlib metrics
+* `statsd`: statsd metric
+* `numpy`: statistics metrics, based on numpy
+* `plot`: graphs of metrics, based on matplotlib. Because Python packaging is brain damaged, you must install the `numpy` target first. You'll need to install the `agg backend <http://matplotlib.org/users/installing.html#installing-from-source>`__ for matplotlib.
+* `tests`: depedencies for running tests
+* `doc`: depedencies for building docs
