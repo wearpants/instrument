@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(name='measure-it',
       version="0.4",
@@ -7,7 +7,14 @@ setup(name='measure-it',
       author='Pete Fein',
       author_email='pete@wearpants.org',
       url='http://github.com/wearpants/measure_it',
-      py_modules=['measure_it'],
+      packages=find_packages(exclude=['tests', 'doc']),
+      extras_require={
+        'statsd': ['statsd'],
+        'numpy': ['numpy', 'prettytable'],
+        'plot': ['matplotlib'],
+        'tests': ['nose', 'fakesleep'],
+        'doc': ['Sphinx'],
+        },
       license = "BSD",
       classifiers = [
       "Programming Language :: Python :: 2",

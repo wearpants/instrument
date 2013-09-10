@@ -7,3 +7,7 @@ dist/
 /MANIFEST
 /.coverage
 /htmlcov
+/cover
+/mit_plots
+/mit_csv
+mit.csv
