@@ -10,7 +10,7 @@ metric recording funtion. It should take three arguments: `count` of items,
 ...
 >>> _ = measure_iter(math_is_hard(5), metric=my_metric, name="bogomips")
 >>> list(_)
-Iterable bogomips produced 5 items in 502 milliseconds
+Iterable bogomips produced 5 items in 5000 milliseconds
 [0, 1, 4, 9, 16]
 
 Unless individually specified, metrics are reported using the global
