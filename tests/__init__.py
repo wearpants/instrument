@@ -4,6 +4,9 @@ import unittest
 import fakesleep
 import time
 
+import warnings
+warnings.simplefilter('ignore')
+
 def math_is_hard(N):
     x = 0
     while x < N:
