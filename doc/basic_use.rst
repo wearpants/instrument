@@ -67,8 +67,8 @@ bogomips: 5 elements in 0.50 seconds
 Decorators
 ----------
 
-If you have a generator function (one that uses `yield`), you can wrap it
-with a decorator using `.func()`. You can pass the same `name` and `metric`
+If you have a generator function (one that uses ``yield``), you can wrap it
+with a decorator using ``.func()``. You can pass the same ``name`` and ``metric``
 arugments:
 
 >>> @measure_each.func()
@@ -121,7 +121,7 @@ items. Examples include aggregators or a `batch_save()`:
 __main__.sum_squares: 5 elements in 0.50 seconds
 30
 
-This works with `*args` functions too:
+This works with ``*args`` functions too:
 
 >>> @measure_reduce()
 ... def sum_squares2(*args):
@@ -136,8 +136,8 @@ __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
 The :func:`measure_produce` decorator measures a function that produces many
-items. This is similar to `measure_iter.func()`, but for functions that
-return lists instead of iterators (or other object supporting `len(..)`):
+items. This is similar to ``measure_iter.func()``, but for functions that
+return lists instead of iterators (or other object supporting ``len()``):
 
 >>> @measure_produce()
 ... def list_squares(N):

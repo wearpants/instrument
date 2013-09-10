@@ -4,7 +4,7 @@ measure_it subscribes to the Python batteries-included philosophy. It ships
 with support for a number of different :doc:`metric backends <output>`, and
 eventually instrumentation for popular packages. Since most users will want only a subset of this functionality, optional dependencies are not installed by default.
 
-Note that the included `requirements.txt` file includes *all* depedencies
+Note that the included ``requirements.txt`` file includes *all* depedencies
 (for build/test purposes), and is almost certainly not what you want.
 
 Minimal
@@ -12,9 +12,9 @@ Minimal
 
 To install the base package (with no depedencies beyond the standard library):
 
-  `pip install measure_it`
+  ``pip install measure_it``
 
-This includes: all generic measurement functions, :func:`print_metric` and :mod:`csv` metrics.
+This includes: all generic measurement functions, :func:`.print_metric` and :mod:`.csv` metrics.
 
 Batteries Included
 ------------------

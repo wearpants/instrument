@@ -194,8 +194,8 @@ class counted_iterable(object):
 def measure_reduce(name = None, metric = call_default):
     """Decorator to measure a function that consumes many items.
 
-    The wrapped `func` should take either a single `iterable` argument or
-    `*args` (plus keyword arguments).
+    The wrapped ``func`` should take either a single ``iterable`` argument or
+    ``*args`` (plus keyword arguments).
 
     :arg function metric: f(name, count, total_time)
     :arg str name: name for the metric
@@ -250,8 +250,8 @@ def measure_reduce(name = None, metric = call_default):
 def measure_produce(name = None, metric = call_default):
     """Decorator to measure a function that produces many items.
 
-    The function should return an object that supports `__len__` (ie, a
-    list). If the function returns an iterator, use `measure_iter.func()` instead.
+    The function should return an object that supports ``__len__`` (ie, a
+    list). If the function returns an iterator, use ``measure_iter.func()`` instead.
 
     :arg function metric: f(name, count, total_time)
     :arg str name: name for the metric

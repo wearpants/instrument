@@ -26,7 +26,7 @@ class CSVDirMetric(object):
     Each metric consumes one open file and 32K of memory while running.
 
     :cvar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
-    :cvar outdir: directory to save CSV files in. Defaults to `./mit_csv`.
+    :cvar outdir: directory to save CSV files in. Defaults to ``./mit_csv``.
     """
     outdir = os.path.abspath("mit_csv")
     dump_atexit = True
@@ -85,7 +85,7 @@ class CSVFileMetric(object):
     Pass the method :func:`metric` to a measurement function. Output using
     :func:`dump`. These are the only public methods.
 
-    :ivar outfile: file to save to. Defaults to `./mit.csv`.
+    :ivar outfile: file to save to. Defaults to ``./mit.csv``.
     :ivar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
     """
 

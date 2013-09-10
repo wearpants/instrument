@@ -2,8 +2,8 @@ Data Output
 ===========
 
 By default, metrics are printed to standard out. You can provide your own
-metric recording funtion. It should take three arguments: `count` of items,
-`elapsed` time in seconds, and `name`, which can be None:
+metric recording funtion. It should take three arguments: ``count`` of items,
+``elapsed`` time in seconds, and `name`, which can be None:
 
 >>> def my_metric(name, count, elapsed):
 ...     print("Iterable %s produced %d items in %d milliseconds"%(name, count, int(round(elapsed*1000))))
@@ -30,7 +30,7 @@ under multiprocessing requires some care.
 :class:`.CSVFileMetric` saves all metrics to a single file with three
 columns: metric name, item count & elapsed time. Create an instance of this
 class and pass its :meth:`.CSVFileMetric.metric` method to measurement
-functions. The `outfile` parameter controls where to write data; an existing
+functions. The ``outfile`` parameter controls where to write data; an existing
 file will be overwritten.
 
 >>> from measure_it.csv import CSVFileMetric
@@ -42,7 +42,7 @@ file will be overwritten.
 :class:`.CSVDirMetric` saves metrics to multiple files, named after each
 metric, with two columns: item count & elapsed time. This class is global to
 your program; do not manually create instances. Instead, use the classmethod
-:meth:`.CSVDirMetric.metric`. Set the class variable `outdir` to a directory
+:meth:`.CSVDirMetric.metric`. Set the class variable ``outdir`` to a directory
 in which to store files. The contents of this directory will be deleted on
 startup.
 
@@ -52,7 +52,7 @@ startup.
 >>> list(_)
 [0, 1, 4, 9, 16]
 
-Both classes support at `dump_atexit` flag, which will register a handler to
+Both classes support at ``dump_atexit`` flag, which will register a handler to
 write data when the interpreter finishes execution. Set to false to manage
 yourself.
 
@@ -66,7 +66,7 @@ requires some care.
 
 :class:`.NumpyMetric` subclasses are global to your program; do not manually
 create instances. Instead, use the classmethod :meth:`.NumpyMetric.metric`.
-The `dump_atexit` flag will register a handler to write data when the
+The ``dump_atexit`` flag will register a handler to write data when the
 interpreter finishes execution. Set to false to manage yourself.
 
 >>> from measure_it.numpy import StatsMetric, PlotMetric
@@ -74,7 +74,7 @@ interpreter finishes execution. Set to false to manage yourself.
 >>> list(_)
 [0, 1, 4, 9, 16]
 
-:class:`.StatsMetric` prints pretty tables of aggregate population statistics. Set the class variable `outfile` to a path to write data. This file will be deleted on startup::
+:class:`.StatsMetric` prints pretty tables of aggregate population statistics. Set the class variable ``outfile`` to a file-like object (defaults to ``stderr``)::
 
     Name           Count Mean        Count Stddev        Elapsed Mean        Elapsed Stddev
     alice            47.96              28.44               310.85               291.16
@@ -83,7 +83,7 @@ interpreter finishes execution. Set to false to manage yourself.
 
 
 :class:`.PlotMetric` generates plots using matplotlib. Plots are saved to
-multiple files, named after each metric. Set the class variable `outdir` to a
+multiple files, named after each metric. Set the class variable ``outdir`` to a
 directory in which to store files. The contents of this directory will be
 deleted on startup.
 

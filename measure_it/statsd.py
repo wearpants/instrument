@@ -6,7 +6,7 @@ from statsd import statsd, StatsClient
 if statsd is None: statsd = StatsClient()
 
 def statsd_metric(name, count, elapsed):
-    """Metric that records to `statsd`"""
+    """Metric that records to statsd/graphite"""
     with statsd.pipeline() as pipe:
         pipe.incr(name, count)
         pipe.timing(name, int(round(1000 * elapsed)))  # milliseconds
