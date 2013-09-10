@@ -19,16 +19,17 @@ This includes: all generic measurement functions, :func:`print_metric` and :mod:
 Batteries Included
 ------------------
 
-To install the dependencies for an optional component, specify it in brackets
-during installation (see also: `setuptools extras
+You should have completed the minimal install already. To install the
+dependencies for an optional component, specify it in brackets with ``--upgrade``
+(see also: `setuptools extras
 <http://pythonhosted.org/setuptools/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies>`__):
 
-  `pip install measure_it[statsd]`
+  ``pip install --upgrade measure_it[statsd]``
 
 The following extra targets are supported:
 
-* `statsd`: statsd metric
-* `numpy`: statistics metrics, based on numpy
-* `plot`: graphs of metrics, based on matplotlib. Because Python packaging is brain damaged, you must install the `numpy` target first. You'll need to install the `agg backend <http://matplotlib.org/users/installing.html#installing-from-source>`__ for matplotlib.
-* `tests`: depedencies for running tests
-* `doc`: depedencies for building docs
+* ``statsd``: statsd metric
+* ``numpy``: statistics metrics, based on numpy
+* ``plot``: graphs of metrics, based on matplotlib. Because Python packaging is brain damaged, you must install the `numpy` target first. You'll need the `agg backend <http://matplotlib.org/users/installing.html#installing-from-source>`__.
+* ``tests``: depedencies for running tests
+* ``doc``: depedencies for building docs
