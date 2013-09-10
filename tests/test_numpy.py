@@ -4,7 +4,12 @@ import time
 import tempfile
 import shutil
 import os
-import StringIO
+import sys
+
+if sys.version_info.major >= 3:
+    from io import StringIO
+else:
+    from StringIO import StringIO
 
 from . import MeasureItTestCase, math_is_hard
 
@@ -15,7 +20,7 @@ class StatsMetricTestCase(MeasureItTestCase):
 
     def test_stats(self):
         StatsMetric.dump_atexit = False
-        StatsMetric.outfile = StringIO.StringIO()
+        StatsMetric.outfile = StringIO()
 
         list(measure_iter(math_is_hard(10), metric=StatsMetric.metric, name="alice"))
         list(measure_iter(math_is_hard(20), metric=StatsMetric.metric, name="alice"))
@@ -50,4 +55,4 @@ class PlotMetricTestCase(MeasureItTestCase):
         PlotMetric.dump()
 
         # just test that files were created
-        self.assertItemsEqual(os.listdir(tmp), ['alice.png', 'bob.png'])
+        self.assertEqual(sorted(os.listdir(tmp)), ['alice.png', 'bob.png'])

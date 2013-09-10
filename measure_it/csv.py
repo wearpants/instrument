@@ -10,6 +10,12 @@ import csv
 
 __all__ = ['CSVDirMetric', 'CSVFileMetric']
 
+# python2.7: open a file for writing as csv, from http://stackoverflow.com/a/11235483
+if sys.version_info.major >= 3:
+    open_fh = lambda fname: open(fname, 'w', newline='', buffering=32768)
+else:
+    open_fh = lambda fname: open(fname, 'wb', buffering=32768)
+
 class CSVDirMetric(object):
     """Write metrics to multiple CSV files
 
@@ -30,8 +36,7 @@ class CSVDirMetric(object):
 
     def __init__(self, name):
         self.name = name
-        self.fh = open(os.path.join(self.outdir, ".".join((self.name, 'csv'))),
-                            'w', buffering=32768)
+        self.fh = open_fh(os.path.join(self.outdir, ".".join((self.name, 'csv'))))
         self.writer = csv.writer(self.fh)
 
     @classmethod
@@ -98,7 +103,7 @@ class CSVFileMetric(object):
             atexit.register(self.dump)
 
         self.lock = threading.Lock()
-        self.fh = open(self.outfile, 'w', buffering=32768)
+        self.fh = open_fh(self.outfile)
         self.writer = csv.writer(self.fh)
 
     def metric(self, name, count, elapsed):

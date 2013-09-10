@@ -4,11 +4,22 @@ import time
 import tempfile
 import shutil
 import os
+import sys
 
 from . import MeasureItTestCase, math_is_hard
 
 from measure_it import measure_iter
 from measure_it.csv import CSVFileMetric, CSVDirMetric
+
+
+def read_csv(fname):
+    # read a CSV file directly, dealing with python2.7 differences
+    if sys.version_info.major >= 3:
+        with open(fname, newline='') as fh:
+            return fh.read()
+    else:
+        with open(fname) as fh:
+            return fh.read()
 
 class CSVFileMetricTestCase(MeasureItTestCase):
 
@@ -28,9 +39,7 @@ class CSVFileMetricTestCase(MeasureItTestCase):
 
         csvfm.dump()
 
-        with open(tmp) as fh:
-            s = fh.read()
-
+        s = read_csv(tmp)
         self.assertMultiLineEqual(s, 'alice,10,10.000000\r\nbob,10,10.000000\r\nalice,20,20.000000\r\n')
 
 class CSVDirMetricTestCase(MeasureItTestCase):
@@ -56,12 +65,10 @@ class CSVDirMetricTestCase(MeasureItTestCase):
         list(measure_iter(math_is_hard(10), metric=CSVDirMetric.metric))
 
         CSVDirMetric.dump()
-        self.assertItemsEqual(os.listdir(tmp), ['alice.csv', 'bob.csv'])
+        self.assertEqual(sorted(os.listdir(tmp)), ['alice.csv', 'bob.csv'])
 
-        with open(os.path.join(tmp, 'alice.csv')) as fh:
-            s = fh.read()
+        s = read_csv(os.path.join(tmp, 'alice.csv'))
         self.assertMultiLineEqual(s, '10,10.000000\r\n20,20.000000\r\n')
 
-        with open(os.path.join(tmp, 'bob.csv')) as fh:
-            s = fh.read()
+        s = read_csv(os.path.join(tmp, 'bob.csv'))
         self.assertMultiLineEqual(s, '10,10.000000\r\n')
