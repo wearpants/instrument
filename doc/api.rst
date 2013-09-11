@@ -24,5 +24,10 @@ measure_it.numpy
 measure_it.statsd
 -----------------
 
-.. automodule:: measure_it.statsd
-    :members:
+.. module:: measure_it.statsd
+
+save metrics to `statsd <http://codeascraft.com/2011/02/15/measure-anything-measure-everything/>`__
+
+.. function:: statsd_metric(name, count, elapsed)
+
+    Metric that records to statsd/graphite
