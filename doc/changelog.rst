@@ -6,7 +6,7 @@ See also: :doc:`incompatibilities`.
 ---
 * add default_metric
 * add make_multi_metric
-* add StatsMetric and PlotMetric, based on numpy
+* add TableMetric and PlotMetric, based on numpy
 * add CSVDirMetric and CSVFileMetric
 * measure_block supports user-supplied count
 

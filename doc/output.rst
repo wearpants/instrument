@@ -69,12 +69,12 @@ create instances. Instead, use the classmethod :meth:`.NumpyMetric.metric`.
 The ``dump_atexit`` flag will register a handler to write data when the
 interpreter finishes execution. Set to false to manage yourself.
 
->>> from measure_it.numpy import StatsMetric, PlotMetric
->>> _ = measure_iter(math_is_hard(5), metric=StatsMetric.metric, name="bogomips")
+>>> from measure_it.numpy import TableMetric, PlotMetric
+>>> _ = measure_iter(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
-:class:`.StatsMetric` prints pretty tables of aggregate population statistics. Set the class variable ``outfile`` to a file-like object (defaults to ``stderr``)::
+:class:`.TableMetric` prints pretty tables of aggregate population statistics. Set the class variable ``outfile`` to a file-like object (defaults to ``stderr``)::
 
     Name           Count Mean        Count Stddev        Elapsed Mean        Elapsed Stddev
     alice            47.96              28.44               310.85               291.16

@@ -47,7 +47,7 @@ numpy-based metrics
 
         Output all recorded metrics
 
-.. class:: StatsMetric
+.. class:: TableMetric
 
     Print a table of statistics
 

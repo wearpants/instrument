@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import prettytable
 
-__all__ = ['PlotMetric', 'StatsMetric']
+__all__ = ['PlotMetric', 'TableMetric']
 
 class NumpyMetric(object):
     """Base class for numpy-based metrics"""
@@ -120,7 +120,7 @@ class NumpyMetric(object):
         """subclass hook, called to clean up after outputting a single metric"""
         pass
 
-class StatsMetric(NumpyMetric):
+class TableMetric(NumpyMetric):
     """Print a table of statistics"""
     instances = {}
     outfile = sys.stderr
@@ -132,17 +132,17 @@ class StatsMetric(NumpyMetric):
         cls.table.sortby = 'Name'
         cls.table.align['Name'] = 'l'
         cls.table.float_format = '.2'
-        super(StatsMetric, cls)._pre_dump()
+        super(TableMetric, cls)._pre_dump()
 
     @classmethod
     def _post_dump(cls):
         print(cls.table, file=cls.outfile)
-        super(StatsMetric, cls)._post_dump()
+        super(TableMetric, cls)._post_dump()
 
     def _output(self):
         # write to prettytable
         self.table.add_row([self.name, self.count_mean, self.count_std, self.elapsed_mean, self.elapsed_std])
-        super(StatsMetric, self)._output()
+        super(TableMetric, self)._output()
 
 class PlotMetric(NumpyMetric):
     """Plot graphs of metrics"""
