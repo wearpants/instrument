@@ -17,9 +17,48 @@ measure_it.csv
 measure_it.numpy
 ----------------
 
-.. automodule:: measure_it.numpy
-    :members: NumpyMetric, PlotMetric, StatsMetric
+.. module:: measure_it.numpy
 
+numpy-based metrics
+
+.. class:: NumpyMetric
+
+    Do not create instances of this class directly. Simply pass the
+    classmethod :func:`metric` to a measurement function. Output using
+    :func:`dump`. These are the only public methods. This is an abstract base
+    class; you should use one of the concrete subclases in this module
+    instead.
+
+    Each metric consumes one open file and 32K of memory while running.
+    Output requires enough memory to load all data points for each metric.
+
+    :cvar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
+
+    .. classmethod:: metric(name, count, elapsed)
+
+        A metric function that buffers through numpy
+
+        :arg str name: name of the metric
+        :arg int count: number of elements
+        :arg float elapsed: time in seconds
+
+
+    .. classmethod:: dump()
+
+        Output all recorded metrics
+
+.. class:: StatsMetric
+
+    Print a table of statistics
+
+    :cvar outfile: output file. Defaults to ``sys.stderr``.
+
+
+.. class:: PlotMetric
+
+    Plot graphs of metrics.
+
+    :cvar outdir: directory to save plots in. Defaults to ``./mit_plots``.
 
 measure_it.statsd
 -----------------

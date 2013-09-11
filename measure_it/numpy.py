@@ -1,4 +1,4 @@
-"""`numpy`-based metrics"""
+"""numpy-based metrics"""
 from __future__ import print_function, division, absolute_import
 
 import struct
@@ -21,19 +21,7 @@ import prettytable
 __all__ = ['PlotMetric', 'StatsMetric']
 
 class NumpyMetric(object):
-    """Base class for numpy-based metrics
-
-    Do not create instances of this class directly. Simply pass the
-    classmethod :func:`metric` to a measurement function. Output using
-    :func:`dump`. These are the only public methods. This is an abstract base
-    class; you should use one of the concrete subclases in this module
-    instead.
-
-    Each metric consumes one open file and 32K of memory while running.
-    Output requires enough memory to load all data points for each metric.
-
-    :cvar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
-    """
+    """Base class for numpy-based metrics"""
 
     dump_atexit = True
     calc_stats = True #: should mean/stddev be calculated?
@@ -133,10 +121,7 @@ class NumpyMetric(object):
         pass
 
 class StatsMetric(NumpyMetric):
-    """Print a table of statistics
-
-    :cvar outfile: output file. Defaults to `sys.stderr`.
-    """
+    """Print a table of statistics"""
     instances = {}
     outfile = sys.stderr
 
@@ -160,10 +145,8 @@ class StatsMetric(NumpyMetric):
         super(StatsMetric, self)._output()
 
 class PlotMetric(NumpyMetric):
-    """Plot graphs of metrics.
+    """Plot graphs of metrics"""
 
-    :cvar outdir: directory to save plots in. Defaults to `./mit_plots`.
-    """
     instances = {}
     outdir = os.path.abspath("mit_plots")
 
