@@ -16,4 +16,5 @@ Get it from the cheeseshop today:
 :versions: Python 2.7 & 3
 :source: https://github.com/wearpants/measure_it
 :homepage: https://measure_it.readthedocs.org/en/latest/
+:video: https://www.youtube.com/watch?v=A_C4Z4RDDgI
 
