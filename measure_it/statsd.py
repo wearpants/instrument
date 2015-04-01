@@ -2,8 +2,10 @@
 
 from __future__ import print_function, division, absolute_import
 
-from statsd import statsd, StatsClient
-if statsd is None: statsd = StatsClient()
+try:
+    from statsd.defaults.django import statsd
+except Exception: # many possible errors, incl. ImportError & ImproperlyConfigured
+    from statsd.defaults.env import statsd
 
 def statsd_metric(name, count, elapsed):
     """Metric that records to statsd/graphite"""

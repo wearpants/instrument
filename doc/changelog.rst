@@ -2,6 +2,10 @@ Changelog
 =========
 See also: :doc:`incompatibilities`.
 
+0.4.1
+-----
+* fix to work with newer versions of statsd, including its django support
+
 0.4
 ---
 * add default_metric

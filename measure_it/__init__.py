@@ -5,7 +5,7 @@ the above-mentioned 'you' includes the author. :-}
 
 from __future__ import print_function, division
 
-__version__ = '0.4'
+__version__ = '0.4.1'
 
 import time
 from functools import wraps

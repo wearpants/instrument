@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='measure-it',
-      version="0.4",
+      version="0.4.1",
       description='time and count measurement for iterators and other code',
       author='Pete Fein',
       author_email='pete@wearpants.org',
