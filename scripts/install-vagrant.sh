@@ -14,3 +14,5 @@ cd ~/project
 # add virtualenv to shells
 echo 'source ~/venv/bin/activate' >> ~/.bashrc 
 
+# install our devel & test packages
+pip install -r requirements.txt
