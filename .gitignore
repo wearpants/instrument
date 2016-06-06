@@ -2,12 +2,14 @@
 *.pyo
 *.wpr
 *.wpu
+*.egg-info
 doc/_build
 dist/
 /MANIFEST
 /.coverage
 /htmlcov
 /cover
+.vagrant/
 /mit_plots
 /mit_csv
 mit.csv
