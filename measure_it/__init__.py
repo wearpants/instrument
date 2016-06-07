@@ -11,9 +11,10 @@ import time
 from functools import wraps
 from contextlib import contextmanager
 import inspect
+import wsgiref.headers
 
 __all__ = ['measure_iter', 'measure_each', 'measure_first', 'measure_reduce',
-           'measure_produce', 'measure_func', 'measure_block']
+           'measure_produce', 'measure_func', 'measure_block', 'MeasureWSGIMiddleware']
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -332,3 +333,100 @@ def measure_block(name = None, metric = call_default, count = 1):
         yield
     finally:
         metric(name, count, time.time() - t)
+
+# based on http://lucumr.pocoo.org/2007/5/21/getting-started-with-wsgi/
+# and http://blog.dscpl.com.au/2012/10/obligations-for-calling-close-on.html
+# and also http://blog.dscpl.com.au/2012/10/wsgi-middleware-and-hidden-write.html
+# and a deeper reading of PEP-3333 than is healthy.
+
+class MeasureWSGIMiddleware(object):
+    """Middleware that measures how long it takes to generate the response"""
+
+    def __init__(self, app, metric = call_default):
+        self.app = app
+        self.metric = metric
+
+    def __call__(self, environ, start_response):
+        iterable = None
+
+        try:
+            t = time.time()
+            bytes = 0
+            status = None
+            headers = None
+
+            # there's two ways to send data. TWO!
+            # The first is by yielding a sequence of bytes.
+            # This is an accumulator to count them as a side effect.
+            def accumulator(s):
+                nonlocal bytes
+                bytes += len(s)
+                return s
+
+            # The second is this 'write' thing.
+            # Here's closures around the start_response callable we got from the server.
+            # The outer closure updates the status & headers, and the inner one accumulates bytes.
+            def start_response_wrapper(status_, headers_, *args):
+                nonlocal status, headers
+                status = status_
+                headers = headers_
+
+                # call the wrapped 'start_response' callable to get
+                # get the 'write' callable that we're wrapping. Really.
+                write = start_response(status_, headers_, *args)
+
+                def write_wrapper(s):
+                    nonlocal bytes
+                    bytes += len(s)
+                    write(s)
+
+                return write_wrapper
+
+            # get the iterable from our wrapped app, and wrap it in the accumulator
+            iterable = self.app(environ, start_response_wrapper)
+            yield from map(accumulator, iterable)
+
+        finally:
+            # call close on the iterable, then output the metrics
+            try:
+                if hasattr(iterable, 'close'):
+                    iterable.close()
+            finally:
+                _t = time.time() - t
+
+                if status is not None and headers is not None:
+                    self.wsgi_metrics(environ, status, headers, bytes, _t)
+
+
+    def wsgi_metrics(self, environ, status, headers, bytes, _t):
+        """do the work of outputting metrics. may be extended by subclasses"""
+
+        # a little helper
+        def _metric(name):
+            self.metric('wsgi.%s' % name, bytes, _t)
+
+        # generate some metrics from the request environ
+        # XXX is this a security problem using untrusted headers like this?
+        _metric('request.method.%s' % environ['REQUEST_METHOD'].lower())
+        _metric('request.scheme.%s' % environ['wsgi.url_scheme'].lower())
+
+        # XXX duplicate nonsense with SERVER_NAME/SERVER_PORT from PEP-3333 
+        host, *port = environ['HTTP_HOST'].split(':')
+        _metric('request.host.%s' % host)
+        _metric('request.port.%s' % port[0] if port else 'null')
+
+        _metric('request.query.true' if environ.get('QUERY_STRING', '') else 'request.query.false')
+        _metric('request.cookie.true' if 'HTTP_COOKIE' in environ else 'request.cookie.false')
+
+        # XXX request content length for uploads? user agent detection?
+
+
+        # generate a metric for the response status
+        _metric('response.status.%s' % status[:3])
+
+        # generate some metrics from response headers
+        h = wsgiref.headers.Headers(headers)
+        if 'Content-Type' in h:
+            _metric('response.content_type.%s' % h['content-type'].split(';')[0].replace('/', '_').rstrip().lower())
+        else:
+            _metric('response.content_type.null')
