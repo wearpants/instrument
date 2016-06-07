@@ -14,7 +14,7 @@ import inspect
 import wsgiref.headers
 
 __all__ = ['measure_iter', 'measure_each', 'measure_first', 'measure_reduce',
-           'measure_produce', 'measure_func', 'measure_block', 'MeasureWSGIMiddleware]
+           'measure_produce', 'measure_func', 'measure_block', 'MeasureWSGIMiddleware']
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -342,8 +342,9 @@ def measure_block(name = None, metric = call_default, count = 1):
 class MeasureWSGIMiddleware(object):
     """Middleware that measures how long it takes to generate the response"""
 
-    def __init__(self, app):
+    def __init__(self, app, metric = call_default):
         self.app = app
+        self.metric = metric
 
     def __call__(self, environ, start_response):
         iterable = None
@@ -357,7 +358,7 @@ class MeasureWSGIMiddleware(object):
             # there's two ways to send data. TWO!
             # The first is by yielding a sequence of bytes.
             # This is an accumulator to count them as a side effect.
-            def iterable_wrapper(s):
+            def accumulator(s):
                 nonlocal bytes
                 bytes += len(s)
                 return s
@@ -365,14 +366,14 @@ class MeasureWSGIMiddleware(object):
             # The second is this 'write' thing.
             # Here's closures around the start_response callable we got from the server.
             # The outer closure updates the status & headers, and the inner one accumulates bytes.
-            def start_response_wrapper(status, headers, *args):
+            def start_response_wrapper(status_, headers_, *args):
                 nonlocal status, headers
-                status = status
-                headers = headers
+                status = status_
+                headers = headers_
 
                 # call the wrapped 'start_response' callable to get
                 # get the 'write' callable that we're wrapping. Really.
-                write = start_response(status, response_headers, *args)
+                write = start_response(status_, headers_, *args)
 
                 def write_wrapper(s):
                     nonlocal bytes
@@ -391,37 +392,41 @@ class MeasureWSGIMiddleware(object):
                 if hasattr(iterable, 'close'):
                     iterable.close()
             finally:
-                _t = time.time_() - t
+                _t = time.time() - t
 
                 if status is not None and headers is not None:
-                    self.metric(environ, status, headers, bytes, _t)
+                    self.wsgi_metrics(environ, status, headers, bytes, _t)
 
 
-        def metric(self, environ, status, headers, bytes, _t):
-            """do the work of outputting a metric. may be extended by subclasses"""
+    def wsgi_metrics(self, environ, status, headers, bytes, _t):
+        """do the work of outputting metrics. may be extended by subclasses"""
 
-            # a little helper
-            def _metric(name):
-                metric('wsgi.%s' % name, bytes, _t)
+        # a little helper
+        def _metric(name):
+            self.metric('wsgi.%s' % name, bytes, _t)
 
-            # generate some metrics from the request environ
-            # XXX is this a security problem using untrusted headers like this?
-            _metric('method.%s' % environ['REQUEST_METHOD'].lower())
-            _metric('scheme.%s' % environ['wsgi.url_scheme'].lower())
+        # generate some metrics from the request environ
+        # XXX is this a security problem using untrusted headers like this?
+        _metric('request.method.%s' % environ['REQUEST_METHOD'].lower())
+        _metric('request.scheme.%s' % environ['wsgi.url_scheme'].lower())
 
-            host, *port = environ['HTTP_HOST'].split(':')
-            _metric('host.%s' % host)
-            _metric('port.%s' % port[0] if port else 'false')
+        # XXX duplicate nonsense with SERVER_NAME/SERVER_PORT from PEP-3333 
+        host, *port = environ['HTTP_HOST'].split(':')
+        _metric('request.host.%s' % host)
+        _metric('request.port.%s' % port[0] if port else 'null')
 
-            _metric('query.true' if 'QUERY_STRING' in environ else 'query.false')
-            _metric('cookie.true' if 'HTTP_COOKIE' in environ else 'cookie.false')
+        _metric('request.query.true' if environ.get('QUERY_STRING', '') else 'request.query.false')
+        _metric('request.cookie.true' if 'HTTP_COOKIE' in environ else 'request.cookie.false')
 
-            # XXX request content length for uploads? user agent detection?
+        # XXX request content length for uploads? user agent detection?
 
-            # generate a metric for the response status
-            _metric('status.%d' % status)
 
-            # generate some metrics from response headers
-            h = wsgiref.headers.Headers(headers)
-            if 'Content-Type' in h:
-                _metric('response.content_type.%s' % h['content-type'].replace('/', '_'))
+        # generate a metric for the response status
+        _metric('response.status.%s' % status[:3])
+
+        # generate some metrics from response headers
+        h = wsgiref.headers.Headers(headers)
+        if 'Content-Type' in h:
+            _metric('response.content_type.%s' % h['content-type'].split(';')[0].replace('/', '_').rstrip().lower())
+        else:
+            _metric('response.content_type.null')
