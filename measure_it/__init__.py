@@ -342,7 +342,31 @@ def measure_block(name = None, metric = call_default, count = 1):
 # and a deeper reading of PEP-3333 than is healthy.
 
 class MeasureWSGIMiddleware(object):
-    """Middleware that measures how long it takes to generate the response"""
+    """Middleware that measures WSGI
+        
+    The following metrics record response body size in bytes & total processing time:
+    
+    * `wsgi.request.method.*`: request HTTP method, lower case
+    * `wsgi.request.scheme.*`: request scheme, usually `http` or `https`
+    * `wsgi.request.host.*`: host name with `.` replaced by `_`
+    * `wsgi.request.port.*`: port number, or `false` if no port supplied
+    * `wsgi.request.query.{true, false}`: did the request have a query string
+    * `wsgi.request.cookie.{true, false}`: did the request have a cookie set
+    * `wsgi.response.status.*`: numeric response code
+    * `wsgi.response.content_type.*`: response content type, with `/` replaced by `_`
+
+    The following metrics record request body size in bytes & time to read it:
+    
+    * `wsgi.input.method.*`: request HTTP method, lower case
+    * `wsgi.input.scheme.*`: request scheme, usually `http` or `https`
+    * `wsgi.input.host.*`: host name with `.` replaced by `_`
+    * `wsgi.input.port.*`: port number, or `false` if no port supplied
+    * `wsgi.input.query.{true, false}`: did the request have a query string
+    * `wsgi.input.cookie.{true, false}`: did the request have a cookie set
+    * `wsgi.input.status.*`: numeric response code
+    * `wsgi.input.content_type.*`: request content type, with `/` replaced by `_`
+   
+    """
 
     def __init__(self, app, metric = call_default):
         self.app = app
@@ -421,7 +445,7 @@ class MeasureWSGIMiddleware(object):
 
         # XXX duplicate nonsense with SERVER_NAME/SERVER_PORT from PEP-3333 
         host, *port = environ['HTTP_HOST'].split(':')
-        _metric('request.host.%s' % host)
+        _metric('request.host.%s' % host.replace('.', '_')
         _metric('request.port.%s' % port[0] if port else 'null')
 
         _metric('request.query.true' if environ.get('QUERY_STRING', '') else 'request.query.false')
