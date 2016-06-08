@@ -448,7 +448,7 @@ class MeasureWSGIMiddleware(object):
 
         # XXX duplicate nonsense with SERVER_NAME/SERVER_PORT from PEP-3333 
         host, *port = environ['HTTP_HOST'].split(':')
-        _metric('request.host.%s' % host.replace('.', '_')
+        _metric('request.host.%s' % host.replace('.', '_'))
         _metric('request.port.%s' % port[0] if port else 'null')
 
         _metric('request.query.true' if environ.get('QUERY_STRING', '') else 'request.query.false')
