@@ -382,6 +382,11 @@ class MeasureWSGIMiddleware(object):
 
                 return write_wrapper
 
+            # guess what? there's actually a THIRD way to send output!
+            # environ['wsgi.file_wrapper'] is a server-specific wrapper for
+            # sendfile(2) and it's unlikely we could succesfully instrument it.
+            # Besiides, this is getting a little ridiculous.
+
             # get the iterable from our wrapped app, and wrap it in the accumulator
             iterable = self.app(environ, start_response_wrapper)
             yield from map(accumulator, iterable)
