@@ -366,6 +366,9 @@ class MeasureWSGIMiddleware(object):
     * `wsgi.input.status.*`: numeric response code
     * `wsgi.input.content_type.*`: request content type, with `/` replaced by `_`
    
+    :ivar app: the WSGI application to wrap
+    :ivar metric: the metric function to use for output
+   
     """
 
     def __init__(self, app, metric = call_default):
