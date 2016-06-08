@@ -357,6 +357,8 @@ class MeasureWSGIMiddleware(object):
             status = None
             headers = None
 
+            # XXX Wrap environ['wsgi.input'] in measure_file... when I write it.
+
             # there's two ways to send data. TWO!
             # The first is by yielding a sequence of bytes.
             # This is an accumulator to count them as a side effect.
