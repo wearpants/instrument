@@ -7,6 +7,10 @@ measure_it
 .. automodule:: measure_it
     :members: measure_iter, measure_each, measure_reduce, measure_produce, measure_func, measure_first, measure_block, print_metric, default_metric, make_multi_metric
 
+measure_it.wsgi
+---------------
+.. automodule:: measure_it.wsgi
+    :members: MeasureWSGIMiddleware
 
 measure_it.csv
 --------------
