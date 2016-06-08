@@ -11,7 +11,9 @@ import time
 from functools import wraps
 from contextlib import contextmanager
 import inspect
+
 import wsgiref.headers
+import cgi
 
 __all__ = ['measure_iter', 'measure_each', 'measure_first', 'measure_reduce',
            'measure_produce', 'measure_func', 'measure_block', 'MeasureWSGIMiddleware']
@@ -432,6 +434,6 @@ class MeasureWSGIMiddleware(object):
         # generate some metrics from response headers
         h = wsgiref.headers.Headers(headers)
         if 'Content-Type' in h:
-            _metric('response.content_type.%s' % h['content-type'].split(';')[0].replace('/', '_').rstrip().lower())
+            _metric('response.content_type.%s' % cgi.parse_header(h['content-type'])[0].replace('/', '_').lower())
         else:
             _metric('response.content_type.null')
