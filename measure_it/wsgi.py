@@ -15,9 +15,9 @@ from . import call_default, measure_produce
 
 class MeasureWSGIMiddleware(object):
     """Middleware that measures WSGI
-        
+
     The following metrics record response body size in bytes & total processing time:
-    
+
     * `wsgi.request.method.*`: request HTTP method, lower case
     * `wsgi.request.scheme.*`: request scheme, usually `http` or `https`
     * `wsgi.request.host.*`: host name with `.` replaced by `_`
@@ -28,7 +28,7 @@ class MeasureWSGIMiddleware(object):
     * `wsgi.response.content_type.*`: response content type, with `/` replaced by `_`
 
     The following metrics record request body size in bytes & time to read it:
-    
+
     * `wsgi.input.method.*`: request HTTP method, lower case
     * `wsgi.input.scheme.*`: request scheme, usually `http` or `https`
     * `wsgi.input.host.*`: host name with `.` replaced by `_`
@@ -37,10 +37,10 @@ class MeasureWSGIMiddleware(object):
     * `wsgi.input.cookie.{true, false}`: did the request have a cookie set
     * `wsgi.input.status.*`: numeric response code
     * `wsgi.input.content_type.*`: request content type, with `/` replaced by `_`
-   
+
     :ivar app: the WSGI application to wrap
     :ivar metric: the metric function to use for output
-   
+
     """
 
     def __init__(self, app, metric = call_default):
@@ -65,11 +65,11 @@ class MeasureWSGIMiddleware(object):
                 nonlocal input_bytes, input_elapsed
                 input_bytes += count
                 input_elapsed += elapsed
-                
+
             wsgi_input = environ['wsgi.input']
             wsgi_input.read = measure_produce(name='wsgi.input', metric=input_metric)(wsgi_input.read)
-            wsgi_input.readline = measure_produce(name='wsgi.input', metric=input_metric)(wsgi_input.readline)            
-            
+            wsgi_input.readline = measure_produce(name='wsgi.input', metric=input_metric)(wsgi_input.readline)
+
             # there's two ways to send data. TWO!
             # The first is by yielding a sequence of bytes.
             # This is an accumulator to count them as a side effect.
@@ -130,14 +130,18 @@ class MeasureWSGIMiddleware(object):
         method = environ['REQUEST_METHOD'].lower()
         scheme = environ['wsgi.url_scheme'].lower()
 
-        # XXX duplicate nonsense with SERVER_NAME/SERVER_PORT from PEP-3333 
+        # XXX duplicate nonsense with SERVER_NAME/SERVER_PORT from PEP-3333
         host, *port = environ['HTTP_HOST'].split(':')
         host = host.replace('.', '_')
         port = port[0] if port else 'null'
-        
+        status = status[:3]
+
         query = str('QUERY_STRING' in environ).lower()
         cookie = str('HTTP_COOKIE' in environ).lower()
-        status = status[:3]
+
+        # make a string 'true' or 'false' for query & cookie
+        query = str(bool(environ.get('QUERY_STRING'))).lower()
+        cookie = str(bool(environ.get('HTTP_COOKIE'))).lower()
 
         # a little helper
         def _output_metric(name):
@@ -164,20 +168,20 @@ class MeasureWSGIMiddleware(object):
             _output_metric('response.content_type.%s' % cgi.parse_header(h['content-type'])[0].replace('/', '_').lower())
         else:
             _output_metric('response.content_type.null')
-        
+
         # generate metrics for uploads, if present
         if input_bytes != 0:
             # a little helper
             def _input_metric(name):
                 self.metric('wsgi.input.%s' % name, input_bytes, input_elapsed)
-        
+
             _input_metric('method.%s' % method)
             _input_metric('scheme.%s' % scheme)
-    
+
             _input_metric('host.%s' % host)
             _input_metric('port.%s' % port)
-    
+
             _input_metric('query.%s' % query)
             _input_metric('cookie.%s' % cookie)
-    
-            _input_metric('status.%s' % status)            
+
+            _input_metric('status.%s' % status)
