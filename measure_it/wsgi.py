@@ -135,10 +135,11 @@ class MeasureWSGIMiddleware(object):
         host, *port = environ['HTTP_HOST'].split(':')
         host = host.replace('.', '_')
         port = port[0] if port else 'null'
-
-        query = str('QUERY_STRING' in environ).lower()
-        cookie = str('HTTP_COOKIE' in environ).lower()
         status = status[:3]
+
+        # make a string 'true' or 'false' for query & cookie
+        query = str(bool(environ.get('QUERY_STRING'))).lower()
+        cookie = str(bool(environ.get('HTTP_COOKIE'))).lower()
 
         # a little helper
         def _output_metric(name):
@@ -188,7 +189,6 @@ class MeasureWSGIMiddleware(object):
 
             _input_metric('status.%s' % status)
 
-
     def user_agent_metrics(self, ua_string):
         """generate a list of metric names from a user-agent header string"""
         ua = user_agents.parse(ua_string)
@@ -209,4 +209,3 @@ class MeasureWSGIMiddleware(object):
         if ua.browser.family: yield ua.browser.family.lower().replace(" ", "_")
         if ua.os.family: yield ua.os.family.lower().replace(" ", "_")
         if ua.device.brand: yield ua.device.brand.lower().replace(" ", "_")
-
