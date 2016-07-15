@@ -5,3 +5,4 @@ matplotlib
 nose
 fakesleep
 Sphinx
+user-agents
