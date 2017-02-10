@@ -15,8 +15,19 @@ Support for automagic instrumentation of popular 3rd-party packages:
 More metric backends:
 
 * lightweight running stats, based on forthcoming `stdlib statistics <http://www.python.org/dev/peps/pep-0450/>`__ module. May include support for periodic stats output, as a low-budget alternative to statsd.
+* Prometheus, Datadog, etc.
 
 Improved testing:
 
 * support for tox (2.7 & 3.3+ only)
 * support for http://travis-ci.org
+
+Bonus features:
+
+* sampling & filtering for metric functions
+* integration of nice Jupyter notebook for analysis
+
+Modernization:
+
+* 3.4+ / rip out old 2.7 compatibility stuff
+* pypy test & support
