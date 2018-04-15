@@ -8,8 +8,8 @@ import sys
 
 from . import MeasureItTestCase, math_is_hard
 
-from measure_it import measure_iter
-from measure_it.csv import CSVFileMetric, CSVDirMetric
+from instrument import measure_iter
+from instrument.csv import CSVFileMetric, CSVDirMetric
 
 
 def read_csv(fname):

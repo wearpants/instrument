@@ -1,23 +1,23 @@
 API Documentation
 =================
 
-measure_it
+instrument
 ----------
 
-.. automodule:: measure_it
+.. automodule:: instrument
     :members: measure_iter, measure_each, measure_reduce, measure_produce, measure_func, measure_first, measure_block, print_metric, default_metric, make_multi_metric
 
 
-measure_it.csv
+instrument.csv
 --------------
 
-.. automodule:: measure_it.csv
+.. automodule:: instrument.csv
     :members:
 
-measure_it.numpy
+instrument.numpy
 ----------------
 
-.. module:: measure_it.numpy
+.. module:: instrument.numpy
 
 numpy-based metrics
 
@@ -60,10 +60,10 @@ numpy-based metrics
 
     :cvar outdir: directory to save plots in. Defaults to ``./mit_plots``.
 
-measure_it.statsd
+instrument.statsd
 -----------------
 
-.. module:: measure_it.statsd
+.. module:: instrument.statsd
 
 save metrics to `statsd <http://codeascraft.com/2011/02/15/measure-anything-measure-everything/>`__
 

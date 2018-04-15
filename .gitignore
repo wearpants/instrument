@@ -13,3 +13,5 @@ dist/
 /mit_plots
 /mit_csv
 mit.csv
+/.pytest_cache
+Pipfile.lock

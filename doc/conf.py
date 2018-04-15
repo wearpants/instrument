@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# measure_it documentation build configuration file, created by
+# instrument documentation build configuration file, created by
 # sphinx-quickstart on Mon Aug  5 12:17:08 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'measure_it'
+project = u'instrument'
 copyright = u'2018, Pete Fein'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -186,7 +186,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'measure_it.tex', u'measure\\_it Documentation',
+  ('index', 'instrument.tex', u'measure\\_it Documentation',
    u'Pete Fein', 'manual'),
 ]
 
@@ -216,7 +216,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'measure_it', u'measure_it Documentation',
+    ('index', 'instrument', u'instrument Documentation',
      [u'Pete Fein'], 1)
 ]
 
@@ -230,8 +230,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'measure_it', u'measure_it Documentation',
-   u'Pete Fein', 'measure_it', 'One line description of project.',
+  ('index', 'instrument', u'instrument Documentation',
+   u'Pete Fein', 'instrument', 'One line description of project.',
    'Miscellaneous'),
 ]
 

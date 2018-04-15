@@ -33,7 +33,7 @@ class and pass its :meth:`.CSVFileMetric.metric` method to measurement
 functions. The ``outfile`` parameter controls where to write data; an existing
 file will be overwritten.
 
->>> from measure_it.csv import CSVFileMetric
+>>> from instrument.csv import CSVFileMetric
 >>> csvfm = CSVFileMetric("/tmp/my_metrics_file.csv")
 >>> _ = measure_iter(math_is_hard(5), metric=csvfm.metric, name="bogomips")
 >>> list(_)
@@ -46,7 +46,7 @@ your program; do not manually create instances. Instead, use the classmethod
 in which to store files. The contents of this directory will be deleted on
 startup.
 
->>> from measure_it.csv import CSVDirMetric
+>>> from instrument.csv import CSVDirMetric
 >>> CSVDirMetric.outdir = "/tmp/my_metrics_dir"
 >>> _ = measure_iter(math_is_hard(5), metric=CSVDirMetric.metric, name="bogomips")
 >>> list(_)
@@ -69,7 +69,7 @@ create instances. Instead, use the classmethod :meth:`.NumpyMetric.metric`.
 The ``dump_atexit`` flag will register a handler to write data when the
 interpreter finishes execution. Set to false to manage yourself.
 
->>> from measure_it.numpy import TableMetric, PlotMetric
+>>> from instrument.numpy import TableMetric, PlotMetric
 >>> _ = measure_iter(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]

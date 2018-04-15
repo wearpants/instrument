@@ -1,6 +1,6 @@
 Basic Usage
 ===========
-.. currentmodule:: measure_it
+.. currentmodule:: instrument
 
 Measurements
 ------------
@@ -20,7 +20,7 @@ Timing iterators is tricky. :func:`measure_iter`, :func:`measure_each` and
 :func:`measure_first` record metrics for time and element count for
 iteratables.
 
->>> from measure_it import measure_iter, measure_each, measure_first
+>>> from instrument import measure_iter, measure_each, measure_first
 
 Wrap an iterator in :func:`measure_iter` to time how long it takes to consume
 entirely:
@@ -104,7 +104,7 @@ Reducers & Producers
 :func:`measure_reduce` and :func:`measure_produce` are decorators for
 functions, *not* iterators:
 
->>> from measure_it import measure_reduce, measure_produce
+>>> from instrument import measure_reduce, measure_produce
 
 The :func:`measure_reduce` decorator measures functions that consume many
 items. Examples include aggregators or a `batch_save()`:
@@ -185,7 +185,7 @@ Functions
 The :func:`measure_func` decorator simply measures total function execution
 time:
 
->>> from measure_it import measure_func
+>>> from instrument import measure_func
 >>> @measure_func()
 ... def slow():
 ...     # you'd do something useful here
@@ -213,7 +213,7 @@ Blocks
 To measure the excecution time of a block of code, use a
 :func:`measure_block` context manager:
 
->>> from measure_it import measure_block
+>>> from instrument import measure_block
 >>> with measure_block(name="slowcode"):
 ...     # you'd do something useful here
 ...     sleep(0.2)

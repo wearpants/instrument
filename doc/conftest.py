@@ -1,7 +1,7 @@
 import pytest
 import fakesleep
 
-from measure_it import measure_iter
+from instrument import measure_iter
 from tests import math_is_hard
 
 @pytest.fixture(autouse=True)

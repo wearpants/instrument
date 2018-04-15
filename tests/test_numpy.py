@@ -13,8 +13,8 @@ else:
 
 from . import MeasureItTestCase, math_is_hard
 
-from measure_it import measure_iter
-from measure_it.numpy import TableMetric, PlotMetric
+from instrument import measure_iter
+from instrument.numpy import TableMetric, PlotMetric
 
 class TableMetricTestCase(MeasureItTestCase):
 

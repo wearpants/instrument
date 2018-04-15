@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-setup(name='measure-it',
+setup(name='instrument',
       version="0.5.0",
       description='time and count measurement for iterators and other code',
       author='Pete Fein',
       author_email='pete@wearpants.org',
-      url='http://github.com/wearpants/measure_it',
+      url='http://github.com/wearpants/instrument',
       packages=find_packages(exclude=['tests', 'doc']),
       extras_require={
         'statsd': ['statsd'],
