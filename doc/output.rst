@@ -8,7 +8,7 @@ metric recording funtion. It should take three arguments: ``count`` of items,
 >>> def my_metric(name, count, elapsed):
 ...     print("Iterable %s produced %d items in %d milliseconds"%(name, count, int(round(elapsed*1000))))
 ...
->>> _ = measure_iter(math_is_hard(5), metric=my_metric, name="bogomips")
+>>> _ = instrument.iter(math_is_hard(5), metric=my_metric, name="bogomips")
 >>> list(_)
 Iterable bogomips produced 5 items in 5000 milliseconds
 [0, 1, 4, 9, 16]
@@ -35,7 +35,7 @@ file will be overwritten.
 
 >>> from instrument.csv import CSVFileMetric
 >>> csvfm = CSVFileMetric("/tmp/my_metrics_file.csv")
->>> _ = measure_iter(math_is_hard(5), metric=csvfm.metric, name="bogomips")
+>>> _ = instrument.iter(math_is_hard(5), metric=csvfm.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
@@ -48,7 +48,7 @@ startup.
 
 >>> from instrument.csv import CSVDirMetric
 >>> CSVDirMetric.outdir = "/tmp/my_metrics_dir"
->>> _ = measure_iter(math_is_hard(5), metric=CSVDirMetric.metric, name="bogomips")
+>>> _ = instrument.iter(math_is_hard(5), metric=CSVDirMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
@@ -70,7 +70,7 @@ The ``dump_atexit`` flag will register a handler to write data when the
 interpreter finishes execution. Set to false to manage yourself.
 
 >>> from instrument.numpy import TableMetric, PlotMetric
->>> _ = measure_iter(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
+>>> _ = instrument.iter(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
