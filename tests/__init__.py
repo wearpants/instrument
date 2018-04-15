@@ -15,7 +15,7 @@ def math_is_hard(N):
         x += 1
 
 
-class MeasureItTestCase(unittest.TestCase):
+class InstrumentTestCase(unittest.TestCase):
 
     def setUp(self):
         fakesleep.monkey_patch()

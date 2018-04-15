@@ -6,9 +6,9 @@ import shutil
 import os
 import sys
 
-from . import MeasureItTestCase, math_is_hard
+from . import InstrumentTestCase, math_is_hard
 
-from instrument import measure_iter
+import instrument
 from instrument.csv import CSVFileMetric, CSVDirMetric
 
 
@@ -21,7 +21,7 @@ def read_csv(fname):
         with open(fname) as fh:
             return fh.read()
 
-class CSVFileMetricTestCase(MeasureItTestCase):
+class CSVFileMetricTestCase(InstrumentTestCase):
 
     def test_csv(self):
         tmp = tempfile.mktemp()
@@ -29,20 +29,20 @@ class CSVFileMetricTestCase(MeasureItTestCase):
 
         csvfm = CSVFileMetric(tmp, False)
 
-        list(measure_iter(math_is_hard(10), metric=csvfm.metric, name="alice"))
-        list(measure_iter(math_is_hard(10), metric=csvfm.metric, name="bob"))
+        list(instrument.iter(math_is_hard(10), metric=csvfm.metric, name="alice"))
+        list(instrument.iter(math_is_hard(10), metric=csvfm.metric, name="bob"))
 
         # unnamed metrics are dropped
-        list(measure_iter(math_is_hard(10), metric=csvfm.metric))
+        list(instrument.iter(math_is_hard(10), metric=csvfm.metric))
 
-        list(measure_iter(math_is_hard(20), metric=csvfm.metric, name="alice"))
+        list(instrument.iter(math_is_hard(20), metric=csvfm.metric, name="alice"))
 
         csvfm.dump()
 
         s = read_csv(tmp)
         self.assertMultiLineEqual(s, 'alice,10,10.000000\r\nbob,10,10.000000\r\nalice,20,20.000000\r\n')
 
-class CSVDirMetricTestCase(MeasureItTestCase):
+class CSVDirMetricTestCase(InstrumentTestCase):
 
     def test_csv(self):
         tmp = tempfile.mktemp()
@@ -54,15 +54,15 @@ class CSVDirMetricTestCase(MeasureItTestCase):
         assert not os.path.exists(tmp)
 
         # directory should exist after first metric
-        list(measure_iter(math_is_hard(10), metric=CSVDirMetric.metric, name="alice"))
+        list(instrument.iter(math_is_hard(10), metric=CSVDirMetric.metric, name="alice"))
         assert os.path.exists(tmp)
 
-        list(measure_iter(math_is_hard(20), metric=CSVDirMetric.metric, name="alice"))
+        list(instrument.iter(math_is_hard(20), metric=CSVDirMetric.metric, name="alice"))
 
-        list(measure_iter(math_is_hard(10), metric=CSVDirMetric.metric, name="bob"))
+        list(instrument.iter(math_is_hard(10), metric=CSVDirMetric.metric, name="bob"))
 
         # unnamed metrics are dropped
-        list(measure_iter(math_is_hard(10), metric=CSVDirMetric.metric))
+        list(instrument.iter(math_is_hard(10), metric=CSVDirMetric.metric))
 
         CSVDirMetric.dump()
         self.assertEqual(sorted(os.listdir(tmp)), ['alice.csv', 'bob.csv'])
