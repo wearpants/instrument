@@ -1,0 +1,25 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+statsd = "*"
+numpy = "*"
+prettytable = "*"
+matplotlib = "*"
+fakesleep = "*"
+sphinx = "*"
+pytest = "*"
+
+
+[dev-packages]
+
+
+
+[requires]
+
+python_version = "3.6"

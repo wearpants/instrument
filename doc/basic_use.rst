@@ -96,7 +96,7 @@ will be inferred:
 >>> _ = database.batch_get([1, 2, 3, 9000])
 >>> list(_)
 __main__.Database.batch_get: 4 elements in 0.40 seconds
-[{'square': 1, 'id': 1}, {'square': 4, 'id': 2}, {'square': 9, 'id': 3}, {'square': 81000000, 'id': 9000}]
+[{'id': 1, 'square': 1}, {'id': 2, 'square': 4}, {'id': 3, 'square': 9}, {'id': 9000, 'square': 81000000}]
 
 Reducers & Producers
 --------------------
@@ -177,7 +177,7 @@ __main__.Database.batch_save: 5 elements in 0.50 seconds
 __main__.Database.batch_save2: 5 elements in 0.50 seconds
 >>> database.dumb_query(3)
 __main__.Database.dumb_query: 3 elements in 0.30 seconds
-[{'square': 0, 'id': 0}, {'square': 1, 'id': 1}, {'square': 4, 'id': 2}]
+[{'id': 0, 'square': 0}, {'id': 1, 'square': 1}, {'id': 2, 'square': 4}]
 
 Functions
 ---------

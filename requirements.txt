@@ -2,6 +2,6 @@ statsd
 numpy
 prettytable
 matplotlib
-nose
 fakesleep
 Sphinx
+pytest
