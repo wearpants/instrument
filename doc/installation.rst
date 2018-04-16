@@ -20,9 +20,7 @@ Batteries Included
 ------------------
 
 You should have completed the minimal install already. To install the
-dependencies for an optional component, specify it in brackets with ``--upgrade``
-(see also: `setuptools extras
-<http://pythonhosted.org/setuptools/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies>`__):
+dependencies for an optional component, specify it in brackets with ``--upgrade``:
 
   ``pip install --upgrade instrument[statsd]``
 

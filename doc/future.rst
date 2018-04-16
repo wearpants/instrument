@@ -6,7 +6,7 @@ Automagic Instrumentation
 -------------------------
 Support for automagic instrumentation of popular 3rd-party packages:
 
-* django, using introspection logic from `django-statsd <https://django-statsd.readthedocs.org/en/latest/>`__
+* django, using introspection logic from `django-statsd <https://github.com/django-statsd/django-statsd>`__
 * `generic WSGI middleware <http://blog.dscpl.com.au/2015/05/performance-monitoring-of-real-wsgi.html>`__. Possibly flask.
 * any `dbapi <http://www.python.org/dev/peps/pep-0249/>`__-compatible database, with names derived by parsing SQL for table/query type
 * HTTP clients: `requests <http://docs.python-requests.org/en/latest/>`__ and `urllib <http://docs.python.org/2/library/urllib2.html>`__
