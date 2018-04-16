@@ -2,7 +2,7 @@ Changelog
 =========
 See also: :doc:`incompatibilities`.
 
-0.5.0
+0.5.1
 -----
 * rename project to `instrument` from `measure_it`
 * update to modern tooling: pytest, pipenv, etc..

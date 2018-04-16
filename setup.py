@@ -2,8 +2,8 @@
 from setuptools import setup, find_packages
 
 setup(name='instrument',
-      version="0.5.0",
-      description='time and count measurement for iterators and other code',
+      version="0.5.1",
+      description='instrumentation primitives for metrics and benchmarking',
       author='Pete Fein',
       author_email='pete@wearpants.org',
       url='http://github.com/wearpants/instrument',
