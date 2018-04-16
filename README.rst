@@ -1,15 +1,17 @@
 instrument
 ==========
 
-`instrument <http://github.com/wearpants/instrument>`__ provides timing and counting for iterators (and other code segments). It can be used to:
+`instrument <http://github.com/wearpants/instrument>`__ provides instrumentation primitives for metrics and benchmarking. It can be used to:
 
 * monitor runtime behavior in production systems
 * conduct performance benchmarks
 * easily generate plots/graphs and statistics
 
-Get it from the cheeseshop today:
+Get it from PyPI today:
 
   `pip install instrument`
+
+Python `Instrument` was formerly known as `Measure It`.
 
 :author: Pete Fein <pete@wearpants.org>
 :license: BSD

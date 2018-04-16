@@ -2,8 +2,8 @@ Future Plans
 ============
 Some rough thoughts.
 
-0.5: instrument all the things
-------------------------------
+Automagic Instrumentation
+-------------------------
 Support for automagic instrumentation of popular 3rd-party packages:
 
 * django, using introspection logic from `django-statsd <https://django-statsd.readthedocs.org/en/latest/>`__
@@ -12,22 +12,26 @@ Support for automagic instrumentation of popular 3rd-party packages:
 * HTTP clients: `requests <http://docs.python-requests.org/en/latest/>`__ and `urllib <http://docs.python.org/2/library/urllib2.html>`__
 * storage engines: MongoDB, memcached, redis, Elastic Search. Possibly sqlalchemy
 
-More metric backends:
+More metric backends
+--------------------
 
 * lightweight running stats, based on forthcoming `stdlib statistics <http://www.python.org/dev/peps/pep-0450/>`__ module. May include support for periodic stats output, as a low-budget alternative to statsd.
 * Prometheus, Datadog, etc.
 
-Improved testing:
+Improved testing
+----------------
 
 * support for tox (2.7 & 3.3+ only)
 * support for http://travis-ci.org
 
-Bonus features:
+Bonus features
+--------------
 
 * sampling & filtering for metric functions
 * integration of nice Jupyter notebook for analysis
 
-Modernization:
+Modernization
+-------------
 
 * 3.4+ / rip out old 2.7 compatibility stuff
 * pypy test & support
