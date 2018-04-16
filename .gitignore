@@ -15,3 +15,5 @@ dist/
 mit.csv
 /.pytest_cache
 Pipfile.lock
+.tox/
+/coverage.xml
