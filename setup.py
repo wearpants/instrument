@@ -12,8 +12,6 @@ setup(name='instrument',
         'statsd': ['statsd'],
         'numpy': ['numpy', 'prettytable'],
         'plot': ['matplotlib'],
-        'tests': ['pytest', 'fakesleep'],
-        'doc': ['Sphinx'],
         },
       license = "BSD",
       classifiers = [
