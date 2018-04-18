@@ -2,6 +2,9 @@ Changelog
 =========
 See also: :doc:`incompatibilities`.
 
+0.6.0
+-----
+
 0.5.1
 -----
 * rename project to `instrument` from `measure_it`

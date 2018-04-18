@@ -1,6 +1,9 @@
 Backwards Incompatibilities
 ===========================
 
+0.5 -> 0.6
+----------
+
 0.4 -> 0.5
 ----------
 * main package renamed from `measure_it` to `instrument`
