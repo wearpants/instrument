@@ -14,6 +14,17 @@ instrument.csv
 .. automodule:: instrument.csv
     :members:
 
+
+instrument.logging
+------------------
+
+.. automodule:: instrument.logging
+    :members:
+
+.. function:: logging_metric(name, count, elapsed)
+
+    Metric that records to standard library logging at `INFO` level
+
 instrument.numpy
 ----------------
 

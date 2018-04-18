@@ -22,11 +22,9 @@ several outputs.
 
 Log
 ---
-:mod:`.log` writes metrics to a standard library logger, using the metric's name.
+:mod:`.logging` writes metrics to a standard library logger, using the metric's name.
 
->>> import logging
->>> logging.basicConfig(level=logging.INFO)
->>> from instrument.log import log_metric
+>>> from instrument.logging import log_metric
 >>> _ = instrument.iter(math_is_hard(5), metric=log_metric, name="bogomips")
 >>> list(_)
 INFO:instrument.bogomips:5 elements in 5.00 seconds
