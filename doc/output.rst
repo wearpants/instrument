@@ -9,7 +9,7 @@ metric recording funtion. It should take three arguments: ``count`` of items,
 >>> def my_metric(name, count, elapsed):
 ...     print("Iterable %s produced %d items in %d milliseconds"%(name, count, int(round(elapsed*1000))))
 ...
->>> _ = instrument.iter(math_is_hard(5), metric=my_metric, name="bogomips")
+>>> _ = instrument.all(math_is_hard(5), metric=my_metric, name="bogomips")
 >>> list(_)
 Iterable bogomips produced 5 items in 5000 milliseconds
 [0, 1, 4, 9, 16]
@@ -26,9 +26,9 @@ Loggging
 :mod:`.logging` writes metrics to a standard library logger, using the metric's name.
 
 >>> from instrument.output.logging import log_metric
->>> _ = instrument.iter(math_is_hard(5), metric=log_metric, name="bogomips")
+>>> _ = instrument.all(math_is_hard(5), metric=log_metric, name="bogomips")
 >>> list(_)
-INFO:instrument.bogomips:5 elements in 5.00 seconds
+INFO:instrument.bogomips:5 items in 5.00 seconds
 [0, 1, 4, 9, 16]
 
 Comma Separated
@@ -46,7 +46,7 @@ file will be overwritten.
 
 >>> from instrument.output.csv import CSVFileMetric
 >>> csvfm = CSVFileMetric("/tmp/my_metrics_file.csv")
->>> _ = instrument.iter(math_is_hard(5), metric=csvfm.metric, name="bogomips")
+>>> _ = instrument.all(math_is_hard(5), metric=csvfm.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
@@ -59,7 +59,7 @@ startup.
 
 >>> from instrument.output.csv import CSVDirMetric
 >>> CSVDirMetric.outdir = "/tmp/my_metrics_dir"
->>> _ = instrument.iter(math_is_hard(5), metric=CSVDirMetric.metric, name="bogomips")
+>>> _ = instrument.all(math_is_hard(5), metric=CSVDirMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
@@ -79,7 +79,7 @@ instances. Instead, use the classmethod :meth:`.metric`. The ``dump_atexit`` fla
 handler to write data when the interpreter finishes execution. Set to false to manage yourself.
 
 >>> from instrument.output.table import TableMetric
->>> _ = instrument.iter(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
+>>> _ = instrument.all(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 

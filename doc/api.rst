@@ -5,7 +5,7 @@ instrument
 ----------
 
 .. automodule:: instrument
-    :members: iter, each, reducer, producer, function, first, block, print_metric, default_metric, make_multi_metric
+    :members: all, each, first, reducer, producer, function, block, print_metric, default_metric, make_multi_metric
 
 
 instrument.output.csv
@@ -83,7 +83,7 @@ numpy-based metrics
         A metric function that buffers through numpy
 
         :arg str name: name of the metric
-        :arg int count: number of elements
+        :arg int count: number of items
         :arg float elapsed: time in seconds
 
 

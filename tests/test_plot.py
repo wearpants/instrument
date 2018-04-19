@@ -21,12 +21,12 @@ class PlotMetricTestCase(unittest.TestCase):
 
         assert not os.path.exists(tmp)
 
-        list(instrument.iter(math_is_hard(10), metric=PlotMetric.metric, name="alice"))
-        list(instrument.iter(math_is_hard(20), metric=PlotMetric.metric, name="alice"))
-        list(instrument.iter(math_is_hard(10), metric=PlotMetric.metric, name="bob"))
+        list(instrument.all(math_is_hard(10), metric=PlotMetric.metric, name="alice"))
+        list(instrument.all(math_is_hard(20), metric=PlotMetric.metric, name="alice"))
+        list(instrument.all(math_is_hard(10), metric=PlotMetric.metric, name="bob"))
 
         # unnamed metrics are dropped
-        list(instrument.iter(math_is_hard(10), metric=PlotMetric.metric))
+        list(instrument.all(math_is_hard(10), metric=PlotMetric.metric))
 
         PlotMetric.dump()
 

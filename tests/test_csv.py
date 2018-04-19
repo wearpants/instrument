@@ -24,13 +24,13 @@ class CSVFileMetricTestCase(unittest.TestCase):
 
         csvfm = CSVFileMetric(tmp, False)
 
-        list(instrument.iter(math_is_hard(10), metric=csvfm.metric, name="alice"))
-        list(instrument.iter(math_is_hard(10), metric=csvfm.metric, name="bob"))
+        list(instrument.all(math_is_hard(10), metric=csvfm.metric, name="alice"))
+        list(instrument.all(math_is_hard(10), metric=csvfm.metric, name="bob"))
 
         # unnamed metrics are dropped
-        list(instrument.iter(math_is_hard(10), metric=csvfm.metric))
+        list(instrument.all(math_is_hard(10), metric=csvfm.metric))
 
-        list(instrument.iter(math_is_hard(20), metric=csvfm.metric, name="alice"))
+        list(instrument.all(math_is_hard(20), metric=csvfm.metric, name="alice"))
 
         csvfm.dump()
 
@@ -49,15 +49,15 @@ class CSVDirMetricTestCase(unittest.TestCase):
         assert not os.path.exists(tmp)
 
         # directory should exist after first metric
-        list(instrument.iter(math_is_hard(10), metric=CSVDirMetric.metric, name="alice"))
+        list(instrument.all(math_is_hard(10), metric=CSVDirMetric.metric, name="alice"))
         assert os.path.exists(tmp)
 
-        list(instrument.iter(math_is_hard(20), metric=CSVDirMetric.metric, name="alice"))
+        list(instrument.all(math_is_hard(20), metric=CSVDirMetric.metric, name="alice"))
 
-        list(instrument.iter(math_is_hard(10), metric=CSVDirMetric.metric, name="bob"))
+        list(instrument.all(math_is_hard(10), metric=CSVDirMetric.metric, name="bob"))
 
         # unnamed metrics are dropped
-        list(instrument.iter(math_is_hard(10), metric=CSVDirMetric.metric))
+        list(instrument.all(math_is_hard(10), metric=CSVDirMetric.metric))
 
         CSVDirMetric.dump()
         self.assertEqual(sorted(os.listdir(tmp)), ['alice.csv', 'bob.csv'])

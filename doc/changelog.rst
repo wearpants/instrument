@@ -5,11 +5,11 @@ See also: :doc:`incompatibilities`.
 0.6.0
 -----
 * drop Python 2.7 support
-* `iter`, `each` and `first` can now be used directly as decorators
+* `all`, `each` and `first` can now be used directly as decorators
 * add `logging` output
 * move outputs to `instrument.output` subpackage
 * split `instrument.output.numpy` to `plot` & `table` modules
-* instrumenter renames: `reducer`, `producer` & `function`
+* instrumenter renames: `reducer`, `producer`, `function`, `all`, `first`, `each`
 
 0.5.1
 -----

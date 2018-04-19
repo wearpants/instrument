@@ -16,21 +16,21 @@ operations we want to gather metrics for:
 ...         yield x * x
 ...         x += 1
 
-Timing iterators is tricky. :func:`iter`, :func:`each` and
-:func:`first` record metrics for time and element count for
+Timing iterators is tricky. :func:`all`, :func:`each` and
+:func:`first` record metrics for time and item count for
 iteratables.
 
 >>> import instrument
 
-Wrap an iterator in :func:`iter` to time how long it takes to consume
+Wrap an iterator in :func:`all` to time how long it takes to consume
 entirely:
 
 >>> underlying = math_is_hard(5)
 >>> underlying # doctest: +ELLIPSIS
 <generator object math_is_hard at ...>
->>> _ = instrument.iter(underlying)
+>>> _ = instrument.all(underlying)
 >>> squares = list(_)
-5 elements in 0.50 seconds
+5 items in 0.50 seconds
 
 The wrapped iterator yields the same results as the underlying iterable:
 
@@ -42,11 +42,11 @@ item:
 
 >>> _ = instrument.each(math_is_hard(5))
 >>> list(_)
-1 elements in 0.10 seconds
-1 elements in 0.10 seconds
-1 elements in 0.10 seconds
-1 elements in 0.10 seconds
-1 elements in 0.10 seconds
+1 items in 0.10 seconds
+1 items in 0.10 seconds
+1 items in 0.10 seconds
+1 items in 0.10 seconds
+1 items in 0.10 seconds
 [0, 1, 4, 9, 16]
 
 The :func:`first` wrapper measures the time taken to produce the
@@ -54,20 +54,20 @@ first item:
 
 >>> _ = instrument.first(math_is_hard(5))
 >>> list(_)
-1 elements in 0.10 seconds
+1 items in 0.10 seconds
 [0, 1, 4, 9, 16]
 
 You can provide a custom name for the metric:
 
->>> _ = instrument.iter(math_is_hard(5), name="bogomips")
+>>> _ = instrument.all(math_is_hard(5), name="bogomips")
 >>> list(_)
-bogomips: 5 elements in 0.50 seconds
+bogomips: 5 items in 0.50 seconds
 [0, 1, 4, 9, 16]
 
 Decorators
 ----------
 
-You can use :func:`iter`, :func:`each` and :func:`first` as decorators to wrap generator function
+You can use :func:`all`, :func:`each` and :func:`first` as decorators to wrap generator function
 (one that uses ``yield``). You can pass the same ``name`` and ``metric`` arugments:
 
 >>> @instrument.each()
@@ -76,16 +76,16 @@ You can use :func:`iter`, :func:`each` and :func:`first` as decorators to wrap g
 ...         sleep(.1)
 ...         yield i
 >>> list(slow(3))
-__main__.slow: 1 elements in 0.10 seconds
-__main__.slow: 1 elements in 0.10 seconds
-__main__.slow: 1 elements in 0.10 seconds
+__main__.slow: 1 items in 0.10 seconds
+__main__.slow: 1 items in 0.10 seconds
+__main__.slow: 1 items in 0.10 seconds
 [0, 1, 2]
 
 Decorators work inside classes too. If you don't provide a name, a decent one
 will be inferred:
 
 >>> class Database(object):
-...     @instrument.iter()
+...     @instrument.all()
 ...     def batch_get(self, ids):
 ...         # you'd actually hit database here
 ...         for i in ids:
@@ -94,7 +94,7 @@ will be inferred:
 >>> database = Database()
 >>> _ = database.batch_get([1, 2, 3, 9000])
 >>> list(_)
-__main__.Database.batch_get: 4 elements in 0.40 seconds
+__main__.Database.batch_get: 4 items in 0.40 seconds
 [{'id': 1, 'square': 1}, {'id': 2, 'square': 4}, {'id': 3, 'square': 9}, {'id': 9000, 'square': 81000000}]
 
 Reducers & Producers
@@ -115,7 +115,7 @@ items. Examples include aggregators or a ``batch_save()``:
 ...     return total
 ...
 >>> sum_squares(range(5))
-__main__.sum_squares: 5 elements in 0.50 seconds
+__main__.sum_squares: 5 items in 0.50 seconds
 30
 
 This works with ``*args`` functions too:
@@ -129,11 +129,11 @@ This works with ``*args`` functions too:
 ...     return total
 ...
 >>> sum_squares2(*range(5))
-__main__.sum_squares2: 5 elements in 0.50 seconds
+__main__.sum_squares2: 5 items in 0.50 seconds
 30
 
 The :func:`producer` decorator measures a function that produces many items. This is similar to
-using :func:`iter` as a decorator, but for functions that return lists instead of iterators (or
+using :func:`all` as a decorator, but for functions that return lists instead of iterators (or
 other object supporting ``len()``):
 
 >>> @instrument.producer()
@@ -141,7 +141,7 @@ other object supporting ``len()``):
 ...     sleep(0.1 * N)
 ...     return [i * i for i in range(N)]
 >>> list_squares(5)
-__main__.list_squares: 5 elements in 0.50 seconds
+__main__.list_squares: 5 items in 0.50 seconds
 [0, 1, 4, 9, 16]
 
 :func:`reducer` and :func:`producer` can be used inside
@@ -169,11 +169,11 @@ classes:
 >>> rows = [{'id':i} for i in range(5)]
 >>> database = Database()
 >>> database.batch_save(rows)
-__main__.Database.batch_save: 5 elements in 0.50 seconds
+__main__.Database.batch_save: 5 items in 0.50 seconds
 >>> database.batch_save2(*rows)
-__main__.Database.batch_save2: 5 elements in 0.50 seconds
+__main__.Database.batch_save2: 5 items in 0.50 seconds
 >>> database.dumb_query(3)
-__main__.Database.dumb_query: 3 elements in 0.30 seconds
+__main__.Database.dumb_query: 3 items in 0.30 seconds
 [{'id': 0, 'square': 0}, {'id': 1, 'square': 1}, {'id': 2, 'square': 4}]
 
 Functions
@@ -188,7 +188,7 @@ time:
 ...     sleep(.1)
 ...     return "SLOW"
 >>> slow()
-__main__.slow: 1 elements in 0.10 seconds
+__main__.slow: 1 items in 0.10 seconds
 'SLOW'
 
 This works in classes too:
@@ -200,7 +200,7 @@ This works in classes too:
 ...         sleep(.1)
 ...         return "SLOW"
 >>> CrunchCrunch().slow()
-__main__.CrunchCrunch.slow: 1 elements in 0.10 seconds
+__main__.CrunchCrunch.slow: 1 items in 0.10 seconds
 'SLOW'
 
 Blocks
@@ -212,7 +212,7 @@ To measure the excecution time of a block of code, use a
 >>> with instrument.block(name="slowcode"):
 ...     # you'd do something useful here
 ...     sleep(0.2)
-slowcode: 1 elements in 0.20 seconds
+slowcode: 1 items in 0.20 seconds
 
 You can also pass your own value for `count`; this is useful to measure a
 resource used by a block (the number of bytes in a file, for example):
@@ -220,4 +220,4 @@ resource used by a block (the number of bytes in a file, for example):
 >>> with instrument.block(name="slowcode", count=42):
 ...     # you'd do something useful here
 ...     sleep(0.2)
-slowcode: 42 elements in 0.20 seconds
+slowcode: 42 items in 0.20 seconds

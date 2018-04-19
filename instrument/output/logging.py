@@ -4,7 +4,7 @@ from __future__ import print_function, division, absolute_import
 
 import logging
 
-def make_log_metric(level=logging.INFO, msg="%d elements in %.2f seconds"):
+def make_log_metric(level=logging.INFO, msg="%d items in %.2f seconds"):
     """Make a new metric function that logs at the given level
 
     :arg int level: logging level, defaults to ``logging.INFO``

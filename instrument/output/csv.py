@@ -39,7 +39,7 @@ class CSVDirMetric(object):
         """A metric function that writes multiple CSV files
 
         :arg str name: name of the metric
-        :arg int count: number of elements
+        :arg int count: number of items
         :arg float elapsed: time in seconds
         """
 
@@ -103,7 +103,7 @@ class CSVFileMetric(object):
         """A metric function that writes a single CSV file
 
         :arg str name: name of the metric
-        :arg int count: number of elements
+        :arg int count: number of items
         :arg float elapsed: time in seconds
         """
 

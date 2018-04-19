@@ -12,20 +12,20 @@ from functools import wraps
 from contextlib import contextmanager
 import inspect
 
-# alias the builtins we shadow
-_builtin_iter = iter
+# builtins we shadow
+_builtin_all = all
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
 
     :arg str name: name of the metric
-    :arg int count: number of elements
+    :arg int count: number of items
     :arg float elapsed: time in seconds
     """
     if name is not None:
-        print("%s: %d elements in %.2f seconds"%(name, count, elapsed))
+        print("%s: %d items in %.2f seconds"%(name, count, elapsed))
     else:
-        print("%d elements in %.2f seconds"%(count, elapsed))
+        print("%d items in %.2f seconds"%(count, elapsed))
 
 
 default_metric = print_metric #: user-supplied function to use as global default metric
@@ -34,7 +34,7 @@ def call_default(name, count, elapsed):
     """call the :func:`default_metric` global in this module
 
     :arg str name: name of the metric
-    :arg int count: number of elements
+    :arg int count: number of items
     :arg float elapsed: time in seconds
     """
     return default_metric(name, count, elapsed)
@@ -52,10 +52,10 @@ def make_multi_metric(*metrics):
             m(name, count, elapsed)
     return multi_metric
 
-def _do_iter(iterable, name, metric):
+def _do_all(iterable, name, metric):
     total_time = 0
     count = 0
-    it = enumerate(iterable, 1) # count, element
+    it = enumerate(iterable, 1) # count, item
     try:
         while True:
             t = time.time()
@@ -70,7 +70,7 @@ def _do_iter(iterable, name, metric):
         metric(name, count, total_time)
 
 def _do_each(iterable, name, metric):
-    it = _builtin_iter(iterable)
+    it = iter(iterable)
     while True:
         t = time.time()
         try:
@@ -88,7 +88,7 @@ def _do_each(iterable, name, metric):
             yield x
 
 def _do_first(iterable, name, metric):
-    it = _builtin_iter(iterable)
+    it = iter(iterable)
     t = time.time()
     try:
         x = next(it)
@@ -130,12 +130,12 @@ def _make_decorator(measuring_func):
     return _decorator
 
 # decorator variants
-_iter_decorator = _make_decorator(_do_iter)
+_iter_decorator = _make_decorator(_do_all)
 _each_decorator = _make_decorator(_do_each)
 _first_decorator = _make_decorator(_do_first)
 
-def iter(iterable = None, *, name = None, metric = call_default):
-    """Measure total time and element count for consuming an iterable
+def all(iterable = None, *, name = None, metric = call_default):
+    """Measure total time and item count for consuming an iterable
 
     :arg iterable: any iterable
     :arg function metric: f(name, count, total_time)
@@ -144,7 +144,7 @@ def iter(iterable = None, *, name = None, metric = call_default):
     if iterable is None:
         return _iter_decorator(name, metric)
     else:
-        return _do_iter(iterable, name, metric)
+        return _do_all(iterable, name, metric)
 
 
 def each(iterable = None, *, name = None, metric = call_default):
@@ -202,7 +202,7 @@ class counted_iterable(object):
     __slots__ = ['iterable', 'count']
 
     def __init__(self, iterable):
-        self.iterable = _builtin_iter(iterable)
+        self.iterable = iter(iterable)
         self.count = 0
 
     def __iter__(self):

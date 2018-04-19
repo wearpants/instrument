@@ -30,7 +30,7 @@ class NumpyMetric(object):
         """A metric function that buffers through numpy
 
         :arg str name: name of the metric
-        :arg int count: number of elements
+        :arg int count: number of items
         :arg float elapsed: time in seconds
         """
 
