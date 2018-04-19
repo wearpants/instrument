@@ -104,7 +104,7 @@ def _do_first(iterable, name, metric):
         metric(name, 1, time.time() - t)
         yield x
 
-    for x in it: yield x
+    yield from it
 
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
