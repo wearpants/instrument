@@ -8,21 +8,12 @@ from __future__ import print_function, division
 __version__ = '0.6.0'
 
 import time
-import sys
 from functools import wraps
 from contextlib import contextmanager
 import inspect
 
-__all__ = ['iter', 'each', 'first', 'reduce', 'produce', 'func', 'block']
-
 # alias the builtins we shadow
 _iter = iter
-
-if sys.version_info.major >= 3:
-    from functools import reduce as _reduce
-else:
-    _reduce = reduce
-
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -201,7 +192,7 @@ class counted_iterable(object):
 
     next = __next__ # python2 compatibility
 
-def reduce(name = None, metric = call_default):
+def reducer(name = None, metric = call_default):
     """Decorator to measure a function that consumes many items.
 
     The wrapped ``func`` should take either a single ``iterable`` argument or
@@ -210,7 +201,7 @@ def reduce(name = None, metric = call_default):
     :arg function metric: f(name, count, total_time)
     :arg str name: name for the metric
     """
-    class instrument_reduce_decorator(object):
+    class instrument_reducer_decorator(object):
         def __init__(self, func):
             self.orig_func = func
             self.wrapping = wraps(func)
@@ -255,9 +246,9 @@ def reduce(name = None, metric = call_default):
             wrapped_method = self.wrapping(wrapped_method)
             return wrapped_method
 
-    return instrument_reduce_decorator
+    return instrument_reducer_decorator
 
-def produce(name = None, metric = call_default):
+def producer(name = None, metric = call_default):
     """Decorator to measure a function that produces many items.
 
     The function should return an object that supports ``__len__`` (ie, a

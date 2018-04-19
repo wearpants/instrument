@@ -101,13 +101,13 @@ __main__.Database.batch_get: 4 elements in 0.40 seconds
 Reducers & Producers
 --------------------
 
-:func:`instrument.reduce` and :func:`instrument.produce` are decorators for
+:func:`instrument.reducer` and :func:`instrument.producer` are decorators for
 functions, *not* iterators.
 
-The :func:`instrument.reduce` decorator measures functions that consume many
+The :func:`instrument.reducer` decorator measures functions that consume many
 items. Examples include aggregators or a ``batch_save()``:
 
->>> @instrument.reduce()
+>>> @instrument.reducer()
 ... def sum_squares(L):
 ...     total = 0
 ...     for i in L:
@@ -121,7 +121,7 @@ __main__.sum_squares: 5 elements in 0.50 seconds
 
 This works with ``*args`` functions too:
 
->>> @instrument.reduce()
+>>> @instrument.reducer()
 ... def sum_squares2(*args):
 ...     total = 0
 ...     for i in args:
@@ -133,11 +133,11 @@ This works with ``*args`` functions too:
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
-The :func:`instrument.produce` decorator measures a function that produces many
+The :func:`instrument.producer` decorator measures a function that produces many
 items. This is similar to ``instrument.iter.func()``, but for functions that
 return lists instead of iterators (or other object supporting ``len()``):
 
->>> @instrument.produce()
+>>> @instrument.producer()
 ... def list_squares(N):
 ...     sleep(0.1 * N)
 ...     return [i * i for i in range(N)]
@@ -145,23 +145,23 @@ return lists instead of iterators (or other object supporting ``len()``):
 __main__.list_squares: 5 elements in 0.50 seconds
 [0, 1, 4, 9, 16]
 
-:func:`instrument.reduce` and :func:`instrument.produce` can be used inside
+:func:`instrument.reducer` and :func:`instrument.producer` can be used inside
 classes:
 
 >>> class Database(object):
-...     @instrument.reduce()
+...     @instrument.reducer()
 ...     def batch_save(self, rows):
 ...         for r in rows:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
 ...
-...     @instrument.reduce()
+...     @instrument.reducer()
 ...     def batch_save2(self, *rows):
 ...         for r in rows:
 ...             # you'd actually commit to your database here
 ...             sleep(0.1)
 ...
-...     @instrument.produce()
+...     @instrument.producer()
 ...     def dumb_query(self, x):
 ...         # you'd actually talk to your database here
 ...         sleep(0.1 * x)
