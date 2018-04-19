@@ -8,27 +8,27 @@ instrument
     :members: iter, each, reduce, produce, func, first, block, print_metric, default_metric, make_multi_metric
 
 
-instrument.csv
---------------
+instrument.output.csv
+---------------------
 
-.. automodule:: instrument.csv
+.. automodule:: instrument.output.csv
     :members:
 
 
-instrument.logging
-------------------
+instrument.output.logging
+-------------------------
 
-.. automodule:: instrument.logging
+.. automodule:: instrument.output.logging
     :members:
 
 .. function:: logging_metric(name, count, elapsed)
 
     Metric that records to standard library logging at `INFO` level
 
-instrument.numpy
-----------------
+instrument.output.numpy
+-----------------------
 
-.. module:: instrument.numpy
+.. module:: instrument.output.numpy
 
 numpy-based metrics
 
@@ -71,10 +71,10 @@ numpy-based metrics
 
     :cvar outdir: directory to save plots in. Defaults to ``./mit_plots``.
 
-instrument.statsd
------------------
+instrument.output.statsd
+------------------------
 
-.. module:: instrument.statsd
+.. module:: instrument.output.statsd
 
 save metrics to `statsd <http://codeascraft.com/2011/02/15/measure-anything-measure-everything/>`__
 

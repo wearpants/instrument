@@ -1,5 +1,6 @@
 Data Output
 ===========
+.. module:: instrument.output
 
 By default, metrics are printed to standard out. You can provide your own
 metric recording funtion. It should take three arguments: ``count`` of items,
