@@ -13,4 +13,4 @@ def make_log_metric(level=logging.INFO, msg="%d items in %.2f seconds"):
         logging.getLogger(log_name).log(level, msg, count, elapsed)
     return log_metric
 
-log_metric = make_log_metric()
+log_metric = make_log_metric()  #: Metric that records to standard library logging at `INFO` level
