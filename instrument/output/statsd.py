@@ -6,7 +6,7 @@ except Exception: # many possible errors, incl. ImportError & ImproperlyConfigur
     from statsd.defaults.env import statsd
 
 def statsd_metric(name, count, elapsed):
-    """Metric that records to statsd/graphite"""
+    """Metric that records to statsd & graphite"""
     with statsd.pipeline() as pipe:
         pipe.incr(name, count)
         pipe.timing(name, int(round(1000 * elapsed)))  # milliseconds

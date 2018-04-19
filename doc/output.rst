@@ -67,29 +67,36 @@ Both classes support at ``dump_atexit`` flag, which will register a handler to
 write data when the interpreter finishes execution. Set to false to manage
 yourself.
 
-Plots & Statistics
-------------------
+Summary Reports
+---------------
 
 :mod:`.table` reports aggregate statistics and :mod:`.plot` generates plots (graphs). These are
-useful for benchmarking or batch jobs; for live systems, `statsd (graphite)`_ is a better choice.
+useful for benchmarking or batch jobs; for live systems, `statsd`_ is a better choice.
 :mod:`.table` and :mod:`.plot` are threadsafe; use under multiprocessing requires some care.
 
 :class:`.TableMetric` and :class:`.PlotMetric` are global to your program; do not manually create
 instances. Instead, use the classmethod :meth:`.metric`. The ``dump_atexit`` flag will register a
 handler to write data when the interpreter finishes execution. Set to false to manage yourself.
 
+Tables
+++++++
+:class:`.TableMetric` prints pretty tables of aggregate population statistics. Set the class variable ``outfile`` to a file-like object (defaults to ``stderr``):
+
 >>> from instrument.output.table import TableMetric
 >>> _ = instrument.all(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
 
-:class:`.TableMetric` prints pretty tables of aggregate population statistics. Set the class variable ``outfile`` to a file-like object (defaults to ``stderr``)::
+You'll get a nice table for output::
 
     Name           Count Mean        Count Stddev        Elapsed Mean        Elapsed Stddev
     alice            47.96              28.44               310.85               291.16
     bob              50.08              28.84               333.98               297.11
     charles          51.79              29.22               353.58               300.82
 
+
+Plots
++++++
 
 :class:`.PlotMetric` generates plots using matplotlib. Plots are saved to
 multiple files, named after each metric. Set the class variable ``outdir`` to a
@@ -102,9 +109,10 @@ deleted on startup.
     Sample plot for an O(n\ :sup:`2`\ ) algorithm
 
 
-statsd (graphite)
------------------
+statsd
+------
 
-For monitoring production systems, the :func:`.statsd_metric` function can be
-used to record metrics to `statsd <https://pypi.python.org/pypi/statsd>`__.
-Each metric will generate two buckets: a count and a timing.
+For monitoring production systems, the :func:`.statsd_metric` function can be used to record
+metrics to `statsd <https://pypi.python.org/pypi/statsd>`__ and
+`graphite <https://graphiteapp.org/>`__. Each metric will generate two buckets: a count
+and a timing.
