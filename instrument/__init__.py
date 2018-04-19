@@ -289,7 +289,7 @@ def producer(name = None, metric = call_default):
         return instrument_decorator()
     return wrapper
 
-def func(name = None, metric = call_default):
+def function(name = None, metric = call_default):
     """Decorator to measure function execution time.
 
     :arg function metric: f(name, 1, total_time)

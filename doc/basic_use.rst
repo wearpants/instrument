@@ -180,10 +180,10 @@ __main__.Database.dumb_query: 3 elements in 0.30 seconds
 Functions
 ---------
 
-The :func:`instrument.func` decorator simply measures total function execution
+The :func:`instrument.function` decorator simply measures total function execution
 time:
 
->>> @instrument.func()
+>>> @instrument.function()
 ... def slow():
 ...     # you'd do something useful here
 ...     sleep(.1)
@@ -195,7 +195,7 @@ __main__.slow: 1 elements in 0.10 seconds
 This works in classes too:
 
 >>> class CrunchCrunch(object):
-...     @instrument.func()
+...     @instrument.function()
 ...     def slow(self):
 ...         # you'd do something useful here
 ...         sleep(.1)
