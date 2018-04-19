@@ -1,7 +1,5 @@
 """save metrics to `statsd <http://codeascraft.com/2011/02/15/measure-anything-measure-everything/>`__"""
 
-from __future__ import print_function, division, absolute_import
-
 try:
     from statsd.defaults.django import statsd
 except Exception: # many possible errors, incl. ImportError & ImproperlyConfigured

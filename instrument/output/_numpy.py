@@ -1,6 +1,4 @@
 """numpy-based metrics"""
-from __future__ import print_function, division, absolute_import
-
 import struct
 import tempfile
 import warnings

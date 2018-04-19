@@ -1,3 +1,5 @@
+"""plot metrics with matplotlib"""
+
 import os.path
 import shutil
 
@@ -8,18 +10,18 @@ import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
-
 from ._numpy import NumpyMetric
 
 __all__ = ['PlotMetric']
 
-
-
 class PlotMetric(NumpyMetric):
-    """Plot graphs of metrics"""
+    """Plot graphs of metrics. See :class:`NumpyMetric <._numpy.NumpyMetric>` for usage.
+
+    :cvar outdir: directory to save plots in. Defaults to ``./instrument_plots``.
+    """
 
     instances = {}
-    outdir = os.path.abspath("mit_plots")
+    outdir = os.path.abspath("instrument_plots")
 
     @classmethod
     def _pre_dump(cls):

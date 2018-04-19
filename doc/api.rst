@@ -5,7 +5,7 @@ instrument
 ----------
 
 .. automodule:: instrument
-    :members: all, each, first, reducer, producer, function, block, default_metric
+    :members:
 
 instrument.output
 -----------------
@@ -34,24 +34,14 @@ instrument.output.logging
 instrument.output.table
 -----------------------
 
-.. module:: instrument.output.table
-
-.. class:: TableMetric
-
-    Print a table of statistics. See :class:`NumpyMetric <._numpy.NumpyMetric>` for usage.
-
-    :cvar outfile: output file. Defaults to ``sys.stderr``.
+.. automodule:: instrument.output.table
+    :members: TableMetric
 
 instrument.output.plot
 -----------------------
 
-.. module:: instrument.output.plot
-
-.. class:: PlotMetric
-
-    Plot graphs of metrics. See :class:`NumpyMetric <._numpy.NumpyMetric>` for usage.
-
-    :cvar outdir: directory to save plots in. Defaults to ``./mit_plots``.
+.. automodule:: instrument.output.plot
+    :members: PlotMetric
 
 instrument.output.statsd
 ------------------------

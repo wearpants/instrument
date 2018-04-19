@@ -1,4 +1,4 @@
-from __future__ import print_function, division, absolute_import
+"""write metrics to csv files"""
 
 import warnings
 import os.path
@@ -21,9 +21,9 @@ class CSVDirMetric(object):
     Each metric consumes one open file and 32K of memory while running.
 
     :cvar bool dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
-    :cvar str outdir: directory to save CSV files in. Defaults to ``./mit_csv``.
+    :cvar str outdir: directory to save CSV files in. Defaults to ``./instrument_csv``.
     """
-    outdir = os.path.abspath("mit_csv")
+    outdir = os.path.abspath("instrument_csv")
     dump_atexit = True
 
     lock = threading.Lock()

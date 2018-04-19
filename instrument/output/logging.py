@@ -1,7 +1,4 @@
 """save metrics to standard library logging"""
-
-from __future__ import print_function, division, absolute_import
-
 import logging
 
 def make_log_metric(level=logging.INFO, msg="%d items in %.2f seconds"):

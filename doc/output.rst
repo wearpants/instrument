@@ -2,7 +2,7 @@ Output
 ======
 .. module:: instrument.output
 
-By default, metrics are printed to standard output. You can provide your own
+By default, metrics are :func:`printed <print_metric>` to standard output. You can provide your own
 metric recording funtion. It should take three arguments: ``count`` of items,
 ``elapsed`` time in seconds, and `name`, which can be None:
 

@@ -1,5 +1,3 @@
-from __future__ import print_function, division, absolute_import
-
 import time
 import tempfile
 import shutil

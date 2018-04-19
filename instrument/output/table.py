@@ -1,3 +1,4 @@
+"""print pretty tables of statistics"""
 import prettytable
 import sys
 
@@ -6,7 +7,10 @@ from ._numpy import NumpyMetric
 __all__ = ['TableMetric']
 
 class TableMetric(NumpyMetric):
-    """Print a table of statistics"""
+    """Print a table of statistics. See :class:`NumpyMetric <._numpy.NumpyMetric>` for usage.
+
+    :cvar outfile: output file. Defaults to ``sys.stderr``.
+    """
     instances = {}
     outfile = sys.stderr
 

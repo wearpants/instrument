@@ -6,10 +6,11 @@ See also: :doc:`incompatibilities`.
 -----
 * drop Python 2.7 support
 * `all`, `each` and `first` can now be used directly as decorators
-* add `logging` output
+* add `logging_metric` & `stderr_metric` outputs
 * move outputs to `instrument.output` subpackage
 * split `instrument.output.numpy` to `plot` & `table` modules
 * instrumenter renames: `reducer`, `producer`, `function`, `all`, `first`, `each`
+* move `print_metric` and `make_multi_metric` to `instrument.output`
 
 0.5.1
 -----
