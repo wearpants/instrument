@@ -5,8 +5,9 @@ import tempfile
 import shutil
 import os
 import sys
+import unittest
 
-from . import InstrumentTestCase, math_is_hard
+from . import math_is_hard
 
 import instrument
 from instrument.output.csv import CSVFileMetric, CSVDirMetric
@@ -21,7 +22,7 @@ def read_csv(fname):
         with open(fname) as fh:
             return fh.read()
 
-class CSVFileMetricTestCase(InstrumentTestCase):
+class CSVFileMetricTestCase(unittest.TestCase):
 
     def test_csv(self):
         tmp = tempfile.mktemp()
@@ -42,7 +43,7 @@ class CSVFileMetricTestCase(InstrumentTestCase):
         s = read_csv(tmp)
         self.assertMultiLineEqual(s, 'alice,10,10.000000\r\nbob,10,10.000000\r\nalice,20,20.000000\r\n')
 
-class CSVDirMetricTestCase(InstrumentTestCase):
+class CSVDirMetricTestCase(unittest.TestCase):
 
     def test_csv(self):
         tmp = tempfile.mktemp()

@@ -1,7 +1,5 @@
 from __future__ import print_function, division, absolute_import
 
-import unittest
-import fakesleep
 import time
 
 import warnings
@@ -13,12 +11,3 @@ def math_is_hard(N):
         time.sleep(1)
         yield x * x
         x += 1
-
-
-class InstrumentTestCase(unittest.TestCase):
-
-    def setUp(self):
-        fakesleep.monkey_patch()
-
-    def tearDown(self):
-        fakesleep.monkey_restore()

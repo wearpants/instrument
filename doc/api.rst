@@ -25,10 +25,43 @@ instrument.output.logging
 
     Metric that records to standard library logging at `INFO` level
 
-instrument.output.numpy
+instrument.output.table
 -----------------------
 
-.. module:: instrument.output.numpy
+.. module:: instrument.output.table
+
+.. class:: TableMetric
+
+    Print a table of statistics. See :class:`NumpyMetric <._numpy.NumpyMetric>` for usage.
+
+    :cvar outfile: output file. Defaults to ``sys.stderr``.
+
+instrument.output.plot
+-----------------------
+
+.. module:: instrument.output.plot
+
+.. class:: PlotMetric
+
+    Plot graphs of metrics. See :class:`NumpyMetric <._numpy.NumpyMetric>` for usage.
+
+    :cvar outdir: directory to save plots in. Defaults to ``./mit_plots``.
+
+instrument.output.statsd
+------------------------
+
+.. module:: instrument.output.statsd
+
+save metrics to `statsd <http://codeascraft.com/2011/02/15/measure-anything-measure-everything/>`__
+
+.. function:: statsd_metric(name, count, elapsed)
+
+    Metric that records to statsd/graphite
+
+instrument.output._numpy
+------------------------
+
+.. module:: instrument.output._numpy
 
 numpy-based metrics
 
@@ -43,7 +76,7 @@ numpy-based metrics
     Each metric consumes one open file and 32K of memory while running.
     Output requires enough memory to load all data points for each metric.
 
-    :cvar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
+    :cvar bool dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
 
     .. classmethod:: metric(name, count, elapsed)
 
@@ -57,27 +90,3 @@ numpy-based metrics
     .. classmethod:: dump()
 
         Output all recorded metrics
-
-.. class:: TableMetric
-
-    Print a table of statistics
-
-    :cvar outfile: output file. Defaults to ``sys.stderr``.
-
-
-.. class:: PlotMetric
-
-    Plot graphs of metrics.
-
-    :cvar outdir: directory to save plots in. Defaults to ``./mit_plots``.
-
-instrument.output.statsd
-------------------------
-
-.. module:: instrument.output.statsd
-
-save metrics to `statsd <http://codeascraft.com/2011/02/15/measure-anything-measure-everything/>`__
-
-.. function:: statsd_metric(name, count, elapsed)
-
-    Metric that records to statsd/graphite

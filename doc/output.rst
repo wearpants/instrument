@@ -2,7 +2,7 @@ Data Output
 ===========
 .. module:: instrument.output
 
-By default, metrics are printed to standard out. You can provide your own
+By default, metrics are printed to standard output. You can provide your own
 metric recording funtion. It should take three arguments: ``count`` of items,
 ``elapsed`` time in seconds, and `name`, which can be None:
 
@@ -21,8 +21,8 @@ metric functions at program startup, **before** recording any metrics.
 :func:`.make_multi_metric` creates a single metric function that records to
 several outputs.
 
-Log
----
+Loggging
+--------
 :mod:`.logging` writes metrics to a standard library logger, using the metric's name.
 
 >>> from instrument.output.logging import log_metric
@@ -70,17 +70,15 @@ yourself.
 Plots & Statistics
 ------------------
 
-:mod:`.numpy` generates aggregate plots (graphs) and statistics. This is
-useful for benchmarking or batch jobs; for live systems, `statsd (graphite)`_ is a
-better choice. :mod:`.numpy` is threadsafe; use under multiprocessing
-requires some care.
+:mod:`.table` reports aggregate statistics and :mod:`.plot` generates plots (graphs). These are
+useful for benchmarking or batch jobs; for live systems, `statsd (graphite)`_ is a better choice.
+:mod:`.table` and :mod:`.plot` are threadsafe; use under multiprocessing requires some care.
 
-:class:`.NumpyMetric` subclasses are global to your program; do not manually
-create instances. Instead, use the classmethod :meth:`.NumpyMetric.metric`.
-The ``dump_atexit`` flag will register a handler to write data when the
-interpreter finishes execution. Set to false to manage yourself.
+:class:`.TableMetric` and :class:`.PlotMetric` are global to your program; do not manually create
+instances. Instead, use the classmethod :meth:`.metric`. The ``dump_atexit`` flag will register a
+handler to write data when the interpreter finishes execution. Set to false to manage yourself.
 
->>> from instrument.output.numpy import TableMetric, PlotMetric
+>>> from instrument.output.table import TableMetric
 >>> _ = instrument.iter(math_is_hard(5), metric=TableMetric.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
