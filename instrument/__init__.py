@@ -275,7 +275,7 @@ def producer(*, name = None, metric = call_default):
     """Decorator to measure a function that produces many items.
 
     The function should return an object that supports ``__len__`` (ie, a
-    list). If the function returns an iterator, use ``iter.func()`` instead.
+    list). If the function returns an iterator, use :func:`iter` instead.
 
     :arg function metric: f(name, count, total_time)
     :arg str name: name for the metric

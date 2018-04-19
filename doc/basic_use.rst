@@ -132,9 +132,9 @@ This works with ``*args`` functions too:
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
-The :func:`producer` decorator measures a function that produces many
-items. This is similar to ``iter.func()``, but for functions that
-return lists instead of iterators (or other object supporting ``len()``):
+The :func:`producer` decorator measures a function that produces many items. This is similar to
+using :func:`iter` as a decorator, but for functions that return lists instead of iterators (or
+other object supporting ``len()``):
 
 >>> @instrument.producer()
 ... def list_squares(N):
