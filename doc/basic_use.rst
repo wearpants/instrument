@@ -2,13 +2,67 @@ Basic Usage
 ===========
 .. currentmodule:: instrument
 
-Measurements
-------------
+:mod:`instrument` provides instrumentation primitives for runtime metrics and benchmarking. These
+helpers report a ``count`` of items, ``elapsed`` time and an optional ``name``, making it easy to
+gather information about your code's performance.
+
+>>> import instrument
+>>> from time import sleep
+
+Functions
+---------
+
+The :func:`function` decorator measures total function execution time:
+
+>>> @instrument.function()
+... def slow():
+...     # you'd do something useful here
+...     sleep(.1)
+...     return "SLOW"
+>>> slow()
+__main__.slow: 1 items in 0.10 seconds
+'SLOW'
+
+This works in classes too. A ``name`` will be inferred if you don't provide one:
+
+>>> class CrunchCrunch(object):
+...     @instrument.function()
+...     def slow(self):
+...         # you'd do something useful here
+...         sleep(.1)
+...         return "SLOW"
+>>> CrunchCrunch().slow()
+__main__.CrunchCrunch.slow: 1 items in 0.10 seconds
+'SLOW'
+
+
+Blocks
+------
+
+To measure the excecution time of a block of code, use a
+:func:`block` context manager:
+
+>>> with instrument.block(name="slowcode"):
+...     # you'd do something useful here
+...     sleep(0.2)
+slowcode: 1 items in 0.20 seconds
+
+You can also pass your own value for ``count``; this is useful to measure a
+resource used by a block (the number of bytes in a file, for example):
+
+>>> with instrument.block(name="slowcode", count=42):
+...     # you'd do something useful here
+...     sleep(0.2)
+slowcode: 42 items in 0.20 seconds
+
+
+
+Iterables
+---------
 
 Iterators & generators often encapsulate I/O, number crunching or other
 operations we want to gather metrics for:
 
->>> from time import sleep
 >>> def math_is_hard(N):
 ...     x = 0
 ...     while x < N:
@@ -19,8 +73,6 @@ operations we want to gather metrics for:
 Timing iterators is tricky. :func:`all`, :func:`each` and
 :func:`first` record metrics for time and item count for
 iteratables.
-
->>> import instrument
 
 Wrap an iterator in :func:`all` to time how long it takes to consume
 entirely:
@@ -64,11 +116,11 @@ You can provide a custom name for the metric:
 bogomips: 5 items in 0.50 seconds
 [0, 1, 4, 9, 16]
 
-Decorators
+Generators
 ----------
 
-You can use :func:`all`, :func:`each` and :func:`first` as decorators to wrap generator function
-(one that uses ``yield``). You can pass the same ``name`` and ``metric`` arugments:
+You can use :func:`all`, :func:`each` and :func:`first` as decorators to wrap a generator function
+(one that uses ``yield``):
 
 >>> @instrument.each()
 ... def slow(N):
@@ -100,8 +152,7 @@ __main__.Database.batch_get: 4 items in 0.40 seconds
 Reducers & Producers
 --------------------
 
-:func:`reducer` and :func:`producer` are decorators for
-functions, *not* iterators.
+:func:`reducer` and :func:`producer` are decorators for functions, *not* iterables.
 
 The :func:`reducer` decorator measures functions that consume many
 items. Examples include aggregators or a ``batch_save()``:
@@ -118,7 +169,7 @@ items. Examples include aggregators or a ``batch_save()``:
 __main__.sum_squares: 5 items in 0.50 seconds
 30
 
-This works with ``*args`` functions too:
+This works with functions taking a variable number of ``*args`` too:
 
 >>> @instrument.reducer()
 ... def sum_squares2(*args):
@@ -133,8 +184,8 @@ __main__.sum_squares2: 5 items in 0.50 seconds
 30
 
 The :func:`producer` decorator measures a function that produces many items. This is similar to
-using :func:`all` as a decorator, but for functions that return lists instead of iterators (or
-other object supporting ``len()``):
+using :func:`all` as a decorator, but for functions that return lists instead of iterators. It
+works with any returned object supporting ``len()``:
 
 >>> @instrument.producer()
 ... def list_squares(N):
@@ -175,49 +226,3 @@ __main__.Database.batch_save2: 5 items in 0.50 seconds
 >>> database.dumb_query(3)
 __main__.Database.dumb_query: 3 items in 0.30 seconds
 [{'id': 0, 'square': 0}, {'id': 1, 'square': 1}, {'id': 2, 'square': 4}]
-
-Functions
----------
-
-The :func:`function` decorator simply measures total function execution
-time:
-
->>> @instrument.function()
-... def slow():
-...     # you'd do something useful here
-...     sleep(.1)
-...     return "SLOW"
->>> slow()
-__main__.slow: 1 items in 0.10 seconds
-'SLOW'
-
-This works in classes too:
-
->>> class CrunchCrunch(object):
-...     @instrument.function()
-...     def slow(self):
-...         # you'd do something useful here
-...         sleep(.1)
-...         return "SLOW"
->>> CrunchCrunch().slow()
-__main__.CrunchCrunch.slow: 1 items in 0.10 seconds
-'SLOW'
-
-Blocks
-------
-
-To measure the excecution time of a block of code, use a
-:func:`block` context manager:
-
->>> with instrument.block(name="slowcode"):
-...     # you'd do something useful here
-...     sleep(0.2)
-slowcode: 1 items in 0.20 seconds
-
-You can also pass your own value for `count`; this is useful to measure a
-resource used by a block (the number of bytes in a file, for example):
-
->>> with instrument.block(name="slowcode", count=42):
-...     # you'd do something useful here
-...     sleep(0.2)
-slowcode: 42 items in 0.20 seconds

@@ -12,21 +12,10 @@ from functools import wraps
 from contextlib import contextmanager
 import inspect
 
+from .output import print_metric
+
 # builtins we shadow
 _builtin_all = all
-
-def print_metric(name, count, elapsed):
-    """A metric function that prints
-
-    :arg str name: name of the metric
-    :arg int count: number of items
-    :arg float elapsed: time in seconds
-    """
-    if name is not None:
-        print("%s: %d items in %.2f seconds"%(name, count, elapsed))
-    else:
-        print("%d items in %.2f seconds"%(count, elapsed))
-
 
 default_metric = print_metric #: user-supplied function to use as global default metric
 
@@ -38,19 +27,6 @@ def call_default(name, count, elapsed):
     :arg float elapsed: time in seconds
     """
     return default_metric(name, count, elapsed)
-
-
-def make_multi_metric(*metrics):
-    """Make a new metric function that calls the supplied metrics
-
-    :arg functions metrics: metric functions
-    :rtype: function
-    """
-    def multi_metric(name, count, elapsed):
-        """Calls multiple metrics (closure)"""
-        for m in metrics:
-            m(name, count, elapsed)
-    return multi_metric
 
 def _do_all(iterable, name, metric):
     total_time = 0

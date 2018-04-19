@@ -5,7 +5,13 @@ instrument
 ----------
 
 .. automodule:: instrument
-    :members: all, each, first, reducer, producer, function, block, print_metric, default_metric, make_multi_metric
+    :members: all, each, first, reducer, producer, function, block, default_metric
+
+instrument.output
+-----------------
+
+.. automodule:: instrument.output
+    :members:
 
 
 instrument.output.csv

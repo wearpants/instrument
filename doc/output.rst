@@ -1,5 +1,5 @@
-Data Output
-===========
+Output
+======
 .. module:: instrument.output
 
 By default, metrics are printed to standard output. You can provide your own
@@ -15,7 +15,7 @@ Iterable bogomips produced 5 items in 5000 milliseconds
 [0, 1, 4, 9, 16]
 
 Unless individually specified, metrics are reported using the global
-:func:`.default_metric`. To change the active default, simply assign another
+:func:`instrument.default_metric`. To change the active default, simply assign another
 metric function to this attribute. In general, you should configure your
 metric functions at program startup, **before** recording any metrics.
 :func:`.make_multi_metric` creates a single metric function that records to
