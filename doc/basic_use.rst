@@ -16,13 +16,13 @@ operations we want to gather metrics for:
 ...         yield x * x
 ...         x += 1
 
-Timing iterators is tricky. :func:`instrument.iter`, :func:`instrument.each` and
-:func:`instrument.first` record metrics for time and element count for
+Timing iterators is tricky. :func:`iter`, :func:`each` and
+:func:`first` record metrics for time and element count for
 iteratables.
 
 >>> import instrument
 
-Wrap an iterator in :func:`instrument.iter` to time how long it takes to consume
+Wrap an iterator in :func:`iter` to time how long it takes to consume
 entirely:
 
 >>> underlying = math_is_hard(5)
@@ -37,7 +37,7 @@ The wrapped iterator yields the same results as the underlying iterable:
 >>> squares
 [0, 1, 4, 9, 16]
 
-The :func:`instrument.each` wrapper measures the time taken to produce each
+The :func:`each` wrapper measures the time taken to produce each
 item:
 
 >>> _ = instrument.each(math_is_hard(5))
@@ -49,7 +49,7 @@ item:
 1 elements in 0.10 seconds
 [0, 1, 4, 9, 16]
 
-The :func:`instrument.first` wrapper measures the time taken to produce the
+The :func:`first` wrapper measures the time taken to produce the
 first item:
 
 >>> _ = instrument.first(math_is_hard(5))
@@ -101,10 +101,10 @@ __main__.Database.batch_get: 4 elements in 0.40 seconds
 Reducers & Producers
 --------------------
 
-:func:`instrument.reducer` and :func:`instrument.producer` are decorators for
+:func:`reducer` and :func:`producer` are decorators for
 functions, *not* iterators.
 
-The :func:`instrument.reducer` decorator measures functions that consume many
+The :func:`reducer` decorator measures functions that consume many
 items. Examples include aggregators or a ``batch_save()``:
 
 >>> @instrument.reducer()
@@ -133,8 +133,8 @@ This works with ``*args`` functions too:
 __main__.sum_squares2: 5 elements in 0.50 seconds
 30
 
-The :func:`instrument.producer` decorator measures a function that produces many
-items. This is similar to ``instrument.iter.func()``, but for functions that
+The :func:`producer` decorator measures a function that produces many
+items. This is similar to ``iter.func()``, but for functions that
 return lists instead of iterators (or other object supporting ``len()``):
 
 >>> @instrument.producer()
@@ -145,7 +145,7 @@ return lists instead of iterators (or other object supporting ``len()``):
 __main__.list_squares: 5 elements in 0.50 seconds
 [0, 1, 4, 9, 16]
 
-:func:`instrument.reducer` and :func:`instrument.producer` can be used inside
+:func:`reducer` and :func:`producer` can be used inside
 classes:
 
 >>> class Database(object):
@@ -180,7 +180,7 @@ __main__.Database.dumb_query: 3 elements in 0.30 seconds
 Functions
 ---------
 
-The :func:`instrument.function` decorator simply measures total function execution
+The :func:`function` decorator simply measures total function execution
 time:
 
 >>> @instrument.function()
@@ -208,7 +208,7 @@ Blocks
 ------
 
 To measure the excecution time of a block of code, use a
-:func:`instrument.block` context manager:
+:func:`block` context manager:
 
 >>> with instrument.block(name="slowcode"):
 ...     # you'd do something useful here
