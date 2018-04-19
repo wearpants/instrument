@@ -9,7 +9,7 @@ import sys
 from . import InstrumentTestCase, math_is_hard
 
 import instrument
-from instrument.csv import CSVFileMetric, CSVDirMetric
+from instrument.output.csv import CSVFileMetric, CSVDirMetric
 
 
 def read_csv(fname):

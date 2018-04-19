@@ -14,7 +14,7 @@ else:
 from . import InstrumentTestCase, math_is_hard
 
 import instrument
-from instrument.numpy import TableMetric, PlotMetric
+from instrument.output.numpy import TableMetric, PlotMetric
 
 class TableMetricTestCase(InstrumentTestCase):
 
