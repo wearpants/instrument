@@ -4,6 +4,10 @@ See also: :doc:`incompatibilities`.
 
 0.6.0
 -----
+* add `logging` output
+* move outputs to `instrument.output` subpackage
+* split `instrument.output.numpy` to `plot` & `table` modules
+* instrumenter renames: `reducer`, `producer` & `function`
 
 0.5.1
 -----

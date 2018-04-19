@@ -150,6 +150,7 @@ def _make_decorator(measuring_func):
 iter.func = _make_decorator(iter)
 each.func = _make_decorator(each)
 first.func = _make_decorator(first)
+
 def _iterable_to_varargs_func(func):
     """decorator to convert a func taking a iterable to a *args one"""
     def wrapped(*args, **kwargs):
