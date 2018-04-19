@@ -67,11 +67,10 @@ bogomips: 5 elements in 0.50 seconds
 Decorators
 ----------
 
-If you have a generator function (one that uses ``yield``), you can wrap it
-with a decorator using ``.func()``. You can pass the same ``name`` and ``metric``
-arugments:
+You can use :func:`iter`, :func:`each` and :func:`first` as decorators to wrap generator function
+(one that uses ``yield``). You can pass the same ``name`` and ``metric`` arugments:
 
->>> @instrument.each.func()
+>>> @instrument.each()
 ... def slow(N):
 ...     for i in range(N):
 ...         sleep(.1)
@@ -86,7 +85,7 @@ Decorators work inside classes too. If you don't provide a name, a decent one
 will be inferred:
 
 >>> class Database(object):
-...     @instrument.iter.func()
+...     @instrument.iter()
 ...     def batch_get(self, ids):
 ...         # you'd actually hit database here
 ...         for i in ids:

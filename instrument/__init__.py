@@ -13,7 +13,7 @@ from contextlib import contextmanager
 import inspect
 
 # alias the builtins we shadow
-_iter = iter
+_builtin_iter = iter
 
 def print_metric(name, count, elapsed):
     """A metric function that prints
@@ -52,13 +52,7 @@ def make_multi_metric(*metrics):
             m(name, count, elapsed)
     return multi_metric
 
-def iter(iterable, name = None, metric = call_default):
-    """Measure total time and element count for consuming an iterable
-
-    :arg iterable: any iterable
-    :arg function metric: f(name, count, total_time)
-    :arg str name: name for the metric
-    """
+def _do_iter(iterable, name, metric):
     total_time = 0
     count = 0
     it = enumerate(iterable, 1) # count, element
@@ -75,14 +69,8 @@ def iter(iterable, name = None, metric = call_default):
         # the `metric` and allow exception to propogate
         metric(name, count, total_time)
 
-def each(iterable, name = None, metric = call_default):
-    """Measure time elapsed to produce each item of an iterable
-
-    :arg iterable: any iterable
-    :arg function metric: f(name, 1, time)
-    :arg str name: name for the metric
-    """
-    it = _iter(iterable)
+def _do_each(iterable, name, metric):
+    it = _builtin_iter(iterable)
     while True:
         t = time.time()
         try:
@@ -99,14 +87,8 @@ def each(iterable, name = None, metric = call_default):
             metric(name, 1, time.time() - t)
             yield x
 
-def first(iterable, name = None, metric = call_default):
-    """Measure time elapsed to produce first item of an iterable
-
-    :arg iterable: any iterable
-    :arg function metric: f(name, 1, time)
-    :arg str name: name for the metric
-    """
-    it = _iter(iterable)
+def _do_first(iterable, name, metric):
+    it = _builtin_iter(iterable)
     t = time.time()
     try:
         x = next(it)
@@ -147,9 +129,49 @@ def _make_decorator(measuring_func):
         return wrapper
     return _decorator
 
-iter.func = _make_decorator(iter)
-each.func = _make_decorator(each)
-first.func = _make_decorator(first)
+# decorator variants
+_iter_decorator = _make_decorator(_do_iter)
+_each_decorator = _make_decorator(_do_each)
+_first_decorator = _make_decorator(_do_first)
+
+def iter(iterable = None, *, name = None, metric = call_default):
+    """Measure total time and element count for consuming an iterable
+
+    :arg iterable: any iterable
+    :arg function metric: f(name, count, total_time)
+    :arg str name: name for the metric
+    """
+    if iterable is None:
+        return _iter_decorator(name, metric)
+    else:
+        return _do_iter(iterable, name, metric)
+
+
+def each(iterable = None, *, name = None, metric = call_default):
+    """Measure time elapsed to produce each item of an iterable
+
+    :arg iterable: any iterable
+    :arg function metric: f(name, 1, time)
+    :arg str name: name for the metric
+    """
+    if iterable is None:
+        return _each_decorator(name, metric)
+    else:
+        return _do_each(iterable, name, metric)
+
+
+def first(iterable = None, *, name = None, metric = call_default):
+    """Measure time elapsed to produce first item of an iterable
+
+    :arg iterable: any iterable
+    :arg function metric: f(name, 1, time)
+    :arg str name: name for the metric
+    """
+    if iterable is None:
+        return _first_decorator(name, metric)
+    else:
+        return _do_first(iterable, name, metric)
+
 
 def _iterable_to_varargs_func(func):
     """decorator to convert a func taking a iterable to a *args one"""
@@ -180,7 +202,7 @@ class counted_iterable(object):
     __slots__ = ['iterable', 'count']
 
     def __init__(self, iterable):
-        self.iterable = _iter(iterable)
+        self.iterable = _builtin_iter(iterable)
         self.count = 0
 
     def __iter__(self):
@@ -193,7 +215,7 @@ class counted_iterable(object):
 
     next = __next__ # python2 compatibility
 
-def reducer(name = None, metric = call_default):
+def reducer(*, name = None, metric = call_default):
     """Decorator to measure a function that consumes many items.
 
     The wrapped ``func`` should take either a single ``iterable`` argument or
@@ -249,7 +271,7 @@ def reducer(name = None, metric = call_default):
 
     return instrument_reducer_decorator
 
-def producer(name = None, metric = call_default):
+def producer(*, name = None, metric = call_default):
     """Decorator to measure a function that produces many items.
 
     The function should return an object that supports ``__len__`` (ie, a
@@ -290,7 +312,7 @@ def producer(name = None, metric = call_default):
         return instrument_decorator()
     return wrapper
 
-def function(name = None, metric = call_default):
+def function(*, name = None, metric = call_default):
     """Decorator to measure function execution time.
 
     :arg function metric: f(name, 1, total_time)
@@ -322,7 +344,7 @@ def function(name = None, metric = call_default):
     return wrapper
 
 @contextmanager
-def block(name = None, metric = call_default, count = 1):
+def block(*, name = None, metric = call_default, count = 1):
     """Context manager to measure execution time of a block
 
     :arg function metric: f(name, 1, time)
