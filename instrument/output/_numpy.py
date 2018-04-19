@@ -4,7 +4,6 @@ from __future__ import print_function, division, absolute_import
 import struct
 import tempfile
 import warnings
-import sys
 import threading
 import atexit
 
@@ -20,11 +19,7 @@ class NumpyMetric(object):
     lock = threading.Lock()
     instances = None #: replace with dict in each subclass
 
-    if sys.version_info.major >= 3:
-        mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', buffering = 32768)
-    else:
-        # python2.7: argument name differs
-        mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', bufsize = 32768)
+    mktemp = lambda self: tempfile.TemporaryFile(mode = 'w+b', buffering = 32768)
 
     def __init__(self, name):
         self.name = name
@@ -60,9 +55,7 @@ class NumpyMetric(object):
         """Output all recorded metrics"""
         with cls.lock:
             if not cls.instances: return
-            if cls.dump_atexit and sys.version_info.major >= 3:
-                # python2.7 has no unregister function
-                atexit.unregister(cls.dump)
+            atexit.unregister(cls.dump)
 
             cls._pre_dump()
 

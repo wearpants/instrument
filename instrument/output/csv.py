@@ -5,16 +5,11 @@ import os.path
 import shutil
 import threading
 import atexit
-import sys
 import csv
 
 __all__ = ['CSVDirMetric', 'CSVFileMetric']
 
-# python2.7: open a file for writing as csv, from http://stackoverflow.com/a/11235483
-if sys.version_info.major >= 3:
-    open_fh = lambda fname: open(fname, 'w', newline='', buffering=32768)
-else:
-    open_fh = lambda fname: open(fname, 'wb', buffering=32768)
+open_fh = lambda fname: open(fname, 'w', newline='', buffering=32768)
 
 class CSVDirMetric(object):
     """Write metrics to multiple CSV files
@@ -72,9 +67,7 @@ class CSVDirMetric(object):
         """Output all recorded metrics"""
         with cls.lock:
             if not cls.instances: return
-            if cls.dump_atexit and sys.version_info.major >= 3:
-                # python2.7 has no unregister function
-                atexit.unregister(cls.dump)
+            atexit.unregister(cls.dump)
 
             for self in cls.instances.values():
                 self.fh.close()
@@ -124,7 +117,5 @@ class CSVFileMetric(object):
     def dump(self):
         """Output all recorded metrics"""
         with self.lock:
-            if self.dump_atexit and sys.version_info.major >= 3:
-                # python2.7 has no unregister function
-                atexit.unregister(self.dump)
+            atexit.unregister(self.dump)
             self.fh.close()

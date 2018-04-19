@@ -4,7 +4,6 @@ import time
 import tempfile
 import shutil
 import os
-import sys
 import unittest
 
 from . import math_is_hard
@@ -14,13 +13,8 @@ from instrument.output.csv import CSVFileMetric, CSVDirMetric
 
 
 def read_csv(fname):
-    # read a CSV file directly, dealing with python2.7 differences
-    if sys.version_info.major >= 3:
-        with open(fname, newline='') as fh:
-            return fh.read()
-    else:
-        with open(fname) as fh:
-            return fh.read()
+    with open(fname, newline='') as fh:
+        return fh.read()
 
 class CSVFileMetricTestCase(unittest.TestCase):
 

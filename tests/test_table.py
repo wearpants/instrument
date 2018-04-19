@@ -1,11 +1,5 @@
-from __future__ import print_function, division, absolute_import
-import sys
 import unittest
-
-if sys.version_info.major >= 3:
-    from io import StringIO
-else:
-    from StringIO import StringIO
+from io import StringIO
 
 from . import math_is_hard
 

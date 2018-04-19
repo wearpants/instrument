@@ -26,6 +26,4 @@ Bonus features
 
 Modernization
 -------------
-
-* rip out old 2.7 compatibility stuff
 * pypy test & support

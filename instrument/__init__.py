@@ -213,8 +213,6 @@ class counted_iterable(object):
         self.count += 1
         return ret
 
-    next = __next__ # python2 compatibility
-
 def reducer(*, name = None, metric = call_default):
     """Decorator to measure a function that consumes many items.
 

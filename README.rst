@@ -15,7 +15,7 @@ Python `Instrument` was formerly known as `Measure It`.
 
 :author: Pete Fein <pete@wearpants.org>
 :license: BSD
-:versions: Python 2.7 & 3
+:versions: Python 3.4+
 :source: https://github.com/wearpants/instrument
 :homepage: https://instrument.readthedocs.org/en/latest/
 :video: https://www.youtube.com/watch?v=A_C4Z4RDDgI
