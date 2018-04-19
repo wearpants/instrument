@@ -78,11 +78,11 @@ class CSVFileMetric(object):
     Pass the method :func:`metric` to a measurement function. Output using
     :func:`dump`. These are the only public methods.
 
-    :ivar outfile: file to save to. Defaults to ``./mit.csv``.
+    :ivar outfile: file to save to. Defaults to ``./instrument.csv``.
     :ivar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.
     """
 
-    def __init__(self, outfile="mit.csv", dump_atexit = True):
+    def __init__(self, outfile="instrument.csv", dump_atexit = True):
         self.outfile = os.path.abspath(outfile)
         if os.path.exists(self.outfile):
             os.remove(self.outfile)
