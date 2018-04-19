@@ -3,7 +3,7 @@ instrument
 
 `instrument <http://github.com/wearpants/instrument>`__ provides instrumentation primitives for metrics and benchmarking.
 
-Python `Instrument` was formerly known as `Measure It`.
+Python ``Instrument`` was formerly known as ``Measure It``.
 
 :author: Pete Fein <pete@wearpants.org>
 :license: BSD

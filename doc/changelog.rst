@@ -7,7 +7,7 @@ See also: :doc:`incompatibilities`.
 
 0.5.1
 -----
-* rename project to `instrument` from `measure_it`
+* rename project to ``instrument`` from ``measure_it``
 * update to modern tooling: pytest, pipenv, etc..
 * improved testing: tox, travis
 * fix to work with newer versions of statsd, including its django support

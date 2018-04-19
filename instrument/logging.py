@@ -7,8 +7,8 @@ import logging
 def make_log_metric(level=logging.INFO, msg="%d elements in %.2f seconds"):
     """Make a new metric function that logs at the given level
 
-    :arg int level: logging level, defaults to `logging.INFO`
-    :arg string msg: logging message format string, taking `count` and `elapsed`
+    :arg int level: logging level, defaults to ``logging.INFO``
+    :arg string msg: logging message format string, taking ``count`` and ``elapsed``
     :rtype: function
     """
     def log_metric(name, count, elapsed):

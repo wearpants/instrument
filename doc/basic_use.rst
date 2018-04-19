@@ -105,7 +105,7 @@ Reducers & Producers
 functions, *not* iterators.
 
 The :func:`instrument.reduce` decorator measures functions that consume many
-items. Examples include aggregators or a `batch_save()`:
+items. Examples include aggregators or a ``batch_save()``:
 
 >>> @instrument.reduce()
 ... def sum_squares(L):
