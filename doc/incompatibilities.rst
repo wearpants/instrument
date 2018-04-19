@@ -3,6 +3,8 @@ Backwards Incompatibilities
 
 0.5 -> 0.6
 ----------
+* drop support for Python 2.7
+* `name` and `metric` are keyword only arguments
 * various renames and move output modules; see :doc:`changelog` for details
 
 0.4 -> 0.5
