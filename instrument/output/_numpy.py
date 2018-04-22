@@ -13,8 +13,7 @@ class NumpyMetric(object):
     Do not create instances of this class directly. Simply pass the
     classmethod :func:`metric` to a measurement function. Output using
     :func:`dump`. These are the only public methods. This is an abstract base
-    class; you should use one of the concrete subclases in this module
-    instead.
+    class; you should use one of the concrete subclases instead.
 
     Each metric consumes one open file and 32K of memory while running.
     Output requires enough memory to load all data points for each metric.
