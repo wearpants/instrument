@@ -10,8 +10,8 @@ setup(name='instrument',
       packages=find_packages(exclude=['tests', 'doc']),
       extras_require={
         'statsd': ['statsd'],
-        'numpy': ['numpy', 'prettytable'],
-        'plot': ['matplotlib'],
+        'table': ['numpy', 'prettytable'],
+        'plot': ['numpy', 'matplotlib'],
         },
       license = "BSD",
       classifiers = [
