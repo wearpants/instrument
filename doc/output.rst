@@ -2,9 +2,9 @@ Output
 ======
 .. module:: instrument.output
 
-By default, metrics are :func:`printed <print_metric>` to standard output. You can provide your own
+By default, metrics are printed to standard output using :func:`print_metric`. You can provide your own
 metric recording funtion. It should take three arguments: ``count`` of items,
-``elapsed`` time in seconds, and `name`, which can be None:
+``elapsed`` time in seconds, and ``name``, which can be None:
 
 >>> def my_metric(name, count, elapsed):
 ...     print("Iterable %s produced %d items in %d milliseconds"%(name, count, int(round(elapsed*1000))))
@@ -18,8 +18,8 @@ Unless individually specified, metrics are reported using the global
 :func:`instrument.default_metric`. To change the active default, simply assign another
 metric function to this attribute. In general, you should configure your
 metric functions at program startup, **before** recording any metrics.
-:func:`.make_multi_metric` creates a single metric function that records to
-several outputs.
+:func:`.make_multi_metric` composes several metrics functions together, for simultaneous
+display to multiple outputs.
 
 Loggging
 --------

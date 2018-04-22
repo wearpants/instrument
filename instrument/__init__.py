@@ -3,7 +3,7 @@ that's why it has tests.
 the above-mentioned 'you' includes the author. :-}
 """
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 import time
 from functools import wraps
@@ -18,7 +18,7 @@ _builtin_all = all
 default_metric = print_metric #: user-supplied function to use as global default metric
 
 def call_default(name, count, elapsed):
-    """call the :func:`default_metric` global in this module
+    """call the global :func:`default_metric`
 
     :arg str name: name of the metric
     :arg int count: number of items
@@ -247,7 +247,7 @@ def producer(*, name = None, metric = call_default):
     """Decorator to measure a function that produces many items.
 
     The function should return an object that supports ``__len__`` (ie, a
-    list). If the function returns an iterator, use :func:`iter` instead.
+    list). If the function returns an iterator, use :func:`all` instead.
 
     :arg function metric: f(name, count, total_time)
     :arg str name: name for the metric

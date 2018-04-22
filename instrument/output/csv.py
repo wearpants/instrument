@@ -16,7 +16,7 @@ class CSVDirMetric(object):
 
     Do not create instances of this class directly. Simply pass the
     classmethod :func:`metric` to a measurement function. Output using
-    :func:`dump`. These are the only public methods.
+    :func:`dump`.
 
     Each metric consumes one open file and 32K of memory while running.
 
@@ -76,7 +76,7 @@ class CSVFileMetric(object):
     """Write metrics to a single CSV file
 
     Pass the method :func:`metric` to a measurement function. Output using
-    :func:`dump`. These are the only public methods.
+    :func:`dump`.
 
     :ivar outfile: file to save to. Defaults to ``./instrument.csv``.
     :ivar dump_atexit: automatically call :func:`dump` when the interpreter exits. Defaults to True.

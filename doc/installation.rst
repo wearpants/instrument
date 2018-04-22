@@ -28,4 +28,4 @@ The following extra targets are supported:
 
 * ``statsd``: statsd metric
 * ``numpy``: statistics metrics, based on numpy
-* ``plot``: graphs of metrics, based on matplotlib. Because Python packaging is brain damaged, you must install the ``numpy`` target first. You'll need the `agg backend <http://matplotlib.org/users/installing.html#installing-from-source>`__.
+* ``plot``: graphs of metrics, based on matplotlib. You'll need the `agg backend <http://matplotlib.org/users/installing.html#installing-from-source>`__.
