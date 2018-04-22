@@ -3,7 +3,7 @@ that's why it has tests.
 the above-mentioned 'you' includes the author. :-}
 """
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 import time
 from functools import wraps
