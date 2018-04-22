@@ -27,5 +27,5 @@ dependencies for an optional component, specify it in brackets with ``--upgrade`
 The following extra targets are supported:
 
 * ``statsd``: statsd metric
-* ``numpy``: statistics metrics, based on numpy
+* ``table``: statistics tables
 * ``plot``: graphs of metrics, based on matplotlib. You'll need the `agg backend <http://matplotlib.org/users/installing.html#installing-from-source>`__.
