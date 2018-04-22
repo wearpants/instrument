@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='instrument',
-      version="0.6.0",
+      version="0.6.1",
       description='instrumentation primitives for metrics and benchmarking',
       author='Pete Fein',
       author_email='pete@wearpants.org',
