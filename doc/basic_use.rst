@@ -179,7 +179,7 @@ This works with functions taking a variable number of ``*args`` too:
 ...         total += i*i
 ...     return total
 ...
->>> sum_squares2(*range(5))
+>>> sum_squares2(0, 1, 2, 3, 4)
 __main__.sum_squares2: 5 items in 0.50 seconds
 30
 
