@@ -7,9 +7,11 @@ Python ``instrument`` was formerly known as ``measure-it``.
 
 :author: Pete Fein <pete@wearpants.org>
 :license: BSD
-:versions: Python 3.4+
+:versions: Python 3.6+, PyPy
 :source: https://github.com/wearpants/instrument
 :homepage: https://instrument.readthedocs.org/en/latest/
+
+Instrument is tested on Python 3.6 and PyPy 3, but should work with Python 3.4 & 3.5 as well.
 
 .. toctree::
     :maxdepth: 2
