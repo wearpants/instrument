@@ -57,12 +57,6 @@ your program; do not manually create instances. Instead, use the classmethod
 in which to store files. The contents of this directory will be deleted on
 startup.
 
->>> from instrument.output.csv import CSVDirMetric
->>> CSVDirMetric.outdir = "/tmp/my_metrics_dir"
->>> _ = instrument.all(math_is_hard(5), metric=CSVDirMetric.metric, name="bogomips")
->>> list(_)
-[0, 1, 4, 9, 16]
-
 Both classes support at ``dump_atexit`` flag, which will register a handler to
 write data when the interpreter finishes execution. Set to false to manage
 yourself.
