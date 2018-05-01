@@ -44,8 +44,10 @@ class and pass its :meth:`.CSVFileMetric.metric` method to measurement
 functions. The ``outfile`` parameter controls where to write data; an existing
 file will be overwritten.
 
+>>> import tempfile, os.path
+>>> csv_filename = os.path.join(tempfile.gettempdir(), "my_metrics_file.csv")
 >>> from instrument.output.csv import CSVFileMetric
->>> csvfm = CSVFileMetric("/tmp/my_metrics_file.csv")
+>>> csvfm = CSVFileMetric(csv_filename)
 >>> _ = instrument.all(math_is_hard(5), metric=csvfm.metric, name="bogomips")
 >>> list(_)
 [0, 1, 4, 9, 16]
