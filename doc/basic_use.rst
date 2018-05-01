@@ -89,6 +89,16 @@ The wrapped iterator yields the same results as the underlying iterable:
 >>> squares
 [0, 1, 4, 9, 16]
 
+If you don't fully consume an iterable wrapped in :func:`all`, call its
+`close` method to force metrcis to be output:
+
+>>> from itertools import islice
+>>> _ = instrument.all(math_is_hard(5))
+>>> list(islice(_, 3))
+[0, 1, 4]
+>>> _.close()
+3 items in 0.30 seconds
+
 The :func:`each` wrapper measures the time taken to produce each
 item:
 
