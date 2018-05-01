@@ -70,8 +70,8 @@ operations we want to gather metrics for:
 ...         yield x * x
 ...         x += 1
 
-Timing iterators is tricky. :func:`all`, :func:`each` and
-:func:`first` record metrics for time and item count for
+Timing iterators is tricky. :func:`all`, :func:`each`, :func:`first` 
+and :func:`rest` record metrics for time and item count for
 iteratables.
 
 Wrap an iterator in :func:`all` to time how long it takes to consume
@@ -118,6 +118,20 @@ first item:
 >>> list(_)
 1 items in 0.10 seconds
 [0, 1, 4, 9, 16]
+
+The :func:`rest` wrapper measures the time taken to produce the
+rest of the items after the first:
+>>> _ = instrument.rest(math_is_hard(5))
+>>> list(_)
+4 items in 0.40 seconds
+[0, 1, 4, 9, 16]
+
+If the iterable has only one item, `rest` will output zeros:
+>>> _ = instrument.rest(math_is_hard(1))
+>>> list(_)
+0 items in 0.00 seconds
+[0]
+
 
 You can provide a custom name for the metric:
 

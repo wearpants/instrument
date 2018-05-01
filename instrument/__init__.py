@@ -43,6 +43,25 @@ def _do_all(iterable, name, metric):
         # the `metric` and allow exception to propogate
         metric(name, count, total_time)
 
+def _do_rest(iterable, name, metric):
+    total_time = 0
+    count = 0
+    it = enumerate(iterable, 0) # count, item
+    yield next(it)[1] # skip first item
+    try:
+        while True:
+            t = time.time()
+            try:
+                count, x = next(it)
+            finally:
+                total_time += time.time() - t
+            yield x
+    finally:
+        # underlying iterable is exhausted (StopIteration) or errored. Record
+        # the `metric` and allow exception to propogate
+        metric(name, count, total_time)
+
+
 def _do_each(iterable, name, metric):
     it = iter(iterable)
     while True:
@@ -104,7 +123,8 @@ def _make_decorator(measuring_func):
     return _decorator
 
 # decorator variants
-_iter_decorator = _make_decorator(_do_all)
+_all_decorator = _make_decorator(_do_all)
+_rest_decorator = _make_decorator(_do_rest)
 _each_decorator = _make_decorator(_do_each)
 _first_decorator = _make_decorator(_do_first)
 
@@ -116,9 +136,21 @@ def all(iterable = None, *, name = None, metric = call_default):
     :arg str name: name for the metric
     """
     if iterable is None:
-        return _iter_decorator(name, metric)
+        return _all_decorator(name, metric)
     else:
         return _do_all(iterable, name, metric)
+
+def rest(iterable = None, *, name = None, metric = call_default):
+    """Measure time elapsed to produce the tail of an iterable (skipping first item)
+
+    :arg iterable: any iterable
+    :arg function metric: f(name, count, total_time)
+    :arg str name: name for the metric
+    """
+    if iterable is None:
+        return _rest_decorator(name, metric)
+    else:
+        return _do_rest(iterable, name, metric)
 
 
 def each(iterable = None, *, name = None, metric = call_default):
