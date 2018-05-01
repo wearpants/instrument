@@ -99,6 +99,14 @@ def _do_first(iterable, name, metric):
 
     yield from it
 
+def _do_first_and_rest(iterable, name, metric):
+    yield from _do_rest(_do_first(iterable,
+                                  name=("%s_first" % name if name else "first"),
+                                  metric=metric),
+                        name=("%s_rest" % name if name else "rest"),
+                        metric=metric)
+
+
 def _make_decorator(measuring_func):
     """morass of closures for making decorators/descriptors"""
     def _decorator(name = None, metric = call_default):
@@ -127,6 +135,8 @@ _all_decorator = _make_decorator(_do_all)
 _rest_decorator = _make_decorator(_do_rest)
 _each_decorator = _make_decorator(_do_each)
 _first_decorator = _make_decorator(_do_first)
+_first_and_rest_decorator = _make_decorator(_do_first_and_rest)
+
 
 def all(iterable = None, *, name = None, metric = call_default):
     """Measure total time and item count for consuming an iterable
@@ -178,6 +188,19 @@ def first(iterable = None, *, name = None, metric = call_default):
     else:
         return _do_first(iterable, name, metric)
 
+def first_and_rest(iterable = None, *, name = None, metric = call_default):
+    """Measure time elapsed to produce first and rest of items
+
+    '_first' and '_rest' will be appened as suffixes to the supplied name.
+
+    :arg iterable: any iterable
+    :arg function metric: f(name, count, time)
+    :arg str name: name for the metric
+    """
+    if iterable is None:
+        return _first_and_rest_decorator(name, metric)
+    else:
+        return _do_first_and_rest(iterable, name, metric)
 
 def _iterable_to_varargs_func(func):
     """decorator to convert a func taking a iterable to a *args one"""

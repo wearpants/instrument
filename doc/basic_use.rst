@@ -70,9 +70,9 @@ operations we want to gather metrics for:
 ...         yield x * x
 ...         x += 1
 
-Timing iterators is tricky. :func:`all`, :func:`each`, :func:`first` 
-and :func:`rest` record metrics for time and item count for
-iteratables.
+Timing iterators is tricky. :func:`all`, :func:`each`, :func:`first`, 
+:func:`rest` and :func:`first_and_rest` record metrics for time and 
+item count for iterables.
 
 Wrap an iterator in :func:`all` to time how long it takes to consume
 entirely:
@@ -132,6 +132,21 @@ If the iterable has only one item, `rest` will output zeros:
 0 items in 0.00 seconds
 [0]
 
+:func:`first` and :func:`rest` work well together:
+>>> _ = instrument.rest(instrument.first(math_is_hard(5), name='first'), name='rest')
+>>> list(_)
+first: 1 items in 0.10 seconds
+rest: 4 items in 0.40 seconds
+[0, 1, 4, 9, 16]
+
+Or use the :func:`first_and_rest` shortcut, which will append `_first` and `_rest` to
+the supplied name:
+>>> _ = instrument.first_and_rest(math_is_hard(5), name="calc")
+>>> list(_)
+calc_first: 1 items in 0.10 seconds
+calc_rest: 4 items in 0.40 seconds
+[0, 1, 4, 9, 16]
+
 
 You can provide a custom name for the metric:
 
@@ -143,7 +158,8 @@ bogomips: 5 items in 0.50 seconds
 Generators
 ----------
 
-You can use :func:`all`, :func:`each` and :func:`first` as decorators to wrap a generator function
+You can use :func:`all`, :func:`each`, :func:`first`, :func:`rest` and
+:func:`first_and_rest` as decorators to wrap a generator function
 (one that uses ``yield``):
 
 >>> @instrument.each()
