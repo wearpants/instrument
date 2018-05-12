@@ -18,5 +18,5 @@ Python `Instrument` was formerly known as `Measure It`.
 :versions: Python 3.4+
 :source: https://github.com/wearpants/instrument
 :homepage: https://instrument.readthedocs.org/en/latest/
-:video: https://www.youtube.com/watch?v=A_C4Z4RDDgI
+:video: https://www.youtube.com/watch?v=gfLS2sXfxtE
 
